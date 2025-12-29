@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar dashboard-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/Logo.jpeg" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                    <p class="tagline">Admin Dashboard</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <span id="adminName" class="user-name"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showTab('overview')">
+                    <span class="icon">📊</span>
+                    Dashboard Overview
+                </button>
+                <button class="menu-item" onclick="showTab('admin-management')">
+                    <span class="icon">👥</span>
+                    Admin Management
+                </button>
+                <button class="menu-item" onclick="showTab('user-management')">
+                    <span class="icon">👤</span>
+                    User Management
+                </button>
+                <button class="menu-item" onclick="showTab('debug-storage')">
+                    <span class="icon">🔍</span>
+                    Debug Storage
+                </button>
+                <a href="quick-start.html" target="_blank" class="menu-item" style="text-decoration: none;">
+                    <span class="icon">📖</span>
+                    Quick Start Guide
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-details">
+                            <h3 id="totalAdmins">0</h3>
+                            <p>Total Admins</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👤</div>
+                        <div class="stat-details">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-details">
+                            <h3>6</h3>
+                            <p>Available Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏫</div>
+                        <div class="stat-details">
+                            <h3>6</h3>
+                            <p>Partner Schools</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="recentActivity">
+                        <p class="no-data">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Management Tab -->
+            <div id="admin-management" class="tab-content">
+                <div class="tab-header">
+                    <h2>Admin Management</h2>
+                    <button class="btn btn-primary" onclick="showAddAdminModal()">
+                        <span>+</span> Add New Admin
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Created Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <tr>
+                                <td colspan="4" class="no-data">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Management Tab -->
+            <div id="user-management" class="tab-content">
+                <div class="tab-header">
+                    <h2>User Management</h2>
+                    <button class="btn btn-primary" onclick="showAddUserModal()">
+                        <span>+</span> Add New User
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Qualification</th>
+                                <th>Progress</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <tr>
+                                <td colspan="6" class="no-data">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Debug Storage Tab -->
+            <div id="debug-storage" class="tab-content">
+                <h2>🔍 Debug Storage</h2>
+                
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-icon">👤</div>
+                        <div class="stat-details">
+                            <h3 id="debugUserCount">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-details">
+                            <h3 id="debugAdminCount">0</h3>
+                            <p>Total Admins</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="refreshDebugData()">🔄 Refresh Data</button>
+                    <button class="btn btn-success" onclick="addSampleUser()">➕ Add Sample User</button>
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="color: #3d2f7c; margin-bottom: 15px;">👥 Users Data</h3>
+                    <pre id="debugUsersData" style="background: #2d2d2d; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 300px;">Loading...</pre>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="color: #3d2f7c; margin-bottom: 15px;">👨‍💼 Admins Data</h3>
+                    <pre id="debugAdminsData" style="background: #2d2d2d; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 300px;">Loading...</pre>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="color: #3d2f7c; margin-bottom: 15px;">🔐 Current Session</h3>
+                    <pre id="debugSessionData" style="background: #2d2d2d; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto;">Loading...</pre>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #3d2f7c; margin-bottom: 15px;">💾 All LocalStorage Keys</h3>
+                    <pre id="debugAllKeys" style="background: #2d2d2d; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 300px;">Loading...</pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div id="addAdminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Admin</h3>
+                <button class="close-btn" onclick="closeAddAdminModal()">&times;</button>
+            </div>
+            <form id="addAdminForm" class="modal-form">
+                <div class="form-group">
+                    <label for="newAdminUsername">Username *</label>
+                    <input type="text" id="newAdminUsername" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="newAdminPassword">Password *</label>
+                    <input type="password" id="newAdminPassword" required placeholder="Enter password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmAdminPassword">Confirm Password *</label>
+                    <input type="password" id="confirmAdminPassword" required placeholder="Confirm password">
+                </div>
+                <div id="adminModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddAdminModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Admin Modal -->
+    <div id="editAdminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Admin</h3>
+                <button class="close-btn" onclick="closeEditAdminModal()">&times;</button>
+            </div>
+            <form id="editAdminForm" class="modal-form">
+                <input type="hidden" id="editAdminUsername">
+                <div class="form-group">
+                    <label for="editAdminNewUsername">Username *</label>
+                    <input type="text" id="editAdminNewUsername" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="editAdminPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editAdminPassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmEditAdminPassword">Confirm New Password</label>
+                    <input type="password" id="confirmEditAdminPassword" placeholder="Confirm new password">
+                </div>
+                <div id="editAdminModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditAdminModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button class="close-btn" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <form id="addUserForm" class="modal-form">
+                <div class="form-group">
+                    <label for="newUserName">Full Name *</label>
+                    <input type="text" id="newUserName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="newUserPhone">Phone Number *</label>
+                    <input type="tel" id="newUserPhone" required placeholder="Enter phone number" pattern="[0-9]{10}">
+                </div>
+                <div class="form-group">
+                    <label for="newUserQualification">Qualification *</label>
+                    <select id="newUserQualification" required>
+                        <option value="">Select qualification</option>
+                        <option value="B.Ed">B.Ed</option>
+                        <option value="M.Ed">M.Ed</option>
+                        <option value="B.A">B.A</option>
+                        <option value="M.A">M.A</option>
+                        <option value="B.Sc">B.Sc</option>
+                        <option value="M.Sc">M.Sc</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newUserEmail">Email *</label>
+                    <input type="email" id="newUserEmail" required placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">Password *</label>
+                    <input type="password" id="newUserPassword" required placeholder="Enter password" minlength="8">
+                </div>
+                <div id="userModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+                <button class="close-btn" onclick="closeEditUserModal()">&times;</button>
+            </div>
+            <form id="editUserForm" class="modal-form">
+                <input type="hidden" id="editUserEmail">
+                <div class="form-group">
+                    <label for="editUserName">Full Name *</label>
+                    <input type="text" id="editUserName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="editUserNewEmail">Email *</label>
+                    <input type="email" id="editUserNewEmail" required placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="editUserPhone">Phone Number *</label>
+                    <input type="tel" id="editUserPhone" required placeholder="Enter phone number" pattern="[0-9]{10}">
+                </div>
+                <div class="form-group">
+                    <label for="editUserQualification">Qualification *</label>
+                    <select id="editUserQualification" required>
+                        <option value="B.Ed">B.Ed</option>
+                        <option value="M.Ed">M.Ed</option>
+                        <option value="B.A">B.A</option>
+                        <option value="M.A">M.A</option>
+                        <option value="B.Sc">B.Sc</option>
+                        <option value="M.Sc">M.Sc</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editUserPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editUserPassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmEditUserPassword">Confirm New Password</label>
+                    <input type="password" id="confirmEditUserPassword" placeholder="Confirm new password">
+                </div>
+                <div id="editUserModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar dashboard-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/Logo.jpeg" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                    <p class="tagline">User Dashboard</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <span id="userName" class="user-name"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showUserTab('dashboard')">
+                    <span class="icon">📊</span>
+                    My Dashboard
+                </button>
+                <button class="menu-item" onclick="showUserTab('courses')">
+                    <span class="icon">📚</span>
+                    Available Courses
+                </button>
+                <button class="menu-item" onclick="showUserTab('schools')">
+                    <span class="icon">🏫</span>
+                    Partner Schools
+                </button>
+                <button class="menu-item" onclick="showUserTab('profile')">
+                    <span class="icon">👤</span>
+                    My Profile
+                </button>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>Welcome, <span id="welcomeName"></span>!</h2>
+                <div class="welcome-message">
+                    <p>Welcome to SAIRA ACAD - Strategic Academics Innovation Resources Academy. 
+                    Start your journey towards academic excellence by exploring our courses and resources.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-details">
+                            <h3 id="enrolledCourses">0</h3>
+                            <p>Enrolled Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-details">
+                            <h3 id="completedCourses">0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-details">
+                            <h3 id="inProgressCourses">0</h3>
+                            <p>In Progress</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-details">
+                            <h3 id="userProgress">0%</h3>
+                            <p>Overall Progress</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-info-card">
+                    <h3>Quick Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Email:</strong>
+                            <span id="userEmail"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Phone:</strong>
+                            <span id="userPhone"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Qualification:</strong>
+                            <span id="userQualification"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Member Since:</strong>
+                            <span id="memberSince"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Tab -->
+            <div id="courses" class="tab-content">
+                <h2>Available Courses</h2>
+                <p class="section-description">
+                    Explore our comprehensive professional development courses designed for passionate teachers.
+                </p>
+
+                <div class="courses-grid">
+                    <div class="course-card detailed">
+                        <div class="course-icon">🔢</div>
+                        <h3>Mathematics</h3>
+                        <p>Advanced teaching methodologies for mathematical concepts, including algebra, geometry, and calculus.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 12 weeks</span>
+                            <span class="course-level">📊 Advanced</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Mathematics')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🔬</div>
+                        <h3>Science</h3>
+                        <p>Innovative approaches to physics, chemistry, and biology education with practical experiments.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 10 weeks</span>
+                            <span class="course-level">📊 Intermediate</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Science')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">📖</div>
+                        <h3>Languages</h3>
+                        <p>Modern techniques for language acquisition and literacy development across multiple languages.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 8 weeks</span>
+                            <span class="course-level">📊 All Levels</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Languages')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🌍</div>
+                        <h3>Social Studies</h3>
+                        <p>Engaging methods for teaching history, geography, civics, and social sciences.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 10 weeks</span>
+                            <span class="course-level">📊 Intermediate</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Social Studies')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🎨</div>
+                        <h3>Arts & Creativity</h3>
+                        <p>Fostering creativity and artistic expression in the classroom through various mediums.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 6 weeks</span>
+                            <span class="course-level">📊 Beginner</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Arts & Creativity')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">💻</div>
+                        <h3>Technology & Digital Learning</h3>
+                        <p>Integrating technology effectively in modern education with digital tools and platforms.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 8 weeks</span>
+                            <span class="course-level">📊 All Levels</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Technology & Digital Learning')">Enroll Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schools Tab -->
+            <div id="schools" class="tab-content">
+                <h2>Our Partner Schools</h2>
+                <p class="section-description">
+                    Trusted educational institutions that have partnered with SAIRA ACAD for academic excellence.
+                </p>
+
+                <div class="schools-list">
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>Delhi Public School</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Delhi Public School</h4>
+                            <p>One of India's premier school chains, committed to holistic education and academic excellence.</p>
+                            <div class="school-stats">
+                                <span>📍 Pan India</span>
+                                <span>👥 500+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>Kendriya Vidyalaya</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Kendriya Vidyalaya</h4>
+                            <p>Central government schools providing quality education with emphasis on all-round development.</p>
+                            <div class="school-stats">
+                                <span>📍 Nationwide</span>
+                                <span>👥 1200+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>Ryan International</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Ryan International School</h4>
+                            <p>Leading international school group focusing on innovative teaching and global perspectives.</p>
+                            <div class="school-stats">
+                                <span>📍 Multiple Cities</span>
+                                <span>👥 135+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>DAV Public School</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>DAV Public School</h4>
+                            <p>Renowned for academic rigor and value-based education across India.</p>
+                            <div class="school-stats">
+                                <span>📍 Pan India</span>
+                                <span>👥 900+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>St. Xavier's School</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>St. Xavier's School</h4>
+                            <p>Premier institution known for academic excellence and character formation.</p>
+                            <div class="school-stats">
+                                <span>📍 Major Cities</span>
+                                <span>👥 50+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3>Modern School</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Modern School</h4>
+                            <p>Progressive education with focus on contemporary teaching methods and student development.</p>
+                            <div class="school-stats">
+                                <span>📍 Select Cities</span>
+                                <span>👥 20+ Schools</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>My Profile</h2>
+                    <button class="btn btn-primary" onclick="showEditProfileModal()">
+                        <span>✏️</span> Edit Profile
+                    </button>
+                </div>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <span id="profileInitial"></span>
+                            </div>
+                            <div class="profile-name">
+                                <h3 id="profileName"></h3>
+                                <p id="profileEmail"></p>
+                            </div>
+                        </div>
+
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <strong>Full Name:</strong>
+                                <span id="profileFullName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Email Address:</strong>
+                                <span id="profileEmailAddress"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Phone Number:</strong>
+                                <span id="profilePhone"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Qualification:</strong>
+                                <span id="profileQualification"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Member Since:</strong>
+                                <span id="profileMemberSince"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Account Status:</strong>
+                                <span class="status-badge active">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn" onclick="closeEditProfileModal()">&times;</button>
+            </div>
+            <form id="editProfileForm" class="modal-form">
+                <input type="hidden" id="editProfileOldEmail">
+                <div class="form-group">
+                    <label for="editProfileName">Full Name *</label>
+                    <input type="text" id="editProfileName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileEmail">Email Address *</label>
+                    <input type="email" id="editProfileEmail" required placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePhone">Phone Number *</label>
+                    <input type="tel" id="editProfilePhone" required placeholder="Enter phone number" pattern="[0-9]{10}">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileQualification">Qualification *</label>
+                    <select id="editProfileQualification" required>
+                        <option value="B.Ed">B.Ed</option>
+                        <option value="M.Ed">M.Ed</option>
+                        <option value="B.A">B.A</option>
+                        <option value="M.A">M.A</option>
+                        <option value="B.Sc">B.Sc</option>
+                        <option value="M.Sc">M.Sc</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editProfilePassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmEditProfilePassword">Confirm New Password</label>
+                    <input type="password" id="confirmEditProfilePassword" placeholder="Confirm new password">
+                </div>
+                <div id="editProfileModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditProfileModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/user-dashboard.js"></script>
+</body>
+</html>

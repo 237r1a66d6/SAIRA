@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/Logo.jpeg" alt="SAIRA ACAD Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                        <p class="tagline">Guiding Academic Excellence</p>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">Home</a>
+                <a href="login.html" class="btn btn-primary">User Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-box admin-box">
+                <div class="admin-badge">
+                    <span>🔐 Admin Access</span>
+                </div>
+                <h2>Admin Login</h2>
+                <p class="auth-subtitle">Access the administrative dashboard</p>
+                
+                <form id="adminLoginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="adminUsername">Username *</label>
+                        <input type="text" id="adminUsername" name="adminUsername" required placeholder="Enter admin username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword">Password *</label>
+                        <input type="password" id="adminPassword" name="adminPassword" required placeholder="Enter admin password">
+                    </div>
+
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Admin Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Not an admin? <a href="login.html">User Login</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-login.js"></script>
+</body>
+</html>
