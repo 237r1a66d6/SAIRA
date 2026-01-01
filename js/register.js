@@ -50,10 +50,14 @@ function handleRegister(event) {
     
     // Check if user already exists
     const users = getUsers();
+    console.log('Current users in storage:', users);
+    console.log('Checking for email:', email);
+    
     const existingUser = users.find(user => user.email === email);
     
     if (existingUser) {
-        showError('errorMessage', 'An account with this email already exists.');
+        console.log('Found existing user with email:', existingUser);
+        showError('errorMessage', 'An account with this email already exists. DEBUG: Found ' + users.length + ' users in storage.');
         return;
     }
     
@@ -61,9 +65,12 @@ function handleRegister(event) {
     const existingName = users.find(user => user.fullName.toLowerCase() === fullName.toLowerCase());
     
     if (existingName) {
+        console.log('Found existing user with name:', existingName);
         showError('errorMessage', 'An account with this name already exists. Please use a different name.');
         return;
     }
+    
+    console.log('No existing user found, proceeding with registration');
     
     // Create new user
     const newUser = {
@@ -79,9 +86,19 @@ function handleRegister(event) {
         inProgressCourses: 0
     };
     
+    console.log('Creating new user:', newUser);
+    
     // Save to localStorage
     users.push(newUser);
+    console.log('Users array after push:', users);
+    
     saveUsers(users);
+    console.log('saveUsers called');
+    
+    // Verify it was saved
+    const savedUsers = getUsers();
+    console.log('Verification - users in storage after save:', savedUsers);
+    console.log('localStorage.users =', localStorage.getItem('users'));
     
     // Show success message
     showSuccess('successMessage', 'Registration successful! Redirecting to login page...');

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Browser Data Sync - SAIRA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3d2f7c;
+            text-align: center;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        button {
+            background: #f9a826;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #fdb84d;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            color: #0066cc;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Cross-Browser Data Sync</h1>
+        <p style="text-align: center; color: #666;">Transfer your SAIRA account data between browsers</p>
+
+        <div class="info">
+            <strong>📌 Important:</strong> localStorage is browser-specific. Use this tool to export data from one browser and import it into another.
+        </div>
+
+        <!-- STEP 1: Export Data -->
+        <div class="section">
+            <h2>Step 1: Export Data (Current Browser)</h2>
+            <p>Click the button below to export your account data from this browser (Firefox):</p>
+            <button onclick="exportData()">📤 Export Data</button>
+            <div id="exportStatus" class="success"></div>
+            <div style="margin-top: 15px;">
+                <label><strong>Exported Data:</strong></label>
+                <textarea id="exportData" readonly placeholder="Click 'Export Data' button above..."></textarea>
+            </div>
+        </div>
+
+        <!-- STEP 2: Import Data -->
+        <div class="section">
+            <h2>Step 2: Import Data (Other Browser)</h2>
+            <p>In the other browser (Chrome), paste the exported data below and click import:</p>
+            <textarea id="importData" placeholder="Paste exported data here..."></textarea>
+            <div style="margin-top: 10px;">
+                <button onclick="importData()">📥 Import Data</button>
+                <button onclick="document.getElementById('importData').value = ''">🗑️ Clear</button>
+            </div>
+            <div id="importStatus" class="success"></div>
+            <div id="importError" class="error"></div>
+        </div>
+
+        <!-- Current Storage Info -->
+        <div class="section">
+            <h2>📊 Current Browser Storage</h2>
+            <button onclick="showCurrentData()">🔍 View Current Data</button>
+            <button onclick="window.location.href='index.html'">🏠 Go to Home</button>
+            <pre id="currentData" style="margin-top: 15px;">Click "View Current Data" to see what's stored in this browser</pre>
+        </div>
+    </div>
+
+    <script>
+        function exportData() {
+            const data = {
+                users: localStorage.getItem('users'),
+                admins: localStorage.getItem('admins'),
+                currentUser: localStorage.getItem('currentUser'),
+                timestamp: new Date().toISOString()
+            };
+
+            const exportText = JSON.stringify(data, null, 2);
+            document.getElementById('exportData').value = exportText;
+            
+            const status = document.getElementById('exportStatus');
+            status.style.display = 'block';
+            status.textContent = '✅ Data exported successfully! Copy the text above and paste it in the other browser.';
+            
+            // Auto-select text for easy copying
+            document.getElementById('exportData').select();
+        }
+
+        function importData() {
+            const importText = document.getElementById('importData').value.trim();
+            const errorDiv = document.getElementById('importError');
+            const successDiv = document.getElementById('importStatus');
+            
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!importText) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '❌ Please paste the exported data first!';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(importText);
+                
+                // Import all data
+                if (data.users) localStorage.setItem('users', data.users);
+                if (data.admins) localStorage.setItem('admins', data.admins);
+                if (data.currentUser) localStorage.setItem('currentUser', data.currentUser);
+
+                successDiv.style.display = 'block';
+                successDiv.textContent = '✅ Data imported successfully! You can now login with your credentials.';
+                
+                // Clear import field
+                document.getElementById('importData').value = '';
+                
+                // Update current data display
+                showCurrentData();
+            } catch (e) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '❌ Invalid data format. Please make sure you copied the complete exported data.';
+            }
+        }
+
+        function showCurrentData() {
+            const users = localStorage.getItem('users');
+            const admins = localStorage.getItem('admins');
+            const currentUser = localStorage.getItem('currentUser');
+
+            let output = 'Current Browser Storage:\n\n';
+            
+            if (users) {
+                const userList = JSON.parse(users);
+                output += `Users: ${userList.length} account(s)\n`;
+                output += JSON.stringify(userList, null, 2) + '\n\n';
+            } else {
+                output += 'Users: None\n\n';
+            }
+
+            if (admins) {
+                const adminList = JSON.parse(admins);
+                output += `Admins: ${adminList.length} account(s)\n`;
+                output += JSON.stringify(adminList, null, 2) + '\n\n';
+            } else {
+                output += 'Admins: None\n\n';
+            }
+
+            if (currentUser) {
+                output += 'Currently Logged In:\n';
+                output += JSON.stringify(JSON.parse(currentUser), null, 2);
+            } else {
+                output += 'Currently Logged In: No';
+            }
+
+            document.getElementById('currentData').textContent = output;
+        }
+
+        // Show current data on load
+        window.addEventListener('load', showCurrentData);
+    </script>
+</body>
+</html>

@@ -17,6 +17,10 @@ function handleLogin(event) {
     const fullName = document.getElementById('fullName').value.trim();
     const password = document.getElementById('password').value;
     
+    console.log('=== LOGIN ATTEMPT ===');
+    console.log('Entered Full Name:', fullName);
+    console.log('Entered Password:', password);
+    
     // Validation
     if (!fullName || !password) {
         showError('errorMessage', 'All fields are required.');
@@ -25,17 +29,24 @@ function handleLogin(event) {
     
     // Get all users
     const users = getUsers();
+    console.log('Total users in storage:', users.length);
+    console.log('All users:', users);
     
     // Find user by full name and password
-    const user = users.find(u => 
-        u.fullName.toLowerCase() === fullName.toLowerCase() && 
-        u.password === password
-    );
+    const user = users.find(u => {
+        const nameMatch = u.fullName.toLowerCase() === fullName.toLowerCase();
+        const passMatch = u.password === password;
+        console.log(`Checking user: ${u.fullName} | Name match: ${nameMatch} | Pass match: ${passMatch}`);
+        return nameMatch && passMatch;
+    });
     
     if (!user) {
-        showError('errorMessage', 'Invalid credentials. Please check your name and password.');
+        console.log('❌ LOGIN FAILED - No matching user found');
+        showError('errorMessage', 'Invalid credentials. Please check your name and password. DEBUG: Found ' + users.length + ' users total.');
         return;
     }
+    
+    console.log('✅ LOGIN SUCCESS - User found:', user);
     
     // Set current user
     setCurrentUser(user);

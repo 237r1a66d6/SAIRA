@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>LocalStorage Persistence Test</h1>
+    
+    <button onclick="testSave()">1. Save Test Data</button>
+    <button onclick="testRead()">2. Read Test Data</button>
+    <button onclick="window.location.reload()">3. Reload Page</button>
+    <button onclick="localStorage.clear(); testRead()">4. Clear & Read</button>
+    
+    <div id="result"></div>
+    
+    <h3>Raw localStorage Contents:</h3>
+    <pre id="raw"></pre>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        function testSave() {
+            const testUser = {
+                fullName: 'deepu',
+                email: 'deepu@test.com',
+                password: 'deepu1234',
+                phoneNumber: '1234567890',
+                qualification: 'Masters',
+                registeredDate: new Date().toISOString(),
+                progress: 0,
+                enrolledCourses: 0,
+                completedCourses: 0,
+                inProgressCourses: 0
+            };
+            
+            // Use the same functions as registration
+            const users = getUsers();
+            users.push(testUser);
+            saveUsers(users);
+            
+            document.getElementById('result').innerHTML = 
+                '<div class="result success">✅ Saved user: deepu<br>Total users: ' + users.length + '</div>';
+            
+            showRaw();
+        }
+        
+        function testRead() {
+            const users = getUsers();
+            
+            if (users.length === 0) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="result error">❌ No users found in storage!</div>';
+            } else {
+                document.getElementById('result').innerHTML = 
+                    '<div class="result success">✅ Found ' + users.length + ' user(s):<br>' +
+                    JSON.stringify(users, null, 2) + '</div>';
+            }
+            
+            showRaw();
+        }
+        
+        function showRaw() {
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                allData[key] = localStorage.getItem(key);
+            }
+            document.getElementById('raw').textContent = JSON.stringify(allData, null, 2);
+        }
+        
+        // Auto-show on load
+        testRead();
+    </script>
+</body>
+</html>
