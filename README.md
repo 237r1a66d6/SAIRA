@@ -2,9 +2,26 @@
 
 Welcome to SAIRA ACAD, a comprehensive educational platform for passionate teachers and administrators.
 
+## ✨ NEW: Full-Stack Backend Integration!
+
+**Your SAIRA ACAD platform now has a complete backend system!**
+
+✅ **Node.js + Express** backend server  
+✅ **MongoDB** database for data persistence  
+✅ **JWT Authentication** & password encryption  
+✅ **RESTful API** architecture  
+✅ **Admin panel** with real database  
+
+**Data is now stored in a real database (MongoDB) instead of localStorage!**
+
+📚 **Quick Start Guides:**
+- [5-Minute Quick Start](QUICK-START.md) ⚡
+- [Complete Setup Guide](SETUP-GUIDE.md) 📖
+- [Integration Summary](INTEGRATION-COMPLETE.md) 🎉
+
 ## 🎯 Project Overview
 
-SAIRA ACAD is a fully functional website designed to connect teachers with professional development courses and manage educational resources. The platform features user registration, authentication, admin management, and course enrollment capabilities.
+SAIRA ACAD is a fully functional **full-stack web application** designed to connect teachers with professional development courses and manage educational resources. The platform features user registration, authentication, admin management, and course enrollment capabilities with MongoDB database backend.
 
 ## 🌈 Color Theme
 
@@ -19,31 +36,89 @@ The website uses colors inspired by the SAIRA ACAD logo:
 ```
 SAIRA/
 │
-├── index.html              # Landing page
-├── register.html           # User registration page
-├── login.html              # User login page
-├── admin-login.html        # Admin login page
-├── admin-dashboard.html    # Admin management dashboard
-├── user-dashboard.html     # User dashboard
+├── 📄 index.html              # Landing page
+├── 📄 register.html           # User registration
+├── 📄 login.html              # User login
+├── 📄 admin-login.html        # Admin login
+├── 📄 admin-dashboard.html    # Admin dashboard
+├── 📄 user-dashboard.html     # User dashboard
 │
-├── css/
-│   └── style.css          # Complete styling
+├── 📂 css/
+│   └── style.css             # Complete styling
 │
-└── js/
-    ├── auth.js            # Authentication & database utilities
-    ├── register.js        # Registration functionality
-    ├── login.js           # User login functionality
-    ├── admin-login.js     # Admin login functionality
-    ├── admin-dashboard.js # Admin dashboard functionality
-    └── user-dashboard.js  # User dashboard functionality
+├── 📂 js/
+│   ├── api-config.js         # ⭐ NEW: API configuration
+│   ├── auth.js               # Authentication utilities
+│   ├── register.js           # ⭐ UPDATED: Uses backend API
+│   ├── login.js              # ⭐ UPDATED: Uses backend API
+│   ├── admin-login.js        # ⭐ UPDATED: Uses backend API
+│   ├── admin-dashboard.js    # Admin dashboard
+│   └── user-dashboard.js     # User dashboard
+│
+├── 📂 backend/                # ⭐ NEW: Backend Server
+│   ├── config/
+│   │   └── db.js            # Database connection
+│   ├── models/
+│   │   ├── User.js          # User schema
+│   │   ├── Admin.js         # Admin schema
+│   │   └── Course.js        # Course schema
+│   ├── routes/
+│   │   ├── users.js         # User API endpoints
+│   │   └── admin.js         # Admin API endpoints
+│   ├── .env                 # Configuration
+│   ├── server.js            # Main server
+│   ├── package.json         # Dependencies
+│   └── README.md            # Backend docs
+│
+├── 📄 QUICK-START.md          # ⭐ 5-minute quick start
+├── 📄 SETUP-GUIDE.md          # ⭐ Complete setup guide
+├── 📄 BACKEND-INTEGRATION.md  # ⭐ Technical docs
+├── 📄 INTEGRATION-COMPLETE.md # ⭐ Summary
+├── 📄 setup.ps1               # ⭐ Setup script
+└── 📄 start-backend.ps1       # ⭐ Server start script
 ```
 
 ## 🚀 Getting Started
 
-### Running the Website
+### Prerequisites
 
-1. Open `index.html` in any modern web browser
-2. No server setup required - everything runs locally with localStorage
+1. **Node.js** (v14+) - [Download](https://nodejs.org/)
+2. **MongoDB** - Choose one:
+   - [Local MongoDB](https://www.mongodb.com/try/download/community)
+   - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (Free cloud)
+
+### Quick Setup
+
+**Option 1: Automated (Recommended)**
+```powershell
+.\setup.ps1
+```
+
+**Option 2: Manual**
+```powershell
+cd backend
+npm install
+npm start
+```
+
+### Running the Application
+
+**Every time you use SAIRA ACAD:**
+
+1. **Start backend server:**
+   ```powershell
+   .\start-backend.ps1
+   ```
+   Keep this window open!
+
+2. **Open frontend:**
+   - Right-click `index.html` → Open with Live Server
+   - Or open in browser
+
+3. **Test it:**
+   - Register new user
+   - Login with credentials
+   - Or use admin: `admin` / `1234567@_a`
 
 ### Default Admin Credentials
 

@@ -31,10 +31,10 @@
                 <h2>Create Your Account</h2>
                 <p class="auth-subtitle">Join SAIRA ACAD and start your journey to academic excellence</p>
                 
-                <form id="registerForm" class="auth-form">
+                <form id="registerForm" class="auth-form" onsubmit="return false;">
                     <div class="form-group">
                         <label for="fullName">Username *</label>
-                        <input type="text" id="fullName" name="fullName" required placeholder="Enter your username">
+                        <input type="text" id="fullName" name="fullName" required placeholder="Enter your username" autocomplete="off">
                     </div>
 
                     <div class="form-group">
@@ -89,6 +89,7 @@
     </section>
 
     <script src="js/auth.js"></script>
+    <script src="js/api-config.js"></script>
     <script src="js/register.js"></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 // Admin Dashboard JavaScript
 
 let currentTab = 'overview';
+let adminListCache = [];
+let adminSource = 'local';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Check authentication
     const admin = checkAuth('admin');
     if (!admin) return;
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Load initial data
-    loadDashboardData();
+    await loadDashboardData();
     
     // Setup modal event listeners
     setupModalListeners();
@@ -50,17 +52,46 @@ function showTab(tabName) {
     currentTab = tabName;
 }
 
-function loadDashboardData() {
-    // Load stats
-    const admins = getAdmins();
-    const users = getUsers();
+async function loadDashboardData() {
+    const admins = await fetchAdmins();
+    const users = getUsers(); // users remain local for now
     
     document.getElementById('totalAdmins').textContent = admins.length;
     document.getElementById('totalUsers').textContent = users.length;
 }
 
-function loadAdminManagement() {
-    const admins = getAdmins();
+// Fetch admins from backend when possible; fallback to localStorage
+async function fetchAdmins(forceRefresh = false) {
+    if (!forceRefresh && adminListCache.length > 0) {
+        return adminListCache;
+    }
+
+    if (typeof api !== 'undefined') {
+        try {
+            const response = await api.getAllAdmins();
+            if (response && response.success && Array.isArray(response.admins)) {
+                adminSource = 'backend';
+                adminListCache = response.admins.map(a => ({
+                    ...a,
+                    createdDate: a.createdDate || a.createdAt || a.created_on || new Date().toISOString()
+                }));
+                return adminListCache;
+            }
+        } catch (error) {
+            console.warn('Fetch admins via backend failed, using localStorage', error);
+        }
+    }
+
+    adminSource = 'local';
+    adminListCache = getAdmins().map(a => ({
+        ...a,
+        createdDate: a.createdDate || new Date().toISOString()
+    }));
+    return adminListCache;
+}
+
+async function loadAdminManagement() {
+    const admins = await fetchAdmins();
     const tableBody = document.getElementById('adminTableBody');
     
     if (admins.length === 0) {
@@ -70,6 +101,7 @@ function loadAdminManagement() {
     
     let html = '';
     admins.forEach(admin => {
+        const adminId = admin._id || admin.id || admin.username;
         html += `
             <tr>
                 <td>${admin.username}</td>
@@ -77,8 +109,8 @@ function loadAdminManagement() {
                 <td><span class="status-badge ${admin.status}">${admin.status}</span></td>
                 <td>
                     ${admin.username !== 'admin' ? `
-                        <button class="action-btn edit" onclick="editAdmin('${admin.username}')">Edit</button>
-                        <button class="action-btn delete" onclick="deleteAdmin('${admin.username}')">Delete</button>
+                        <button class="action-btn edit" onclick="editAdmin('${adminId}')">Edit</button>
+                        <button class="action-btn delete" onclick="deleteAdmin('${adminId}')">Delete</button>
                     ` : '<em>Default Admin</em>'}
                 </td>
             </tr>
@@ -194,7 +226,7 @@ function closeEditAdminModal() {
 }
 
 // Add Admin Handler
-function handleAddAdmin(event) {
+async function handleAddAdmin(event) {
     event.preventDefault();
     hideError('adminModalError');
     
@@ -218,31 +250,54 @@ function handleAddAdmin(event) {
         return;
     }
     
-    // Check if admin exists
-    const admins = getAdmins();
-    const existingAdmin = admins.find(a => a.username === username);
-    
-    if (existingAdmin) {
-        showError('adminModalError', 'Admin with this username already exists.');
-        return;
+    try {
+        // Prefer backend when available
+        if (typeof api !== 'undefined') {
+            try {
+                const response = await api.createAdmin({ username, password });
+                if (response && response.success) {
+                    await fetchAdmins(true);
+                    closeAddAdminModal();
+                    loadAdminManagement();
+                    loadDashboardData();
+                    alert('Admin added successfully!');
+                    return;
+                }
+            } catch (apiError) {
+                console.warn('Backend create admin failed, falling back to localStorage', apiError);
+            }
+        }
+
+        // Fallback to localStorage
+        const admins = getAdmins();
+        const existingAdmin = admins.find(a => a.username === username);
+        
+        if (existingAdmin) {
+            showError('adminModalError', 'Admin with this username already exists.');
+            return;
+        }
+        
+        const newAdmin = {
+            username: username,
+            password: password,
+            createdDate: new Date().toISOString(),
+            status: 'active'
+        };
+        
+        admins.push(newAdmin);
+        saveAdmins(admins);
+        adminListCache = admins;
+        adminSource = 'local';
+        
+        closeAddAdminModal();
+        loadAdminManagement();
+        loadDashboardData();
+        
+        alert('Admin added successfully!');
+    } catch (error) {
+        console.error('Add admin error:', error);
+        showError('adminModalError', error.message || 'Unable to add admin');
     }
-    
-    // Create new admin
-    const newAdmin = {
-        username: username,
-        password: password,
-        createdDate: new Date().toISOString(),
-        status: 'active'
-    };
-    
-    admins.push(newAdmin);
-    saveAdmins(admins);
-    
-    closeAddAdminModal();
-    loadAdminManagement();
-    loadDashboardData();
-    
-    alert('Admin added successfully!');
 }
 
 // Add User Handler
@@ -417,9 +472,8 @@ function handleEditUser(event) {
 }
 
 // Edit Admin Functions
-function editAdmin(username) {
-    const admins = getAdmins();
-    const admin = admins.find(a => a.username === username);
+function editAdmin(adminId) {
+    const admin = adminListCache.find(a => (a._id || a.id || a.username) === adminId);
     
     if (!admin) {
         alert('Admin not found!');
@@ -428,6 +482,7 @@ function editAdmin(username) {
     
     // Fill form with admin data
     document.getElementById('editAdminUsername').value = admin.username;
+    document.getElementById('editAdminId').value = admin._id || admin.id || admin.username;
     document.getElementById('editAdminNewUsername').value = admin.username;
     document.getElementById('editAdminPassword').value = '';
     document.getElementById('confirmEditAdminPassword').value = '';
@@ -435,31 +490,16 @@ function editAdmin(username) {
     showEditAdminModal();
 }
 
-function handleEditAdmin(event) {
+async function handleEditAdmin(event) {
     event.preventDefault();
     hideError('editAdminModalError');
     
     const oldUsername = document.getElementById('editAdminUsername').value;
+    const adminId = document.getElementById('editAdminId').value;
     const newUsername = document.getElementById('editAdminNewUsername').value.trim();
     const newPassword = document.getElementById('editAdminPassword').value;
     const confirmPassword = document.getElementById('confirmEditAdminPassword').value;
-    
-    // Validation
-    if (!newUsername) {
-        showError('editAdminModalError', 'Username is required.');
-        return;
-    }
-    
-    // Check if new username already exists (if username changed)
-    if (oldUsername !== newUsername) {
-        const admins = getAdmins();
-        const existingAdmin = admins.find(a => a.username === newUsername);
-        if (existingAdmin) {
-            showError('editAdminModalError', 'An admin with this username already exists.');
-            return;
-        }
-    }
-    
+
     // Validate password if provided
     if (newPassword) {
         if (newPassword.length < 8) {
@@ -472,61 +512,131 @@ function handleEditAdmin(event) {
         }
     }
     
-    // Update admin
-    const admins = getAdmins();
-    const adminIndex = admins.findIndex(a => a.username === oldUsername);
-    
-    if (adminIndex === -1) {
-        showError('editAdminModalError', 'Admin not found!');
+    // Validation
+    if (!newUsername) {
+        showError('editAdminModalError', 'Username is required.');
         return;
     }
     
-    admins[adminIndex].username = newUsername;
-    
-    // Update password if provided
-    if (newPassword) {
-        admins[adminIndex].password = newPassword;
-    }
-    
-    saveAdmins(admins);
-    
-    // Update current admin if editing logged in admin
-    const currentAdmin = getCurrentAdmin();
-    if (currentAdmin && currentAdmin.username === oldUsername) {
-        setCurrentAdmin(admins[adminIndex]);
-        // Update displayed admin name
-        const adminNameElement = document.getElementById('adminName');
-        if (adminNameElement) {
-            adminNameElement.textContent = `Admin: ${newUsername}`;
+    try {
+        // Try backend first
+        if (typeof api !== 'undefined') {
+            try {
+                const payload = { username: newUsername };
+                if (newPassword) payload.password = newPassword;
+                const response = await api.updateAdmin(adminId, payload);
+                if (response && response.success) {
+                    await fetchAdmins(true);
+                    closeEditAdminModal();
+                    loadAdminManagement();
+                    loadDashboardData();
+                    alert('Admin updated successfully!');
+                    return;
+                }
+            } catch (apiError) {
+                console.warn('Backend update admin failed, falling back to localStorage', apiError);
+            }
         }
+    
+        // Fallback to localStorage
+        if (newPassword) {
+            if (newPassword.length < 8) {
+                showError('editAdminModalError', 'Password must be at least 8 characters long.');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                showError('editAdminModalError', 'Passwords do not match.');
+                return;
+            }
+        }
+
+        const admins = getAdmins();
+        if (oldUsername !== newUsername) {
+            const existingAdmin = admins.find(a => a.username === newUsername);
+            if (existingAdmin) {
+                showError('editAdminModalError', 'An admin with this username already exists.');
+                return;
+            }
+        }
+
+        const adminIndex = admins.findIndex(a => a.username === oldUsername);
+        
+        if (adminIndex === -1) {
+            showError('editAdminModalError', 'Admin not found!');
+            return;
+        }
+        
+        admins[adminIndex].username = newUsername;
+        
+        if (newPassword) {
+            admins[adminIndex].password = newPassword;
+        }
+        
+        saveAdmins(admins);
+        adminListCache = admins;
+        adminSource = 'local';
+        
+        const currentAdmin = getCurrentAdmin();
+        if (currentAdmin && currentAdmin.username === oldUsername) {
+            setCurrentAdmin(admins[adminIndex]);
+            const adminNameElement = document.getElementById('adminName');
+            if (adminNameElement) {
+                adminNameElement.textContent = `Admin: ${newUsername}`;
+            }
+        }
+        
+        closeEditAdminModal();
+        loadAdminManagement();
+        loadDashboardData();
+        
+        alert('Admin updated successfully!');
+    } catch (error) {
+        console.error('Edit admin error:', error);
+        showError('editAdminModalError', error.message || 'Unable to update admin');
     }
-    
-    closeEditAdminModal();
-    loadAdminManagement();
-    loadDashboardData();
-    
-    alert('Admin updated successfully!');
 }
 
 // Delete Functions
-function deleteAdmin(username) {
-    if (!confirm(`Are you sure you want to delete admin "${username}"?`)) {
+async function deleteAdmin(adminId) {
+    if (!confirm('Are you sure you want to delete this admin?')) {
         return;
     }
     
-    if (username === 'admin') {
-        alert('Cannot delete the default admin!');
-        return;
+    try {
+        if (typeof api !== 'undefined') {
+            try {
+                const response = await api.deleteAdmin(adminId);
+                if (response && response.success) {
+                    await fetchAdmins(true);
+                    loadAdminManagement();
+                    loadDashboardData();
+                    alert('Admin deleted successfully!');
+                    return;
+                }
+            } catch (apiError) {
+                console.warn('Backend delete admin failed, falling back to localStorage', apiError);
+            }
+        }
+
+        const admins = getAdmins();
+        const adminToDelete = admins.find(a => (a._id || a.id || a.username) === adminId);
+        if (adminToDelete && adminToDelete.username === 'admin') {
+            alert('Cannot delete the default admin!');
+            return;
+        }
+
+        const filteredAdmins = admins.filter(a => (a._id || a.id || a.username) !== adminId);
+        saveAdmins(filteredAdmins);
+        adminListCache = filteredAdmins;
+        adminSource = 'local';
+        loadAdminManagement();
+        loadDashboardData();
+        
+        alert('Admin deleted successfully!');
+    } catch (error) {
+        console.error('Delete admin error:', error);
+        alert(error.message || 'Unable to delete admin');
     }
-    
-    const admins = getAdmins();
-    const filteredAdmins = admins.filter(a => a.username !== username);
-    
-    saveAdmins(filteredAdmins);
-    loadAdminManagement();
-    loadDashboardData();
-    
-    alert('Admin deleted successfully!');
 }
 
 function deleteUser(email) {
@@ -552,14 +662,14 @@ window.onclick = function(event) {
 }
 
 // Debug Storage Functions
-function refreshDebugData() {
+async function refreshDebugData() {
     // Get users
     const users = getUsers();
     document.getElementById('debugUsersData').textContent = JSON.stringify(users, null, 2);
     document.getElementById('debugUserCount').textContent = users.length;
 
     // Get admins
-    const admins = getAdmins();
+    const admins = await fetchAdmins(true);
     document.getElementById('debugAdminsData').textContent = JSON.stringify(admins, null, 2);
     document.getElementById('debugAdminCount').textContent = admins.length;
 

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
     
     hideError('errorMessage');
@@ -48,63 +48,104 @@ function handleRegister(event) {
         return;
     }
     
-    // Check if user already exists
-    const users = getUsers();
-    console.log('Current users in storage:', users);
-    console.log('Checking for email:', email);
+    // Disable submit button
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering...';
     
-    const existingUser = users.find(user => user.email === email);
+    // Check if backend API is available
+    const useBackend = typeof api !== 'undefined';
     
-    if (existingUser) {
-        console.log('Found existing user with email:', existingUser);
-        showError('errorMessage', 'An account with this email already exists. DEBUG: Found ' + users.length + ' users in storage.');
-        return;
+    try {
+        if (useBackend) {
+            // Try backend API first
+            try {
+                const response = await api.registerUser({
+                    fullName,
+                    phoneNumber,
+                    qualification,
+                    email,
+                    password
+                });
+                
+                console.log('Registration response:', response);
+                
+                if (response.success) {
+                    // Save token and user data
+                    saveAuthToken(response.token);
+                    setCurrentUser(response.user);
+                    
+                    // Show success message
+                    showSuccess('successMessage', response.message || 'Registration successful!');
+                    
+                    // Redirect to dashboard after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard.html';
+                    }, 1500);
+                    return;
+                }
+            } catch (apiError) {
+                console.log('Backend API unavailable, falling back to localStorage');
+            }
+        }
+        
+        // Fallback to localStorage
+        console.log('Using localStorage for registration');
+        
+        // Check if user already exists
+        const users = getUsers();
+        console.log('Current users in storage:', users);
+        
+        // Check if username already exists FIRST (most important check)
+        const existingName = users.find(user => user.fullName.toLowerCase() === fullName.toLowerCase());
+        if (existingName) {
+            throw new Error('⚠️ Username already exists! The username "' + fullName + '" is already taken. Please choose a different username.');
+        }
+        
+        // Check if email already exists
+        const existingUser = users.find(user => user.email.toLowerCase() === email.toLowerCase());
+        if (existingUser) {
+            throw new Error('⚠️ Email already exists! An account with the email "' + email + '" is already registered. Please use a different email or try logging in.');
+        }
+        
+        // Note: Password can be reused - we don't check for duplicate passwords
+        // Users can register with the same password as other users
+        
+        // Create new user
+        const newUser = {
+            fullName: fullName,
+            phoneNumber: phoneNumber,
+            qualification: qualification,
+            email: email,
+            password: password,
+            registeredDate: new Date().toISOString(),
+            progress: 0,
+            enrolledCourses: 0,
+            completedCourses: 0,
+            inProgressCourses: 0
+        };
+        
+        // Save to localStorage
+        users.push(newUser);
+        saveUsers(users);
+        
+        // Set current user
+        setCurrentUser(newUser);
+        
+        // Show success message
+        showSuccess('successMessage', 'Registration successful! Redirecting to dashboard...');
+        
+        // Redirect to user dashboard
+        setTimeout(() => {
+            window.location.href = 'user-dashboard.html';
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        showError('errorMessage', error.message || 'Registration failed. Please try again.');
+        
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register Now';
     }
-    
-    // Check if full name is already taken
-    const existingName = users.find(user => user.fullName.toLowerCase() === fullName.toLowerCase());
-    
-    if (existingName) {
-        console.log('Found existing user with name:', existingName);
-        showError('errorMessage', 'An account with this name already exists. Please use a different name.');
-        return;
-    }
-    
-    console.log('No existing user found, proceeding with registration');
-    
-    // Create new user
-    const newUser = {
-        fullName: fullName,
-        phoneNumber: phoneNumber,
-        qualification: qualification,
-        email: email,
-        password: password,
-        registeredDate: new Date().toISOString(),
-        progress: 0,
-        enrolledCourses: 0,
-        completedCourses: 0,
-        inProgressCourses: 0
-    };
-    
-    console.log('Creating new user:', newUser);
-    
-    // Save to localStorage
-    users.push(newUser);
-    console.log('Users array after push:', users);
-    
-    saveUsers(users);
-    console.log('saveUsers called');
-    
-    // Verify it was saved
-    const savedUsers = getUsers();
-    console.log('Verification - users in storage after save:', savedUsers);
-    console.log('localStorage.users =', localStorage.getItem('users'));
-    
-    // Show success message
-    showSuccess('successMessage', 'Registration successful! Redirecting to login page...');
-    
-    // Redirect to login page after 2 seconds
-    setTimeout(function() {
-        window.location.href = 'login.html';
-    }, 2000);
 }
