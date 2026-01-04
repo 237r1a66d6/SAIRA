@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="containernav">
+        <div class="logo">
+            <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+            <div class="logo-text">
+                <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about-us.html" class="nav-link">About Us</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="mentorship-training.html" class="nav-link">Mentorship</a>
+            <a href="success-stories.html" class="nav-link">Success Stories</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="contact-us.html" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-secondary">Login</a>
+            <a href="register.html" class="btn btn-cta">Join Now</a>
+        </div>
+    </div>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Get in Touch</h1>
+            <p class="page-subtitle">We're Here to Help You</p>
+        </div>
+    </section>
+
+    <!-- Contact Options -->
+    <section class="content-section">
+        <div class="container">
+            <div class="contact-options-grid">
+                <div class="contact-option-card">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email Us</h3>
+                    <p>General Inquiries</p>
+                    <a href="mailto:info@sairaacad.com">info@sairaacad.com</a>
+                    <p>For Schools</p>
+                    <a href="mailto:schools@sairaacad.com">schools@sairaacad.com</a>
+                    <p>For Teachers</p>
+                    <a href="mailto:teachers@sairaacad.com">teachers@sairaacad.com</a>
+                </div>
+
+                <div class="contact-option-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Call Us</h3>
+                    <p>Toll-Free Number</p>
+                    <a href="tel:18001234567">1800-123-4567</a>
+                    <p>Direct Line</p>
+                    <a href="tel:+919876543210">+91 98765 43210</a>
+                    <p class="timings">Mon-Sat: 9:00 AM - 6:00 PM IST</p>
+                </div>
+
+                <div class="contact-option-card">
+                    <div class="contact-icon">💬</div>
+                    <h3>Live Chat</h3>
+                    <p>Chat with our team</p>
+                    <button class="btn btn-primary" onclick="openLiveChat()">Start Chat</button>
+                    <p class="timings">Available during business hours</p>
+                </div>
+
+                <div class="contact-option-card">
+                    <div class="contact-icon">📱</div>
+                    <h3>WhatsApp</h3>
+                    <p>Quick Support</p>
+                    <a href="https://wa.me/919876543210" target="_blank" class="btn btn-secondary">
+                        Message on WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <div class="contact-form-section">
+                <h2 class="section-heading text-center">Send Us a Message</h2>
+                <p class="section-subtitle text-center">Fill out the form below and we'll get back to you within 24 hours</p>
+                
+                <div class="contact-form-container">
+                    <form id="contactForm" onsubmit="handleContactForm(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactName">Full Name *</label>
+                                <input type="text" id="contactName" name="contactName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail">Email Address *</label>
+                                <input type="email" id="contactEmail" name="contactEmail" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactPhone">Phone Number *</label>
+                                <input type="tel" id="contactPhone" name="contactPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactType">I am a *</label>
+                                <select id="contactType" name="contactType" required>
+                                    <option value="">Select...</option>
+                                    <option value="school">School/Institution</option>
+                                    <option value="teacher">Teacher</option>
+                                    <option value="mentor">Aspiring Mentor</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactSubject">Subject *</label>
+                            <select id="contactSubject" name="contactSubject" required>
+                                <option value="">Select a subject...</option>
+                                <option value="recruitment">Teacher Recruitment</option>
+                                <option value="job-search">Looking for Teaching Job</option>
+                                <option value="mentorship">Mentorship Programs</option>
+                                <option value="partnership">Partnership Opportunities</option>
+                                <option value="training">Training & Certification</option>
+                                <option value="support">Technical Support</option>
+                                <option value="other">Other Inquiry</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactMessage">Message *</label>
+                            <textarea id="contactMessage" name="contactMessage" rows="6" required placeholder="Tell us how we can help you..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="contactConsent" required>
+                                I agree to be contacted by SAIRA ACAD regarding my inquiry
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Book a Consultation -->
+    <section class="content-section">
+        <div class="container">
+            <div class="consultation-section">
+                <h2 class="section-heading text-center">Book a Free Consultation</h2>
+                <p class="section-subtitle text-center">Schedule a call with our experts</p>
+                
+                <div class="consultation-options">
+                    <div class="consultation-card">
+                        <h3>For Schools</h3>
+                        <p>Discuss your hiring needs, explore partnership opportunities, and learn how we can help you build a strong teaching team.</p>
+                        <ul class="consultation-features">
+                            <li>✓ 30-minute consultation</li>
+                            <li>✓ Understand recruitment process</li>
+                            <li>✓ Customized solutions</li>
+                            <li>✓ No obligation</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="bookConsultation('school')">Book School Consultation</button>
+                    </div>
+
+                    <div class="consultation-card">
+                        <h3>For Teachers</h3>
+                        <p>Get personalized career guidance, explore job opportunities, and learn about our mentorship and training programs.</p>
+                        <ul class="consultation-features">
+                            <li>✓ 30-minute career counseling</li>
+                            <li>✓ Job market insights</li>
+                            <li>✓ Career path guidance</li>
+                            <li>✓ Program recommendations</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="bookConsultation('teacher')">Book Teacher Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Office Locations -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <h2 class="section-heading text-center">Our Offices</h2>
+            <p class="section-subtitle text-center">Visit us at our locations across India</p>
+            
+            <div class="offices-grid">
+                <div class="office-card">
+                    <h3>Bangalore (Head Office)</h3>
+                    <div class="office-details">
+                        <p><strong>Address:</strong><br>
+                        SAIRA ACAD Pvt. Ltd.<br>
+                        #123, 4th Floor, Tech Park<br>
+                        Whitefield, Bangalore - 560066<br>
+                        Karnataka, India</p>
+                        
+                        <p><strong>Phone:</strong> +91 98765 43210</p>
+                        <p><strong>Email:</strong> bangalore@sairaacad.com</p>
+                    </div>
+                    <button class="btn btn-secondary">Get Directions</button>
+                </div>
+
+                <div class="office-card">
+                    <h3>Mumbai</h3>
+                    <div class="office-details">
+                        <p><strong>Address:</strong><br>
+                        SAIRA ACAD<br>
+                        Level 5, Business Hub<br>
+                        Andheri East, Mumbai - 400069<br>
+                        Maharashtra, India</p>
+                        
+                        <p><strong>Phone:</strong> +91 98765 43211</p>
+                        <p><strong>Email:</strong> mumbai@sairaacad.com</p>
+                    </div>
+                    <button class="btn btn-secondary">Get Directions</button>
+                </div>
+
+                <div class="office-card">
+                    <h3>Delhi NCR</h3>
+                    <div class="office-details">
+                        <p><strong>Address:</strong><br>
+                        SAIRA ACAD<br>
+                        Tower B, Corporate Plaza<br>
+                        Sector 62, Noida - 201301<br>
+                        Uttar Pradesh, India</p>
+                        
+                        <p><strong>Phone:</strong> +91 98765 43212</p>
+                        <p><strong>Email:</strong> delhi@sairaacad.com</p>
+                    </div>
+                    <button class="btn btn-secondary">Get Directions</button>
+                </div>
+
+                <div class="office-card">
+                    <h3>Pune</h3>
+                    <div class="office-details">
+                        <p><strong>Address:</strong><br>
+                        SAIRA ACAD<br>
+                        3rd Floor, Knowledge Center<br>
+                        Hinjewadi Phase 1, Pune - 411057<br>
+                        Maharashtra, India</p>
+                        
+                        <p><strong>Phone:</strong> +91 98765 43213</p>
+                        <p><strong>Email:</strong> pune@sairaacad.com</p>
+                    </div>
+                    <button class="btn btn-secondary">Get Directions</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-heading text-center">Frequently Asked Questions</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What services does SAIRA ACAD provide?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>SAIRA ACAD provides comprehensive teacher recruitment services for schools, job placement support for teachers, mentorship and training programs, certification courses, and career counseling. We bridge the gap between quality educators and educational institutions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How quickly can you help us fill teaching positions?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Typically, we can provide shortlisted candidates within 3-5 business days and complete placements within 2-3 weeks, depending on the role specifics and your requirements. For urgent positions, we offer expedited services.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Is there a fee for teachers to use your services?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, our job placement services are completely free for teachers. We are compensated by our partner schools. However, certification and training programs have fees, which are clearly stated on our Mentorship & Training page.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What is your screening process for teachers?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We conduct thorough background verification, credential validation, skills assessment, reference checks, and personality evaluations to ensure quality. Only candidates who meet our standards are recommended to schools.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Do you provide support after placement?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we offer post-placement support for both schools and teachers to ensure smooth integration and address any concerns during the initial months.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Booking Modal -->
+    <div id="consultationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeConsultationModal()">&times;</span>
+            <h2>Book a Consultation</h2>
+            <form id="consultationForm" onsubmit="handleConsultationBooking(event)">
+                <input type="hidden" id="consultationType" name="consultationType">
+                
+                <div class="form-group">
+                    <label for="consultName">Full Name *</label>
+                    <input type="text" id="consultName" name="consultName" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultEmail">Email *</label>
+                    <input type="email" id="consultEmail" name="consultEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultPhone">Phone Number *</label>
+                    <input type="tel" id="consultPhone" name="consultPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultOrg">School/Organization Name (if applicable)</label>
+                    <input type="text" id="consultOrg" name="consultOrg">
+                </div>
+                <div class="form-group">
+                    <label for="consultDate">Preferred Date *</label>
+                    <input type="date" id="consultDate" name="consultDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultTime">Preferred Time *</label>
+                    <select id="consultTime" name="consultTime" required>
+                        <option value="">Select time...</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                        <option value="16:00">4:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="consultTopic">What would you like to discuss? *</label>
+                    <textarea id="consultTopic" name="consultTopic" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Book Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>SAIRA ACAD</h3>
+                    <p>Guiding Academic Excellence</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="about-us.html">About Us</a>
+                    <a href="services.html">Services</a>
+                    <a href="contact-us.html">Contact</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-conditions.html">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SAIRA ACAD - Strategic Academics Innovation Resources Academy. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="LinkedIn" class="social-link">in</a>
+                    <a href="#" aria-label="Twitter" class="social-link">𝕏</a>
+                    <a href="#" aria-label="Instagram" class="social-link">ig</a>
+                    <a href="#" aria-label="Facebook" class="social-link">f</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="js/animations.js"></script>
+    <script src="js/premium-interactions.js"></script>
+    <script src="js/contact.js"></script>
+</body>
+</html>

@@ -4,3 +4,7 @@ node_modules/
 .env.production
 *.log
 .DS_Store
+
+# Uploaded files
+uploads/
+!uploads/.gitkeep

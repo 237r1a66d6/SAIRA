@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work With Us - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="containernav">
+        <div class="logo">
+            <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+            <div class="logo-text">
+                <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about-us.html" class="nav-link">About Us</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="mentorship-training.html" class="nav-link">Mentorship</a>
+            <a href="success-stories.html" class="nav-link">Success Stories</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="contact-us.html" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-secondary">Login</a>
+            <a href="register.html" class="btn btn-cta">Join Now</a>
+        </div>
+    </div>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Work With Us</h1>
+            <p class="page-subtitle">Connect Schools with Teachers, Build Better Educational Futures</p>
+        </div>
+    </section>
+
+    <!-- For Schools - Hire Teachers -->
+    <section class="content-section">
+        <div class="container">
+            <div class="work-with-section">
+                <h2 class="section-heading">For Schools - Hire Teachers</h2>
+                <p class="section-subtitle">Find Qualified Educators for Your Institution</p>
+                
+                <div class="two-column-layout">
+                    <div class="content-text">
+                        <h3>Why Partner with SAIRA ACAD?</h3>
+                        <ul class="feature-list">
+                            <li><strong>Pre-Vetted Candidates:</strong> Access our database of 2000+ certified and experienced teachers</li>
+                            <li><strong>Quick Hiring:</strong> Fill positions faster with our streamlined recruitment process</li>
+                            <li><strong>Quality Assurance:</strong> All candidates undergo rigorous screening and background checks</li>
+                            <li><strong>Diverse Talent Pool:</strong> Teachers across all subjects, grades, and teaching methodologies</li>
+                            <li><strong>Flexible Options:</strong> Full-time, part-time, substitute, and contract positions</li>
+                            <li><strong>Cost-Effective:</strong> Reduce recruitment costs and time-to-hire significantly</li>
+                            <li><strong>Ongoing Support:</strong> Post-placement support to ensure successful integration</li>
+                        </ul>
+                        
+                        <div class="cta-box">
+                            <h4>Ready to Find Your Next Star Teacher?</h4>
+                            <button class="btn btn-primary btn-large" onclick="showSchoolForm()">Post a Requirement</button>
+                        </div>
+                    </div>
+                    <div class="content-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Hire Teachers" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Teachers - Apply for Jobs -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <div class="work-with-section">
+                <h2 class="section-heading">For Teachers - Find Your Dream Job</h2>
+                <p class="section-subtitle">Apply for Teaching Positions Across Leading Schools</p>
+                
+                <div class="two-column-layout reverse">
+                    <div class="content-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Teacher Jobs" />
+                    </div>
+                    <div class="content-text">
+                        <h3>Why Apply Through SAIRA ACAD?</h3>
+                        <ul class="feature-list">
+                            <li><strong>Wide Range of Opportunities:</strong> Access jobs from 500+ partner schools</li>
+                            <li><strong>Career Growth:</strong> Positions across all levels - from entry to leadership roles</li>
+                            <li><strong>Personalized Matching:</strong> Get matched with schools that fit your profile and preferences</li>
+                            <li><strong>Application Support:</strong> Assistance with resume building and interview preparation</li>
+                            <li><strong>Salary Guidance:</strong> Transparent salary information and negotiation support</li>
+                            <li><strong>Free Service:</strong> No charges for teachers - our services are completely free for educators</li>
+                            <li><strong>Fast Placement:</strong> Get placed within 2-4 weeks of registration</li>
+                        </ul>
+                        
+                        <div class="cta-box">
+                            <h4>Start Your Teaching Career Today!</h4>
+                            <button class="btn btn-primary btn-large" onclick="showTeacherForm()">Submit Your Resume</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Openings -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-heading text-center">Current Job Openings</h2>
+            <p class="section-subtitle text-center">Browse latest opportunities from our partner schools</p>
+            
+            <div class="jobs-grid" id="jobsGrid">
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Mathematics Teacher</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">Delhi Public School, Bangalore</div>
+                    <div class="job-details">
+                        <span>📚 Grades 9-12</span>
+                        <span>💼 3+ years exp.</span>
+                        <span>💰 ₹40k-60k/month</span>
+                    </div>
+                    <p class="job-description">Seeking experienced mathematics teacher for senior secondary classes. CBSE curriculum expertise required.</p>
+                    <button class="btn btn-primary" onclick="applyJob('math-teacher-001')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>English Language Teacher</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">Ryan International School, Mumbai</div>
+                    <div class="job-details">
+                        <span>📚 Grades 6-10</span>
+                        <span>💼 2+ years exp.</span>
+                        <span>💰 ₹35k-50k/month</span>
+                    </div>
+                    <p class="job-description">Dynamic English teacher needed for middle and high school. Strong communication skills essential.</p>
+                    <button class="btn btn-primary" onclick="applyJob('english-teacher-002')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Primary School Teacher</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">Akanksha Foundation Schools, Pune</div>
+                    <div class="job-details">
+                        <span>📚 Grades 1-5</span>
+                        <span>💼 Fresh graduates welcome</span>
+                        <span>💰 ₹25k-35k/month</span>
+                    </div>
+                    <p class="job-description">Passionate teachers wanted for primary classes. B.Ed preferred but not mandatory.</p>
+                    <button class="btn btn-primary" onclick="applyJob('primary-teacher-003')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Science Teacher (Physics)</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">Kendriya Vidyalaya, Delhi</div>
+                    <div class="job-details">
+                        <span>📚 Grades 11-12</span>
+                        <span>💼 5+ years exp.</span>
+                        <span>💰 ₹45k-70k/month</span>
+                    </div>
+                    <p class="job-description">Senior Physics teacher for JEE/NEET preparation. MSc in Physics preferred.</p>
+                    <button class="btn btn-primary" onclick="applyJob('physics-teacher-004')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Computer Science Teacher</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">The Heritage School, Kolkata</div>
+                    <div class="job-details">
+                        <span>📚 Grades 6-12</span>
+                        <span>💼 2+ years exp.</span>
+                        <span>💰 ₹40k-55k/month</span>
+                    </div>
+                    <p class="job-description">Teach programming, web development, and computer fundamentals. Coding expertise required.</p>
+                    <button class="btn btn-primary" onclick="applyJob('cs-teacher-005')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Special Education Teacher</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-school">Lighthouse Learning, Chennai</div>
+                    <div class="job-details">
+                        <span>📚 All Grades</span>
+                        <span>💼 3+ years exp.</span>
+                        <span>💰 ₹38k-55k/month</span>
+                    </div>
+                    <p class="job-description">Support students with diverse learning needs. Special education certification required.</p>
+                    <button class="btn btn-primary" onclick="applyJob('sped-teacher-006')">Apply Now</button>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 40px;">
+                <a href="#" class="btn btn-secondary btn-large">View All Openings</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Become a Mentor/Trainer -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <h2 class="section-heading text-center">Join as Mentor / Trainer</h2>
+            <p class="section-subtitle text-center">Share Your Expertise and Shape Future Educators</p>
+            
+            <div class="two-column-layout">
+                <div class="content-text">
+                    <h3>Are You an Experienced Educator?</h3>
+                    <p>Join our elite team of mentors and trainers to guide the next generation of teachers. As a SAIRA ACAD mentor, you'll have the opportunity to:</p>
+                    
+                    <ul class="feature-list">
+                        <li><strong>Make Impact:</strong> Shape the careers of aspiring educators</li>
+                        <li><strong>Share Expertise:</strong> Conduct workshops and training sessions</li>
+                        <li><strong>Flexible Schedule:</strong> Choose your availability and commitment level</li>
+                        <li><strong>Competitive Compensation:</strong> Earn while sharing your knowledge</li>
+                        <li><strong>Professional Recognition:</strong> Build your profile as an expert educator</li>
+                        <li><strong>Continuous Learning:</strong> Access latest educational research and methodologies</li>
+                    </ul>
+                    
+                    <h4>Mentor Requirements:</h4>
+                    <ul class="feature-list">
+                        <li>10+ years of teaching experience</li>
+                        <li>Proven track record of excellence</li>
+                        <li>Strong communication and leadership skills</li>
+                        <li>Passion for educator development</li>
+                    </ul>
+                    
+                    <button class="btn btn-primary btn-large" onclick="showMentorForm()">Apply as Mentor</button>
+                </div>
+                <div class="content-image">
+                    <img src="assets/teacher-collaboration.jpg" alt="Become a Mentor" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- School Requirement Form Modal -->
+    <div id="schoolFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSchoolForm()">&times;</span>
+            <h2>School Requirement Form</h2>
+            <form id="schoolRequirementForm" onsubmit="handleSchoolRequirement(event)">
+                <div class="form-group">
+                    <label for="schoolName">School Name *</label>
+                    <input type="text" id="schoolName" name="schoolName" required>
+                </div>
+                <div class="form-group">
+                    <label for="schoolLocation">Location *</label>
+                    <input type="text" id="schoolLocation" name="schoolLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPerson">Contact Person *</label>
+                    <input type="text" id="contactPerson" name="contactPerson" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email *</label>
+                    <input type="email" id="contactEmail" name="contactEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone">Phone Number *</label>
+                    <input type="tel" id="contactPhone" name="contactPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="positionType">Position Type *</label>
+                    <select id="positionType" name="positionType" required>
+                        <option value="">Select type...</option>
+                        <option value="full-time">Full-Time</option>
+                        <option value="part-time">Part-Time</option>
+                        <option value="substitute">Substitute</option>
+                        <option value="contract">Contract</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject/Role Required *</label>
+                    <input type="text" id="subject" name="subject" placeholder="e.g., Mathematics, Primary Teacher" required>
+                </div>
+                <div class="form-group">
+                    <label for="grades">Grade Levels *</label>
+                    <input type="text" id="grades" name="grades" placeholder="e.g., 6-10, Primary" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Experience Required (Years)</label>
+                    <input type="number" id="experience" name="experience" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="salary">Salary Range (Monthly)</label>
+                    <input type="text" id="salary" name="salary" placeholder="e.g., ₹30,000 - ₹50,000">
+                </div>
+                <div class="form-group">
+                    <label for="additionalInfo">Additional Requirements</label>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Submit Requirement</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Teacher Resume Form Modal -->
+    <div id="teacherFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTeacherForm()">&times;</span>
+            <h2>Submit Your Resume</h2>
+            <form id="teacherResumeForm" onsubmit="handleTeacherResume(event)">
+                <div class="form-group">
+                    <label for="teacherName">Full Name *</label>
+                    <input type="text" id="teacherName" name="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherEmail">Email *</label>
+                    <input type="email" id="teacherEmail" name="teacherEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherPhone">Phone Number *</label>
+                    <input type="tel" id="teacherPhone" name="teacherPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherQualification">Highest Qualification *</label>
+                    <input type="text" id="teacherQualification" name="teacherQualification" placeholder="e.g., B.Ed, M.A." required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherSubject">Subject Specialization *</label>
+                    <input type="text" id="teacherSubject" name="teacherSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherExperience">Years of Experience *</label>
+                    <input type="number" id="teacherExperience" name="teacherExperience" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="preferredLocation">Preferred Location *</label>
+                    <input type="text" id="preferredLocation" name="preferredLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="currentSalary">Current/Expected Salary (Monthly)</label>
+                    <input type="text" id="currentSalary" name="currentSalary" placeholder="e.g., ₹40,000">
+                </div>
+                <div class="form-group">
+                    <label for="resume">Upload Resume (PDF only) *</label>
+                    <input type="file" id="resume" name="resume" accept=".pdf" required>
+                </div>
+                <div class="form-group">
+                    <label for="coverLetter">Cover Letter</label>
+                    <textarea id="coverLetter" name="coverLetter" rows="4" placeholder="Tell us about yourself and your teaching philosophy..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mentor Application Form Modal -->
+    <div id="mentorFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMentorForm()">&times;</span>
+            <h2>Mentor Application Form</h2>
+            <form id="mentorApplicationForm" onsubmit="handleMentorApplication(event)">
+                <div class="form-group">
+                    <label for="mentorName">Full Name *</label>
+                    <input type="text" id="mentorName" name="mentorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorEmail">Email *</label>
+                    <input type="email" id="mentorEmail" name="mentorEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorPhone">Phone Number *</label>
+                    <input type="tel" id="mentorPhone" name="mentorPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorQualification">Highest Qualification *</label>
+                    <input type="text" id="mentorQualification" name="mentorQualification" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorExperience">Years of Teaching Experience *</label>
+                    <input type="number" id="mentorExperience" name="mentorExperience" min="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorSpecialization">Area of Expertise *</label>
+                    <input type="text" id="mentorSpecialization" name="mentorSpecialization" placeholder="e.g., Curriculum Design, EdTech" required>
+                </div>
+                <div class="form-group">
+                    <label for="mentorAchievements">Notable Achievements *</label>
+                    <textarea id="mentorAchievements" name="mentorAchievements" rows="4" placeholder="List your achievements, awards, certifications..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="mentorAvailability">Availability (hours/week)</label>
+                    <input type="number" id="mentorAvailability" name="mentorAvailability" min="5">
+                </div>
+                <div class="form-group">
+                    <label for="mentorWhy">Why do you want to become a mentor? *</label>
+                    <textarea id="mentorWhy" name="mentorWhy" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>SAIRA ACAD</h3>
+                    <p>Guiding Academic Excellence</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="about-us.html">About Us</a>
+                    <a href="services.html">Services</a>
+                    <a href="contact-us.html">Contact</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-conditions.html">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SAIRA ACAD - Strategic Academics Innovation Resources Academy. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="LinkedIn" class="social-link">in</a>
+                    <a href="#" aria-label="Twitter" class="social-link">𝕏</a>
+                    <a href="#" aria-label="Instagram" class="social-link">ig</a>
+                    <a href="#" aria-label="Facebook" class="social-link">f</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="js/animations.js"></script>
+    <script src="js/premium-interactions.js"></script>
+    <script src="js/work-with-us.js"></script>
+</body>
+</html>

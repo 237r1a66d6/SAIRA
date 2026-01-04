@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 const connectDB = require('./config/db');
 
 // Load environment variables
@@ -8,6 +10,19 @@ dotenv.config();
 
 // Initialize express app
 const app = express();
+
+// Create uploads directories if they don't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+const resumesDir = path.join(__dirname, 'uploads', 'resumes');
+
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('✅ Created uploads directory');
+}
+if (!fs.existsSync(resumesDir)) {
+    fs.mkdirSync(resumesDir, { recursive: true });
+    console.log('✅ Created resumes directory');
+}
 
 // Connect to MongoDB
 connectDB();
@@ -20,6 +35,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Request logging middleware
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
@@ -29,6 +47,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/forms', require('./routes/forms'));
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -57,6 +76,15 @@ app.get('/', (req, res) => {
                 getStats: 'GET /api/admin/stats',
                 updateUserStatus: 'PUT /api/admin/users/:id/status',
                 deleteUser: 'DELETE /api/admin/users/:id'
+            },
+            forms: {
+                enrollment: 'POST /api/forms/enrollment',
+                schoolRequirement: 'POST /api/forms/school-requirement',
+                teacherApplication: 'POST /api/forms/teacher-application',
+                mentorApplication: 'POST /api/forms/mentor-application',
+                jobApplication: 'POST /api/forms/job-application',
+                contact: 'POST /api/forms/contact',
+                consultation: 'POST /api/forms/consultation'
             }
         }
     });

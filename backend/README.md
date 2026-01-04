@@ -198,10 +198,23 @@ backend/
 ├── models/
 │   ├── User.js         # User model
 │   ├── Admin.js        # Admin model
-│   └── Course.js       # Course model
+│   ├── Course.js       # Course model
+│   ├── Enrollment.js   # Training enrollment model
+│   ├── SchoolRequirement.js  # School hiring requirements model
+│   ├── TeacherApplication.js # Teacher job application model
+│   ├── MentorApplication.js  # Mentor application model
+│   ├── JobApplication.js     # Career application model
+│   ├── Contact.js      # Contact form submissions model
+│   └── Consultation.js # Consultation bookings model
 ├── routes/
 │   ├── users.js        # User routes
-│   └── admin.js        # Admin routes
+│   ├── admin.js        # Admin routes
+│   └── forms.js        # Form submission routes
+├── middleware/
+│   ├── auth.js         # Authentication middleware
+│   └── upload.js       # File upload middleware (multer)
+├── uploads/
+│   └── resumes/        # Uploaded resume files
 ├── .env                # Environment variables
 ├── .gitignore          # Git ignore file
 ├── package.json        # Dependencies
@@ -240,6 +253,207 @@ The system creates these collections:
 - `users` - Registered users
 - `admins` - Admin accounts
 - `courses` - Available courses (optional)
+- `enrollments` - Training program enrollments
+- `schoolrequirements` - School teacher requirements
+- `teacherapplications` - Teacher job applications
+- `mentorapplications` - Mentor applications
+- `jobapplications` - Career applications
+- `contacts` - Contact form submissions
+- `consultations` - Consultation bookings
+
+### Forms API Endpoints
+
+#### 1. Training Enrollment
+```
+POST /api/forms/enrollment
+```
+Submit enrollment for mentorship/training programs.
+
+**Request Body:**
+```json
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "phone": "+1234567890",
+  "program": "foundation",
+  "experience": 5,
+  "message": "I want to improve my teaching skills"
+}
+```
+
+**Program Types:** `foundation`, `advanced`, `leadership`, `digital`, `subject`, `special`
+
+#### 2. School Requirement
+```
+POST /api/forms/school-requirement
+```
+Submit school's teacher hiring requirements.
+
+**Request Body:**
+```json
+{
+  "schoolName": "ABC International School",
+  "schoolLocation": "New York, NY",
+  "contactPerson": "Jane Smith",
+  "contactEmail": "jane@abcschool.com",
+  "contactPhone": "+1234567890",
+  "positionType": "full-time",
+  "subject": "Mathematics",
+  "grades": "9-12",
+  "experience": 3,
+  "salary": "$50,000 - $60,000",
+  "additionalInfo": "Looking for an experienced teacher"
+}
+```
+
+**Position Types:** `full-time`, `part-time`, `substitute`, `contract`
+
+#### 3. Teacher Application
+```
+POST /api/forms/teacher-application
+Content-Type: multipart/form-data
+```
+Submit teacher job application with resume.
+
+**Request Body (FormData):**
+```
+teacherName: John Doe
+teacherEmail: john@example.com
+teacherPhone: +1234567890
+teacherQualification: Master's in Education
+teacherSubject: Science
+teacherExperience: 5
+preferredLocation: California
+currentSalary: $45,000
+coverLetter: I am passionate about teaching...
+teacherResume: [File]
+```
+
+**File Requirements:**
+- Formats: PDF, DOC, DOCX
+- Max size: 5MB
+- Field name: `teacherResume`
+
+#### 4. Mentor Application
+```
+POST /api/forms/mentor-application
+```
+Submit application to become a mentor/trainer.
+
+**Request Body:**
+```json
+{
+  "mentorName": "Dr. Sarah Johnson",
+  "mentorEmail": "sarah@example.com",
+  "mentorPhone": "+1234567890",
+  "mentorQualification": "PhD in Education",
+  "mentorExperience": 15,
+  "mentorSpecialization": "STEM Education",
+  "mentorAchievements": "Published 10 papers, Award winner",
+  "mentorAvailability": 10,
+  "mentorWhy": "I want to share my knowledge"
+}
+```
+
+**Note:** Minimum experience required: 10 years
+
+#### 5. Job Application
+```
+POST /api/forms/job-application
+Content-Type: multipart/form-data
+```
+Submit application for career opportunities at SAIRA ACAD.
+
+**Request Body (FormData):**
+```
+applicantName: John Doe
+applicantEmail: john@example.com
+applicantPhone: +1234567890
+position: Senior Developer
+currentLocation: San Francisco
+totalExperience: 7
+currentCompany: Tech Corp
+noticePeriod: 30
+coverLetterText: I am excited about this opportunity...
+applicantResume: [File]
+```
+
+**File Requirements:**
+- Formats: PDF, DOC, DOCX
+- Max size: 5MB
+- Field name: `applicantResume`
+
+#### 6. Contact Form
+```
+POST /api/forms/contact
+```
+Submit general contact inquiries.
+
+**Request Body:**
+```json
+{
+  "contactName": "John Doe",
+  "contactEmail": "john@example.com",
+  "contactPhone": "+1234567890",
+  "contactType": "school",
+  "contactSubject": "Partnership Inquiry",
+  "contactMessage": "I would like to discuss a partnership"
+}
+```
+
+**Contact Types:** `school`, `teacher`, `mentor`, `other`
+
+#### 7. Consultation Booking
+```
+POST /api/forms/consultation
+```
+Book a consultation session.
+
+**Request Body:**
+```json
+{
+  "consultationType": "school",
+  "consultName": "Jane Smith",
+  "consultEmail": "jane@example.com",
+  "consultPhone": "+1234567890",
+  "consultOrg": "ABC School",
+  "consultDate": "2024-02-15",
+  "consultTime": "14:00",
+  "consultTopic": "Teacher hiring strategy"
+}
+```
+
+**Consultation Types:** `school`, `teacher`
+
+### Response Format
+
+All form endpoints return:
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Form submitted successfully",
+  "formId": "60a7f9c8e4b0a123456789ab"
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "message": "Error submitting form"
+}
+```
+
+### File Upload Notes
+
+For endpoints that accept file uploads:
+1. Use `multipart/form-data` content type
+2. Uploaded files are stored in `backend/uploads/resumes/`
+3. Files are accessible at: `http://localhost:5000/uploads/resumes/filename.pdf`
+4. Supported formats: PDF, DOC, DOCX
+5. Maximum file size: 5MB
 
 ## 🎯 Next Steps
 

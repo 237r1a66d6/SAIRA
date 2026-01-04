@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentorship & Training - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="containernav">
+        <div class="logo">
+            <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+            <div class="logo-text">
+                <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about-us.html" class="nav-link">About Us</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="mentorship-training.html" class="nav-link">Mentorship</a>
+            <a href="success-stories.html" class="nav-link">Success Stories</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="contact-us.html" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-secondary">Login</a>
+            <a href="register.html" class="btn btn-cta">Join Now</a>
+        </div>
+    </div>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Mentorship & Training Programs</h1>
+            <p class="page-subtitle">Elevate Your Teaching Career with Expert Guidance</p>
+        </div>
+    </section>
+
+    <!-- Program Overview -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-heading text-center">Program Overview</h2>
+            <p class="section-subtitle text-center">Comprehensive Development for Modern Educators</p>
+            
+            <div class="two-column-layout">
+                <div class="content-text">
+                    <h3>Transform Your Teaching Journey</h3>
+                    <p>Our mentorship and training programs are designed to empower educators at every stage of their career. 
+                    Whether you're a fresh graduate entering the teaching profession or an experienced educator looking to 
+                    advance to leadership roles, we have tailored programs to meet your needs.</p>
+                    
+                    <h4>What Makes Our Programs Unique:</h4>
+                    <ul class="feature-list">
+                        <li><strong>Personalized Learning Paths:</strong> Custom-designed programs based on your goals and experience</li>
+                        <li><strong>Expert Mentors:</strong> Learn from seasoned educators with 10+ years of experience</li>
+                        <li><strong>Practical Application:</strong> Real-world classroom scenarios and hands-on practice</li>
+                        <li><strong>Industry Recognition:</strong> Certifications valued by leading educational institutions</li>
+                        <li><strong>Ongoing Support:</strong> Continuous guidance even after program completion</li>
+                        <li><strong>Community Access:</strong> Join a network of 2000+ certified educators</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="assets/teacher-collaboration.jpg" alt="Mentorship Programs" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certification Details -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <h2 class="section-heading text-center">Certification Programs</h2>
+            <p class="section-subtitle text-center">Industry-Recognized Credentials to Boost Your Career</p>
+            
+            <div class="certification-grid">
+                <div class="certification-card">
+                    <div class="cert-badge">🎓</div>
+                    <h3>Foundation Teaching Certificate</h3>
+                    <div class="cert-duration">Duration: 3 Months</div>
+                    <p>Perfect for new teachers starting their career. Covers classroom management, lesson planning, and student engagement fundamentals.</p>
+                    <ul class="cert-features">
+                        <li>Classroom Management Essentials</li>
+                        <li>Lesson Planning & Curriculum Design</li>
+                        <li>Student Assessment Techniques</li>
+                        <li>Communication Skills</li>
+                        <li>Technology Integration Basics</li>
+                    </ul>
+                    <div class="cert-price">₹15,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('foundation')">Enroll Now</button>
+                </div>
+
+                <div class="certification-card featured">
+                    <div class="cert-badge">🏆</div>
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Advanced Teaching Excellence</h3>
+                    <div class="cert-duration">Duration: 6 Months</div>
+                    <p>For experienced teachers seeking to master advanced methodologies and specialized teaching techniques.</p>
+                    <ul class="cert-features">
+                        <li>Differentiated Instruction Methods</li>
+                        <li>Data-Driven Teaching Strategies</li>
+                        <li>Special Education Inclusion</li>
+                        <li>Leadership & Mentoring Skills</li>
+                        <li>Advanced Technology Integration</li>
+                        <li>Research-Based Pedagogy</li>
+                    </ul>
+                    <div class="cert-price">₹28,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('advanced')">Enroll Now</button>
+                </div>
+
+                <div class="certification-card">
+                    <div class="cert-badge">👑</div>
+                    <h3>Educational Leadership</h3>
+                    <div class="cert-duration">Duration: 9 Months</div>
+                    <p>Transition from teacher to leader with comprehensive training in educational administration and leadership.</p>
+                    <ul class="cert-features">
+                        <li>Strategic Planning & Management</li>
+                        <li>Team Leadership & Development</li>
+                        <li>Curriculum Development</li>
+                        <li>School Administration</li>
+                        <li>Change Management</li>
+                        <li>Educational Policy & Compliance</li>
+                    </ul>
+                    <div class="cert-price">₹45,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('leadership')">Enroll Now</button>
+                </div>
+
+                <div class="certification-card">
+                    <div class="cert-badge">💻</div>
+                    <h3>Digital Teaching Specialist</h3>
+                    <div class="cert-duration">Duration: 4 Months</div>
+                    <p>Master online teaching platforms, EdTech tools, and digital pedagogy for modern classrooms.</p>
+                    <ul class="cert-features">
+                        <li>Online Teaching Platforms</li>
+                        <li>Virtual Classroom Management</li>
+                        <li>Educational Technology Tools</li>
+                        <li>Digital Content Creation</li>
+                        <li>Online Assessment Methods</li>
+                    </ul>
+                    <div class="cert-price">₹20,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('digital')">Enroll Now</button>
+                </div>
+
+                <div class="certification-card">
+                    <div class="cert-badge">🌟</div>
+                    <h3>Subject Matter Expert</h3>
+                    <div class="cert-duration">Duration: 5 Months</div>
+                    <p>Specialized certifications in specific subjects (Math, Science, Languages, Social Studies, etc.)</p>
+                    <ul class="cert-features">
+                        <li>Advanced Subject Knowledge</li>
+                        <li>Subject-Specific Pedagogy</li>
+                        <li>Curriculum Specialization</li>
+                        <li>Resource Development</li>
+                        <li>Assessment Design</li>
+                    </ul>
+                    <div class="cert-price">₹25,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('subject')">Enroll Now</button>
+                </div>
+
+                <div class="certification-card">
+                    <div class="cert-badge">🤝</div>
+                    <h3>Special Education Certificate</h3>
+                    <div class="cert-duration">Duration: 6 Months</div>
+                    <p>Comprehensive training in inclusive education and supporting students with diverse learning needs.</p>
+                    <ul class="cert-features">
+                        <li>Inclusive Education Practices</li>
+                        <li>Learning Disabilities Support</li>
+                        <li>IEP Development</li>
+                        <li>Behavioral Support Strategies</li>
+                        <li>Assistive Technology</li>
+                    </ul>
+                    <div class="cert-price">₹30,000</div>
+                    <button class="btn btn-primary" onclick="enrollProgram('special')">Enroll Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mentors & Trainers -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-heading text-center">Meet Our Mentors & Trainers</h2>
+            <p class="section-subtitle text-center">Learn from Industry Experts</p>
+            
+            <div class="mentors-grid">
+                <div class="mentor-card">
+                    <div class="mentor-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Mentor" />
+                    </div>
+                    <h3>Dr. Priya Sharma</h3>
+                    <div class="mentor-title">Senior Education Consultant</div>
+                    <p class="mentor-bio">20+ years in curriculum development and teacher training. Former principal of top-tier international school.</p>
+                    <div class="mentor-expertise">
+                        <span class="expertise-tag">Curriculum Design</span>
+                        <span class="expertise-tag">Leadership</span>
+                        <span class="expertise-tag">CBSE/ICSE</span>
+                    </div>
+                </div>
+
+                <div class="mentor-card">
+                    <div class="mentor-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Mentor" />
+                    </div>
+                    <h3>Prof. Rajesh Kumar</h3>
+                    <div class="mentor-title">EdTech Specialist</div>
+                    <p class="mentor-bio">Expert in digital pedagogy and technology integration. Trained over 5000 teachers in online teaching methodologies.</p>
+                    <div class="mentor-expertise">
+                        <span class="expertise-tag">Digital Learning</span>
+                        <span class="expertise-tag">EdTech</span>
+                        <span class="expertise-tag">Innovation</span>
+                    </div>
+                </div>
+
+                <div class="mentor-card">
+                    <div class="mentor-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Mentor" />
+                    </div>
+                    <h3>Ms. Anjali Verma</h3>
+                    <div class="mentor-title">Special Education Expert</div>
+                    <p class="mentor-bio">Specialized in inclusive education and learning disabilities. Certified in multiple therapeutic approaches.</p>
+                    <div class="mentor-expertise">
+                        <span class="expertise-tag">Inclusive Ed</span>
+                        <span class="expertise-tag">Learning Support</span>
+                        <span class="expertise-tag">IEP</span>
+                    </div>
+                </div>
+
+                <div class="mentor-card">
+                    <div class="mentor-image">
+                        <img src="assets/teacher-collaboration.jpg" alt="Mentor" />
+                    </div>
+                    <h3>Mr. Vikram Singh</h3>
+                    <div class="mentor-title">Mathematics Education Specialist</div>
+                    <p class="mentor-bio">Award-winning mathematics teacher. Developed innovative teaching methods adopted by 100+ schools.</p>
+                    <div class="mentor-expertise">
+                        <span class="expertise-tag">Mathematics</span>
+                        <span class="expertise-tag">Problem Solving</span>
+                        <span class="expertise-tag">Olympiads</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <h2 class="section-heading text-center">Success Stories</h2>
+            <p class="section-subtitle text-center">Hear from Our Graduates</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"The Advanced Teaching Excellence program transformed my career. I went from being a regular teacher to becoming the Head of Department within a year of completing the certification."</p>
+                    <div class="testimonial-author">
+                        <strong>Sneha Reddy</strong>
+                        <span>HOD - Science, Delhi Public School</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"The mentorship I received was invaluable. My mentor helped me navigate challenges and develop confidence in my teaching abilities. Highly recommend to all new teachers!"</p>
+                    <div class="testimonial-author">
+                        <strong>Amit Patel</strong>
+                        <span>Primary Teacher, Ryan International</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"The Digital Teaching Specialist program prepared me perfectly for the online education revolution. I now successfully run my own online tutoring platform."</p>
+                    <div class="testimonial-author">
+                        <strong>Kavita Nair</strong>
+                        <span>Online Educator & EdTech Entrepreneur</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enrollment Process -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-heading text-center">How to Enroll</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Program</h3>
+                    <p>Select the certification program that aligns with your career goals</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>Submit Application</h3>
+                    <p>Fill out the enrollment form and submit required documents</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Assessment & Counseling</h3>
+                    <p>Complete initial assessment and speak with our career counselor</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3>Begin Learning</h3>
+                    <p>Start your program with personalized mentorship and support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-heading">Ready to Transform Your Teaching Career?</h2>
+            <p class="cta-description">Enroll today and join 2000+ certified educators</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary btn-large" onclick="showEnrollmentForm()">Enroll Now</button>
+                <a href="contact-us.html" class="btn btn-secondary btn-large">Talk to Counselor</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enrollment Modal -->
+    <div id="enrollmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEnrollmentForm()">&times;</span>
+            <h2>Program Enrollment</h2>
+            <form id="enrollmentForm" onsubmit="handleEnrollment(event)">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="program">Select Program *</label>
+                    <select id="program" name="program" required>
+                        <option value="">Choose a program...</option>
+                        <option value="foundation">Foundation Teaching Certificate</option>
+                        <option value="advanced">Advanced Teaching Excellence</option>
+                        <option value="leadership">Educational Leadership</option>
+                        <option value="digital">Digital Teaching Specialist</option>
+                        <option value="subject">Subject Matter Expert</option>
+                        <option value="special">Special Education Certificate</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Teaching Experience (Years)</label>
+                    <input type="number" id="experience" name="experience" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="message">Why do you want to enroll? *</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>SAIRA ACAD</h3>
+                    <p>Guiding Academic Excellence</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="about-us.html">About Us</a>
+                    <a href="services.html">Services</a>
+                    <a href="contact-us.html">Contact</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-conditions.html">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SAIRA ACAD - Strategic Academics Innovation Resources Academy. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="LinkedIn" class="social-link">in</a>
+                    <a href="#" aria-label="Twitter" class="social-link">𝕏</a>
+                    <a href="#" aria-label="Instagram" class="social-link">ig</a>
+                    <a href="#" aria-label="Facebook" class="social-link">f</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="js/animations.js"></script>
+    <script src="js/premium-interactions.js"></script>
+    <script src="js/mentorship.js"></script>
+</body>
+</html>
