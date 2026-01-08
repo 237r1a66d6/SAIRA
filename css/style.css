@@ -411,13 +411,47 @@ body {
     text-align: left;
 }
 
+.hero-label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+    will-change: transform;
+}
+
+.hero-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: white;
+    margin-left: -18px;
+}
+
+.hero-logo:first-of-type {
+    margin-left: 0;
+}
+
+.hero-logo-plus {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: white;
+    margin-left: -18px;
+}
+
 .hero-label {
     display: inline-block;
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    margin-bottom: 1.5rem;
     padding: 10px 20px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
@@ -426,7 +460,6 @@ body {
     border-radius: 50px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -535,13 +568,17 @@ section {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 1rem;
-    display: inline-block;
+    display: block;
     position: relative;
     padding-bottom: 8px;
 }\n\n.section-label::after {\n    content: '';\n    position: absolute;\n    bottom: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 50px;\n    height: 3px;\n    background: linear-gradient(90deg, var(--primary-purple), var(--primary-orange));\n    border-radius: 2px;\n}\n\nsection > .container {\n    text-align: center;\n}
 
 .section-label.light {
     color: var(--primary-orange);
+    letter-spacing: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.85;
 }
 
 .section-title {
@@ -621,15 +658,27 @@ section {
     padding: 2.75rem 3rem;
     background: #f7f8fc;
     border-radius: 26px;
-    box-shadow: 0 20px 60px rgba(61, 47, 124, 0.12);
+    box-shadow: 0 2px 8px rgba(61, 47, 124, 0.06);
     border: 1px solid #e8eaf3;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .process-step:hover {
     transform: translateY(-6px);
-    box-shadow: 0 28px 70px rgba(61, 47, 124, 0.16);
+    box-shadow: 0 4px 12px rgba(61, 47, 124, 0.08);
     border-color: rgba(103, 120, 255, 0.4);
+}
+
+.process-step.reverse {
+    grid-template-columns: 1fr minmax(260px, 360px);
+}
+
+.process-step.reverse .process-illustration {
+    order: 2;
+}
+
+.process-step.reverse .process-copy {
+    order: 1;
 }
 
 .process-illustration {
@@ -819,6 +868,9 @@ section {
     border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .course-card::before {
@@ -3828,5 +3880,47 @@ footer {
     
     .legal-document {
         padding: 40px 20px;
+    }
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float svg {
+    width: 32px;
+    height: 32px;
+}
+
+@media (max-width: 768px) {
+    .whatsapp-float {
+        bottom: 80px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .whatsapp-float svg {
+        width: 28px;
+        height: 28px;
     }
 }
