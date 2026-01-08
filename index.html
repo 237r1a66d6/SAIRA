@@ -17,11 +17,20 @@
                 </div>
             </div>
             <div class="nav-menu">
-                <a href="#process" class="nav-link">Process</a>
+                <a href="index.html" class="nav-link">Home</a>
                 <a href="#courses" class="nav-link">Services</a>
                 <a href="#benefits" class="nav-link">Benefits</a>
-                <a href="about-us.html" class="nav-link">About</a>
                 <a href="#faq" class="nav-link">FAQ</a>
+                <a href="contact-us.html" class="nav-link">Contact</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn nav-link">About <span class="dropdown-arrow">▼</span></button>
+                    <div class="dropdown-content">
+                        <a href="about-us.html">About Us</a>
+                        <a href="mentorship-training.html">Mentorship</a>
+                        <a href="success-stories.html">Success Stories</a>
+                        <a href="resources.html">Resources</a>
+                    </div>
+                </div>
             </div>
             <div class="nav-buttons">
                 <a href="login.html" class="btn btn-secondary">Login</a>
@@ -41,14 +50,13 @@
                         <img src="assets/plus.webp" alt="Plus" class="hero-logo-plus">
                         <div class="hero-label">Trusted by 40+ Schools & Teachers</div>
                     </div>
-                    <h2 class="hero-title">Transform Your Teaching with Strategic Innovation</h2>
+                    <h2 class="hero-title">The Bridge Between Exceptional Teachers and Progressive Schools</h2>
                     <p class="hero-description">
-                        Harness the power of strategic academic innovation to elevate your teaching excellence, 
-                        enhance student outcomes, and create lasting educational impact.
+                        Certified mentorship, classroom-ready training, and quality placements — all within one
+academic ecosystem.
                     </p>
                     <div class="hero-buttons">
-                        <a href="register.html" class="btn btn-primary btn-large">Join Now</a>
-                    </div>
+                        <a href="register.html" class="btn btn-primary btn-large">Join Now</a>                        <a href="schools-page.html" class="btn btn-secondary btn-large">Partner Login</a>                    </div>
                 </div>
                 <div class="hero-image">
                     <img src="assets/teacher-collaboration.jpg" alt="Professional educators working together" />
@@ -238,7 +246,7 @@
         </div>
     </section>
 
-    <section class="faq">
+    <section class="faq" id="faq">
         <div class="container">
             <div class="section-label">FAQ</div>
             <h2 class="section-title">Your Questions, Answered</h2>
@@ -328,5 +336,6 @@
             window.open(whatsappUrl, '_blank');
         });
     </script>
+    <script src="js/dropdown.js"></script>
 </body>
 </html>

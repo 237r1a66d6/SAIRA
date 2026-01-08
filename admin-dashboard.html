@@ -42,18 +42,26 @@
                     <span class="icon">🏫</span>
                     Partner Schools
                 </button>
-                <a href="services.html" target="_blank" class="menu-item" style="text-decoration: none;">
+                <button class="menu-item" onclick="showTab('school-accounts')">
+                    <span class="icon">🔑</span>
+                    School Accounts
+                </button>
+                <button class="menu-item" onclick="showTab('consultations')">
+                    <span class="icon">📅</span>
+                    Consultations <span id="consultationBadge" class="notification-badge" style="display:none;"></span>
+                </button>
+                <button class="menu-item" onclick="showTab('services')">
                     <span class="icon">🛠️</span>
                     Services
-                </a>
-                <a href="resources.html" target="_blank" class="menu-item" style="text-decoration: none;">
+                </button>
+                <button class="menu-item" onclick="showTab('resources')">
                     <span class="icon">📚</span>
                     Resources
-                </a>
-                <a href="work-with-us.html" target="_blank" class="menu-item" style="text-decoration: none;">
+                </button>
+                <button class="menu-item" onclick="showTab('work-with-us')">
                     <span class="icon">💼</span>
                     Work With Us
-                </a>
+                </button>
                 <button class="menu-item" onclick="showTab('debug-storage')">
                     <span class="icon">🔍</span>
                     Debug Storage
@@ -260,6 +268,69 @@
                 </div>
             </div>
 
+            <!-- School Accounts Management Tab -->
+            <div id="school-accounts" class="tab-content">
+                <div class="tab-header">
+                    <h2>School Partner Accounts</h2>
+                    <button class="btn btn-primary" onclick="showAddSchoolModal()">
+                        <span>+</span> Add School Account
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>School Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schoolAccountsTableBody">
+                            <tr>
+                                <td colspan="7" class="no-data">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Consultations Tab -->
+            <div id="consultations" class="tab-content">
+                <h2>Consultation Bookings</h2>
+                <div id="consultationNotification" class="notification-banner" style="display:none;">
+                    <span id="notificationText"></span>
+                    <button onclick="markAllAsRead()" class="btn btn-sm">Mark All as Read</button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consultationsTableBody">
+                            <tr>
+                                <td colspan="9" class="no-data">No consultations yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Debug Storage Tab -->
             <div id="debug-storage" class="tab-content">
                 <h2>🔍 Debug Storage</h2>
@@ -305,6 +376,353 @@
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
                     <h3 style="color: #3d2f7c; margin-bottom: 15px;">💾 All LocalStorage Keys</h3>
                     <pre id="debugAllKeys" style="background: #2d2d2d; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 300px;">Loading...</pre>
+                </div>
+            </div>
+
+            <!-- Services Tab -->
+            <div id="services" class="tab-content">
+                <div class="tab-header">
+                    <h2>Services Management</h2>
+                    <p style="color: #666;">Comprehensive Solutions for Schools and Teachers</p>
+                </div>
+                
+                <div class="service-category" style="margin-bottom: 3rem;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Schools</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Streamlined Teacher Recruitment and Support</p>
+                    
+                    <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="service-card">
+                            <div class="service-icon">👨‍🏫</div>
+                            <h4>Teacher Recruitment</h4>
+                            <p>Access our extensive database of qualified, certified teachers across all subjects and grade levels.</p>
+                            <ul class="service-features">
+                                <li>Pre-vetted qualified candidates</li>
+                                <li>Subject matter experts</li>
+                                <li>Background verification</li>
+                                <li>Skills assessment</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🎯</div>
+                            <h4>Leadership Hiring</h4>
+                            <p>Find experienced educational leaders, principals, and administrators who can drive your institution's vision.</p>
+                            <ul class="service-features">
+                                <li>Executive search services</li>
+                                <li>Leadership assessment</li>
+                                <li>Cultural fit evaluation</li>
+                                <li>Succession planning</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🔄</div>
+                            <h4>Substitute & Short-Term Hiring</h4>
+                            <p>Flexible staffing solutions for temporary, substitute, and project-based teaching positions.</p>
+                            <ul class="service-features">
+                                <li>On-demand availability</li>
+                                <li>Quick placement</li>
+                                <li>Flexible contracts</li>
+                                <li>Emergency coverage</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">📊</div>
+                            <h4>Academic Consulting</h4>
+                            <p>Expert guidance on curriculum development, teaching methodologies, and institutional improvement strategies.</p>
+                            <ul class="service-features">
+                                <li>Curriculum design</li>
+                                <li>Quality assurance</li>
+                                <li>Performance metrics</li>
+                                <li>Strategic planning</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">📚</div>
+                            <h4>Professional Development</h4>
+                            <p>Customized training programs and workshops for your existing teaching staff.</p>
+                            <ul class="service-features">
+                                <li>Customized workshops</li>
+                                <li>On-site training</li>
+                                <li>Skill enhancement</li>
+                                <li>Certification programs</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🤝</div>
+                            <h4>Partnership Programs</h4>
+                            <p>Long-term strategic partnerships for ongoing recruitment needs and institutional growth support.</p>
+                            <ul class="service-features">
+                                <li>Priority access</li>
+                                <li>Dedicated support</li>
+                                <li>Custom solutions</li>
+                                <li>Cost benefits</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-category">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Teachers</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Career Growth and Professional Support</p>
+                    
+                    <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="service-card">
+                            <div class="service-icon">🎓</div>
+                            <h4>Teacher Placement</h4>
+                            <p>Find your ideal teaching position with schools that match your expertise, values, and career aspirations.</p>
+                            <ul class="service-features">
+                                <li>Personalized job matching</li>
+                                <li>Career counseling</li>
+                                <li>Interview preparation</li>
+                                <li>Negotiation support</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">📜</div>
+                            <h4>Certified Mentorship</h4>
+                            <p>Work with experienced mentors who guide your professional development and help you achieve teaching excellence.</p>
+                            <ul class="service-features">
+                                <li>One-on-one mentoring</li>
+                                <li>Skill development</li>
+                                <li>Best practices sharing</li>
+                                <li>Career roadmapping</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🏅</div>
+                            <h4>Certification Programs</h4>
+                            <p>Enhance your credentials with our industry-recognized certification programs in various teaching specializations.</p>
+                            <ul class="service-features">
+                                <li>Subject certifications</li>
+                                <li>Teaching methodologies</li>
+                                <li>Technology integration</li>
+                                <li>Special education</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🚀</div>
+                            <h4>Career Guidance</h4>
+                            <p>Strategic career planning and development support to help you advance from classroom teacher to educational leader.</p>
+                            <ul class="service-features">
+                                <li>Career planning</li>
+                                <li>Leadership development</li>
+                                <li>Resume building</li>
+                                <li>Portfolio development</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">💼</div>
+                            <h4>Interview Preparation</h4>
+                            <p>Comprehensive interview coaching and preparation to help you confidently navigate the hiring process.</p>
+                            <ul class="service-features">
+                                <li>Mock interviews</li>
+                                <li>Feedback sessions</li>
+                                <li>Question preparation</li>
+                                <li>Presentation skills</li>
+                            </ul>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🌟</div>
+                            <h4>Professional Network</h4>
+                            <p>Join a vibrant community of educators for networking, collaboration, and continuous learning opportunities.</p>
+                            <ul class="service-features">
+                                <li>Networking events</li>
+                                <li>Peer learning groups</li>
+                                <li>Resource sharing</li>
+                                <li>Collaboration opportunities</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div id="resources" class="tab-content">
+                <div class="tab-header">
+                    <h2>Resources</h2>
+                    <p style="color: #666;">Your Knowledge Hub for Educational Excellence</p>
+                </div>
+                
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Blog & Insights</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Latest trends, tips, and insights from education experts</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="service-card">
+                            <div class="service-icon">🎯</div>
+                            <h4>10 Classroom Management Strategies</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Teaching Tips • December 15, 2024 • 5 min read</em></p>
+                            <p>Effective classroom management is the foundation of successful teaching. Discover proven strategies that help create a positive learning environment and maximize student engagement.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🎓</div>
+                            <h4>Navigate Your First Year as a Teacher</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Career Advice • December 10, 2024 • 7 min read</em></p>
+                            <p>Starting your teaching career can be overwhelming. Here's a comprehensive guide to help new teachers thrive in their first year.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">💻</div>
+                            <h4>Top 15 EdTech Tools for Modern Classrooms</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>EdTech • December 5, 2024 • 6 min read</em></p>
+                            <p>Technology is transforming education. Explore the best EdTech tools that enhance learning and make teaching more effective.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🏫</div>
+                            <h4>School Administrator's Guide to Hiring</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Recruitment • November 28, 2024 • 8 min read</em></p>
+                            <p>Finding and retaining excellent teachers is crucial for school success. Learn the best practices for teacher recruitment.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">🤝</div>
+                            <h4>Why Every Teacher Needs a Mentor</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Professional Development • November 20, 2024 • 5 min read</em></p>
+                            <p>Mentorship accelerates professional growth and builds teaching confidence. Discover the benefits of having a teaching mentor.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">♿</div>
+                            <h4>Creating Inclusive Classrooms</h4>
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Special Education • November 15, 2024 • 10 min read</em></p>
+                            <p>Every student deserves quality education. Learn how to create inclusive learning environments that support diverse learners.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Hiring Tips for Schools</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Expert advice for school administrators and HR professionals</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div class="service-card">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">1</div>
+                            <h4>Define Clear Job Requirements</h4>
+                            <p>Create detailed job descriptions that outline specific qualifications, experience levels, and teaching methodologies required.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">2</div>
+                            <h4>Look Beyond Certifications</h4>
+                            <p>While credentials are important, assess candidates' passion for teaching, communication skills, adaptability, and cultural fit.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">3</div>
+                            <h4>Conduct Demo Classes</h4>
+                            <p>Observe candidates teaching a real or simulated class. This reveals their teaching style and classroom management abilities.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">4</div>
+                            <h4>Check References Thoroughly</h4>
+                            <p>Contact previous employers to verify experience, teaching effectiveness, and professional conduct.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work With Us Tab -->
+            <div id="work-with-us" class="tab-content">
+                <div class="tab-header">
+                    <h2>Work With Us</h2>
+                    <p style="color: #666;">Connect Schools with Teachers, Build Better Educational Futures</p>
+                </div>
+                
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Schools - Hire Teachers</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Find Qualified Educators for Your Institution</p>
+                    
+                    <div class="service-card" style="max-width: 900px;">
+                        <h4>✨ Why Partner with SAIRA ACAD?</h4>
+                        <ul class="service-features">
+                            <li><strong>Pre-Vetted Candidates:</strong> Access our database of 2000+ certified and experienced teachers</li>
+                            <li><strong>Quick Hiring:</strong> Fill positions faster with our streamlined recruitment process</li>
+                            <li><strong>Quality Assurance:</strong> All candidates undergo rigorous screening and background checks</li>
+                            <li><strong>Diverse Talent Pool:</strong> Teachers across all subjects, grades, and teaching methodologies</li>
+                            <li><strong>Flexible Options:</strong> Full-time, part-time, substitute, and contract positions</li>
+                            <li><strong>Cost-Effective:</strong> Reduce recruitment costs and time-to-hire significantly</li>
+                            <li><strong>Ongoing Support:</strong> Post-placement support to ensure successful integration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Teachers - Find Your Dream Job</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Apply for Teaching Positions Across Leading Schools</p>
+                    
+                    <div class="service-card" style="max-width: 900px;">
+                        <h4>✨ Why Apply Through SAIRA ACAD?</h4>
+                        <ul class="service-features">
+                            <li><strong>Wide Range of Opportunities:</strong> Access jobs from 500+ partner schools</li>
+                            <li><strong>Career Growth:</strong> Positions across all levels - from entry to leadership roles</li>
+                            <li><strong>Personalized Matching:</strong> Get matched with schools that fit your profile and preferences</li>
+                            <li><strong>Application Support:</strong> Assistance with resume building and interview preparation</li>
+                            <li><strong>Salary Guidance:</strong> Transparent salary information and negotiation support</li>
+                            <li><strong>Free Service:</strong> No charges for teachers - our services are completely free for educators</li>
+                            <li><strong>Fast Placement:</strong> Get placed within 2-4 weeks of registration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Sample Job Openings</h3>
+                    <p style="color: #666; margin-bottom: 2rem;">Browse latest opportunities from our partner schools</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                        <div class="service-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <h4 style="margin: 0;">Mathematics Teacher</h4>
+                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
+                            </div>
+                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Delhi Public School, Bangalore</p>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+                                <span>📚 Grades 9-12</span>
+                                <span>💼 3+ years exp.</span>
+                                <span>💰 ₹40k-60k/month</span>
+                            </div>
+                            <p>Seeking experienced mathematics teacher for senior secondary classes. CBSE curriculum expertise required.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <h4 style="margin: 0;">English Language Teacher</h4>
+                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
+                            </div>
+                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Ryan International School, Mumbai</p>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+                                <span>📚 Grades 6-10</span>
+                                <span>💼 2+ years exp.</span>
+                                <span>💰 ₹35k-50k/month</span>
+                            </div>
+                            <p>Dynamic English teacher needed for middle and high school. Strong communication skills essential.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <h4 style="margin: 0;">Science Teacher</h4>
+                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
+                            </div>
+                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Kendriya Vidyalaya, Chennai</p>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+                                <span>📚 Grades 6-8</span>
+                                <span>💼 2+ years exp.</span>
+                                <span>💰 ₹30k-45k/month</span>
+                            </div>
+                            <p>Enthusiastic science teacher for middle school. Experience with practical labs and experiments preferred.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -463,6 +881,171 @@
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Consultation Details Modal -->
+    <div id="consultationDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Consultation Details</h3>
+                <button class="close-btn" onclick="closeConsultationDetails()">&times;</button>
+            </div>
+            <div class="consultation-details-body">
+                <div class="detail-row">
+                    <span class="detail-label">📋 ID:</span>
+                    <span class="detail-value" id="detailId"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">👤 Name:</span>
+                    <span class="detail-value" id="detailName"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📧 Email:</span>
+                    <span class="detail-value" id="detailEmail"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📱 Phone:</span>
+                    <span class="detail-value" id="detailPhone"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">🏫 Organization:</span>
+                    <span class="detail-value" id="detailOrganization"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📂 Type:</span>
+                    <span class="detail-value" id="detailType"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📅 Preferred Date:</span>
+                    <span class="detail-value" id="detailDate"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">🕐 Preferred Time:</span>
+                    <span class="detail-value" id="detailTime"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📊 Status:</span>
+                    <span class="detail-value" id="detailStatus"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">🕒 Booked on:</span>
+                    <span class="detail-value" id="detailTimestamp"></span>
+                </div>
+                <div class="detail-row full-width">
+                    <span class="detail-label">💬 Message:</span>
+                    <div class="detail-message" id="detailMessage"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeConsultationDetails()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="custom-notification-overlay">
+        <div class="custom-notification-box">
+            <div class="notification-icon" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">⚠️</div>
+            <h3 class="notification-title">Confirm Delete</h3>
+            <p class="notification-message">Are you sure you want to delete this consultation?</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeDeleteConfirm()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Custom Notification Modal -->
+    <div id="adminNotification" class="custom-notification-overlay">
+        <div class="custom-notification-box">
+            <div class="notification-icon" id="adminNotificationIcon">✓</div>
+            <h3 id="adminNotificationTitle" class="notification-title">Success!</h3>
+            <p id="adminNotificationMessage" class="notification-message"></p>
+            <button onclick="closeAdminNotification()" class="btn btn-cta">OK</button>
+        </div>
+    </div>
+
+    <!-- Add School Account Modal -->
+    <div id="addSchoolModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add School Partner Account</h3>
+                <button class="close-btn" onclick="closeAddSchoolModal()">&times;</button>
+            </div>
+            <form id="addSchoolForm" class="modal-form">
+                <div class="form-group">
+                    <label for="schoolName">School Name *</label>
+                    <input type="text" id="schoolName" required placeholder="Enter school name">
+                </div>
+                <div class="form-group">
+                    <label for="schoolUsername">Username *</label>
+                    <input type="text" id="schoolUsername" required placeholder="Enter username for login">
+                </div>
+                <div class="form-group">
+                    <label for="schoolPassword">Password *</label>
+                    <input type="password" id="schoolPassword" required placeholder="Enter password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="schoolEmail">Email *</label>
+                    <input type="email" id="schoolEmail" required placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label for="schoolPhone">Phone</label>
+                    <input type="tel" id="schoolPhone" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label for="schoolLocation">Location</label>
+                    <input type="text" id="schoolLocation" placeholder="Enter location">
+                </div>
+                <div id="schoolModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddSchoolModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add School Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit School Account Modal -->
+    <div id="editSchoolModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit School Partner Account</h3>
+                <button class="close-btn" onclick="closeEditSchoolModal()">&times;</button>
+            </div>
+            <form id="editSchoolForm" class="modal-form">
+                <input type="hidden" id="editSchoolId">
+                <div class="form-group">
+                    <label for="editSchoolName">School Name *</label>
+                    <input type="text" id="editSchoolName" required placeholder="Enter school name">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolUsername">Username *</label>
+                    <input type="text" id="editSchoolUsername" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editSchoolPassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolEmail">Email *</label>
+                    <input type="email" id="editSchoolEmail" required placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolPhone">Phone</label>
+                    <input type="tel" id="editSchoolPhone" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolLocation">Location</label>
+                    <input type="text" id="editSchoolLocation" placeholder="Enter location">
+                </div>
+                <div id="editSchoolModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditSchoolModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update School Account</button>
                 </div>
             </form>
         </div>

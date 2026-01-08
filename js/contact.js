@@ -66,26 +66,65 @@ async function handleConsultationBooking(event) {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     
+    // Add timestamp and status
+    const consultation = {
+        ...data,
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        status: 'pending',
+        viewed: false
+    };
+    
     try {
-        const response = await fetch('/api/consultations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+        // Store in localStorage
+        const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+        consultations.push(consultation);
+        localStorage.setItem('consultations', JSON.stringify(consultations));
         
-        if (response.ok) {
-            alert('Your consultation has been booked! We will send you a confirmation email with meeting details.');
-            closeConsultationModal();
-            event.target.reset();
-        } else {
-            alert('There was an error booking your consultation. Please try again.');
-        }
+        // Update unread count for admin notifications
+        const unreadCount = consultations.filter(c => !c.viewed).length;
+        localStorage.setItem('unreadConsultations', unreadCount.toString());
+        
+        showCustomNotification('Consultation Booked!', 'Your consultation has been booked! We will send you a confirmation email with meeting details.');
+        closeConsultationModal();
+        event.target.reset();
     } catch (error) {
         console.error('Error:', error);
-        alert('There was an error booking your consultation. Please try again.');
+        showCustomNotification('Error', 'There was an error booking your consultation. Please try again.', 'error');
     }
+}
+
+// Show custom notification
+function showCustomNotification(title, message, type = 'success') {
+    const notification = document.getElementById('customNotification');
+    const notificationTitle = document.getElementById('notificationTitle');
+    const notificationMessage = document.getElementById('notificationMessage');
+    const notificationIcon = notification.querySelector('.notification-icon');
+    
+    notificationTitle.textContent = title;
+    notificationMessage.textContent = message;
+    
+    if (type === 'error') {
+        notificationIcon.textContent = '✗';
+        notificationIcon.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+    } else {
+        notificationIcon.textContent = '✓';
+        notificationIcon.style.background = 'linear-gradient(135deg, #28a745 0%, #218838 100%)';
+    }
+    
+    notification.style.display = 'flex';
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+}
+
+// Close custom notification
+function closeCustomNotification() {
+    const notification = document.getElementById('customNotification');
+    notification.classList.remove('show');
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 300);
 }
 
 // Toggle FAQ

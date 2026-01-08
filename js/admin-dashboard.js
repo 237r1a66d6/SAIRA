@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         adminNameElement.textContent = `Admin: ${admin.username}`;
     }
     
+    // Check for new consultations and show notification
+    checkNewConsultations();
+    
     // Load initial data
     await loadDashboardData();
     
@@ -45,6 +48,10 @@ function showTab(tabName) {
         loadAdminManagement();
     } else if (tabName === 'user-management') {
         loadUserManagement();
+    } else if (tabName === 'school-accounts') {
+        loadSchoolAccounts();
+    } else if (tabName === 'consultations') {
+        loadConsultations();
     } else if (tabName === 'debug-storage') {
         refreshDebugData();
     }
@@ -733,3 +740,403 @@ function addSampleUser() {
         loadUserManagement();
     }
 }
+
+// Consultation Management Functions
+function checkNewConsultations() {
+    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    const unreadCount = consultations.filter(c => !c.viewed).length;
+    
+    const badge = document.getElementById('consultationBadge');
+    if (badge && unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-block';
+        
+        // Show browser notification if supported
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('New Consultation Bookings', {
+                body: `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`,
+                icon: 'assets/OnlyLogo(noBG).png'
+            });
+        }
+    }
+}
+
+function loadConsultations() {
+    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    const tbody = document.getElementById('consultationsTableBody');
+    const notification = document.getElementById('consultationNotification');
+    const notificationText = document.getElementById('notificationText');
+    
+    const unreadCount = consultations.filter(c => !c.viewed).length;
+    
+    if (unreadCount > 0) {
+        notificationText.textContent = `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`;
+        notification.style.display = 'flex';
+    } else {
+        notification.style.display = 'none';
+    }
+    
+    if (consultations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="no-data">No consultations yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = consultations.reverse().map(consultation => `
+        <tr style="${!consultation.viewed ? 'background-color: #fff8e1;' : ''}">
+            <td>${consultation.id.substring(0, 8)}...</td>
+            <td>${consultation.consultName}</td>
+            <td>${consultation.consultEmail}</td>
+            <td>${consultation.consultPhone}</td>
+            <td>${consultation.consultationType || 'General'}</td>
+            <td>${new Date(consultation.consultDate).toLocaleDateString()}</td>
+            <td>${consultation.consultTime}</td>
+            <td>
+                <span class="status-badge status-${consultation.status}">
+                    ${consultation.status}
+                </span>
+            </td>
+            <td>
+                <button onclick="viewConsultation('${consultation.id}')" class="btn-icon" title="View">👁️</button>
+                <button onclick="updateConsultationStatus('${consultation.id}', 'confirmed')" class="btn-icon" title="Confirm">✅</button>
+                <button onclick="updateConsultationStatus('${consultation.id}', 'declined')" class="btn-icon" title="Decline">❌</button>
+                <button onclick="deleteConsultation('${consultation.id}')" class="btn-icon" title="Delete">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function viewConsultation(id) {
+    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    const consultation = consultations.find(c => c.id === id);
+    
+    if (consultation) {
+        // Mark as viewed
+        consultation.viewed = true;
+        localStorage.setItem('consultations', JSON.stringify(consultations));
+        
+        // Populate modal with consultation details
+        document.getElementById('detailId').textContent = consultation.id;
+        document.getElementById('detailName').textContent = consultation.consultName;
+        document.getElementById('detailEmail').textContent = consultation.consultEmail;
+        document.getElementById('detailPhone').textContent = consultation.consultPhone;
+        document.getElementById('detailOrganization').textContent = consultation.consultSchool || 'N/A';
+        document.getElementById('detailType').textContent = consultation.consultationType || 'General';
+        document.getElementById('detailDate').textContent = new Date(consultation.consultDate).toLocaleDateString();
+        document.getElementById('detailTime').textContent = consultation.consultTime;
+        
+        const statusSpan = document.getElementById('detailStatus');
+        statusSpan.innerHTML = `<span class="status-badge status-${consultation.status}">${consultation.status}</span>`;
+        
+        document.getElementById('detailTimestamp').textContent = new Date(consultation.timestamp).toLocaleString();
+        document.getElementById('detailMessage').textContent = consultation.consultMessage || 'No message provided';
+        
+        // Show modal
+        document.getElementById('consultationDetailsModal').style.display = 'block';
+        
+        // Refresh the display
+        loadConsultations();
+        checkNewConsultations();
+    }
+}
+
+function closeConsultationDetails() {
+    document.getElementById('consultationDetailsModal').style.display = 'none';
+}
+
+function updateConsultationStatus(id, newStatus) {
+    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    const consultation = consultations.find(c => c.id === id);
+    
+    if (consultation) {
+        consultation.status = newStatus;
+        consultation.viewed = true;
+        localStorage.setItem('consultations', JSON.stringify(consultations));
+        
+        // Send email notification to the user
+        sendConsultationStatusEmail(consultation, newStatus);
+        
+        showAdminNotification('Status Updated', `Consultation status updated to: ${newStatus}. Email notification sent to ${consultation.email}`);
+        loadConsultations();
+        checkNewConsultations();
+    }
+}
+
+// Function to send email notification (simulated)
+function sendConsultationStatusEmail(consultation, status) {
+    const emailData = {
+        to: consultation.email,
+        subject: `Consultation Booking ${status.charAt(0).toUpperCase() + status.slice(1)} - SAIRA ACAD`,
+        body: `
+Dear ${consultation.name},
+
+Your consultation booking has been ${status}.
+
+Booking Details:
+- Type: ${consultation.consultType}
+- Date: ${consultation.consultDate}
+- Time: ${consultation.consultTime}
+- Phone: ${consultation.phone}
+
+${status === 'confirmed' ? 
+    'We look forward to meeting with you. Please arrive 5 minutes early.' : 
+    'We apologize for any inconvenience. Please feel free to reschedule or contact us for alternative options.'}
+
+Best regards,
+SAIRA ACAD Team
+        `
+    };
+    
+    // Log the email data (in production, this would send via backend API)
+    console.log('Email notification prepared:', emailData);
+    
+    // Simulate email sending - in production, this would be an API call
+    // fetch('/api/send-email', { method: 'POST', body: JSON.stringify(emailData) })
+}
+
+let consultationToDelete = null;
+
+function deleteConsultation(id) {
+    consultationToDelete = id;
+    const modal = document.getElementById('deleteConfirmModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeDeleteConfirm() {
+    const modal = document.getElementById('deleteConfirmModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        consultationToDelete = null;
+    }, 300);
+}
+
+function confirmDelete() {
+    if (consultationToDelete) {
+        let consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+        consultations = consultations.filter(c => c.id !== consultationToDelete);
+        localStorage.setItem('consultations', JSON.stringify(consultations));
+        
+        closeDeleteConfirm();
+        showAdminNotification('Deleted', 'Consultation deleted successfully');
+        loadConsultations();
+        checkNewConsultations();
+    }
+}
+
+function markAllAsRead() {
+    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    consultations.forEach(c => c.viewed = true);
+    localStorage.setItem('consultations', JSON.stringify(consultations));
+    
+    loadConsultations();
+    checkNewConsultations();
+}
+
+// Show admin notification
+function showAdminNotification(title, message, type = 'success') {
+    const notification = document.getElementById('adminNotification');
+    const notificationTitle = document.getElementById('adminNotificationTitle');
+    const notificationMessage = document.getElementById('adminNotificationMessage');
+    const notificationIcon = document.getElementById('adminNotificationIcon');
+    
+    notificationTitle.textContent = title;
+    notificationMessage.textContent = message;
+    
+    if (type === 'error') {
+        notificationIcon.textContent = '✗';
+        notificationIcon.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+    } else {
+        notificationIcon.textContent = '✓';
+        notificationIcon.style.background = 'linear-gradient(135deg, #28a745 0%, #218838 100%)';
+    }
+    
+    notification.style.display = 'flex';
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+}
+
+// Close admin notification
+function closeAdminNotification() {
+    const notification = document.getElementById('adminNotification');
+    notification.classList.remove('show');
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 300);
+}
+
+// ===== SCHOOL ACCOUNT MANAGEMENT =====
+
+function loadSchoolAccounts() {
+    const schools = JSON.parse(localStorage.getItem('schools') || '[]');
+    const tableBody = document.getElementById('schoolAccountsTableBody');
+    
+    if (schools.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="no-data">No school accounts found</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = schools.map(school => `
+        <tr>
+            <td>${school.schoolName}</td>
+            <td>${school.username}</td>
+            <td>${school.email}</td>
+            <td>${school.phone || 'N/A'}</td>
+            <td>${school.location || 'N/A'}</td>
+            <td>${new Date(school.createdAt).toLocaleDateString()}</td>
+            <td>
+                <button onclick="editSchool('${school.id}')" class="btn-icon" title="Edit">✏️</button>
+                <button onclick="deleteSchool('${school.id}')" class="btn-icon" title="Delete">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function showAddSchoolModal() {
+    document.getElementById('addSchoolModal').style.display = 'flex';
+    document.getElementById('addSchoolForm').reset();
+    document.getElementById('schoolModalError').style.display = 'none';
+}
+
+function closeAddSchoolModal() {
+    document.getElementById('addSchoolModal').style.display = 'none';
+}
+
+document.getElementById('addSchoolForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const schoolName = document.getElementById('schoolName').value.trim();
+    const username = document.getElementById('schoolUsername').value.trim();
+    const password = document.getElementById('schoolPassword').value;
+    const email = document.getElementById('schoolEmail').value.trim();
+    const phone = document.getElementById('schoolPhone').value.trim();
+    const location = document.getElementById('schoolLocation').value.trim();
+    
+    const errorDiv = document.getElementById('schoolModalError');
+    
+    // Get existing schools
+    const schools = JSON.parse(localStorage.getItem('schools') || '[]');
+    
+    // Check if username already exists
+    if (schools.some(s => s.username === username)) {
+        errorDiv.textContent = 'Username already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if email already exists
+    if (schools.some(s => s.email === email)) {
+        errorDiv.textContent = 'Email already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Create new school account
+    const newSchool = {
+        id: Date.now().toString(),
+        schoolName,
+        username,
+        password,
+        email,
+        phone,
+        location,
+        createdAt: new Date().toISOString()
+    };
+    
+    schools.push(newSchool);
+    localStorage.setItem('schools', JSON.stringify(schools));
+    
+    closeAddSchoolModal();
+    showAdminNotification('Success', `School account created for ${schoolName}`);
+    loadSchoolAccounts();
+});
+
+function editSchool(id) {
+    const schools = JSON.parse(localStorage.getItem('schools') || '[]');
+    const school = schools.find(s => s.id === id);
+    
+    if (school) {
+        document.getElementById('editSchoolId').value = school.id;
+        document.getElementById('editSchoolName').value = school.schoolName;
+        document.getElementById('editSchoolUsername').value = school.username;
+        document.getElementById('editSchoolEmail').value = school.email;
+        document.getElementById('editSchoolPhone').value = school.phone || '';
+        document.getElementById('editSchoolLocation').value = school.location || '';
+        document.getElementById('editSchoolPassword').value = '';
+        document.getElementById('editSchoolModalError').style.display = 'none';
+        document.getElementById('editSchoolModal').style.display = 'flex';
+    }
+}
+
+function closeEditSchoolModal() {
+    document.getElementById('editSchoolModal').style.display = 'none';
+}
+
+document.getElementById('editSchoolForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('editSchoolId').value;
+    const schoolName = document.getElementById('editSchoolName').value.trim();
+    const username = document.getElementById('editSchoolUsername').value.trim();
+    const password = document.getElementById('editSchoolPassword').value;
+    const email = document.getElementById('editSchoolEmail').value.trim();
+    const phone = document.getElementById('editSchoolPhone').value.trim();
+    const location = document.getElementById('editSchoolLocation').value.trim();
+    
+    const errorDiv = document.getElementById('editSchoolModalError');
+    const schools = JSON.parse(localStorage.getItem('schools') || '[]');
+    const schoolIndex = schools.findIndex(s => s.id === id);
+    
+    if (schoolIndex === -1) {
+        errorDiv.textContent = 'School not found';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if username is taken by another school
+    if (schools.some(s => s.username === username && s.id !== id)) {
+        errorDiv.textContent = 'Username already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if email is taken by another school
+    if (schools.some(s => s.email === email && s.id !== id)) {
+        errorDiv.textContent = 'Email already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Update school
+    schools[schoolIndex].schoolName = schoolName;
+    schools[schoolIndex].username = username;
+    schools[schoolIndex].email = email;
+    schools[schoolIndex].phone = phone;
+    schools[schoolIndex].location = location;
+    
+    // Update password only if provided
+    if (password) {
+        schools[schoolIndex].password = password;
+    }
+    
+    localStorage.setItem('schools', JSON.stringify(schools));
+    
+    closeEditSchoolModal();
+    showAdminNotification('Success', `School account updated for ${schoolName}`);
+    loadSchoolAccounts();
+});
+
+function deleteSchool(id) {
+    if (confirm('Are you sure you want to delete this school account? This action cannot be undone.')) {
+        let schools = JSON.parse(localStorage.getItem('schools') || '[]');
+        schools = schools.filter(s => s.id !== id);
+        localStorage.setItem('schools', JSON.stringify(schools));
+        
+        showAdminNotification('Success', 'School account deleted successfully');
+        loadSchoolAccounts();
+    }
+}
+
