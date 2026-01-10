@@ -47,6 +47,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/school-partner', require('./routes/schoolPartner'));
 app.use('/api/forms', require('./routes/forms'));
 
 // Health check route

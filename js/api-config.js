@@ -15,6 +15,13 @@ const API_CONFIG = {
         ADMIN_LIST: '/admin/admins',
         ADMIN_CREATE: '/admin/admins',
         ADMIN_UPDATE: '/admin/admins',
+        
+        // School Partner endpoints
+        PARTNER_LOGIN: '/school-partner/login',
+        PARTNER_CREATE: '/school-partner/create',
+        PARTNER_LIST: '/school-partner/all',
+        PARTNER_UPDATE: '/school-partner/update',
+        PARTNER_DELETE: '/school-partner/delete'
     }
 };
 
@@ -34,7 +41,13 @@ const api = {
         };
 
         try {
-            const response = await fetch(url, config);
+            // Add 3 second timeout for faster fallback
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            
+            const response = await fetch(url, { ...config, signal: controller.signal });
+            clearTimeout(timeoutId);
+            
             const data = await response.json();
             
             if (!response.ok) {
@@ -120,7 +133,7 @@ const api = {
         return this.request(`${API_CONFIG.ENDPOINTS.ADMIN_UPDATE}/${adminId}`, {
             method: 'DELETE'
         });
-    }
+    },
 
     async updateUserStatus(userId, status) {
         return this.request(`${API_CONFIG.ENDPOINTS.ADMIN_USER_STATUS}/${userId}/status`, {
@@ -131,6 +144,40 @@ const api = {
 
     async deleteUser(userId) {
         return this.request(`${API_CONFIG.ENDPOINTS.ADMIN_USER_STATUS}/${userId}`, {
+            method: 'DELETE'
+        });
+    },
+
+    // School Partner API calls
+    async schoolPartnerLogin(credentials) {
+        return this.request(API_CONFIG.ENDPOINTS.PARTNER_LOGIN, {
+            method: 'POST',
+            body: JSON.stringify(credentials)
+        });
+    },
+
+    async createSchoolPartner(partnerData) {
+        return this.request(API_CONFIG.ENDPOINTS.PARTNER_CREATE, {
+            method: 'POST',
+            body: JSON.stringify(partnerData)
+        });
+    },
+
+    async getAllSchoolPartners() {
+        return this.request(API_CONFIG.ENDPOINTS.PARTNER_LIST, {
+            method: 'GET'
+        });
+    },
+
+    async updateSchoolPartner(partnerId, partnerData) {
+        return this.request(`${API_CONFIG.ENDPOINTS.PARTNER_UPDATE}/${partnerId}`, {
+            method: 'PUT',
+            body: JSON.stringify(partnerData)
+        });
+    },
+
+    async deleteSchoolPartner(partnerId) {
+        return this.request(`${API_CONFIG.ENDPOINTS.PARTNER_DELETE}/${partnerId}`, {
             method: 'DELETE'
         });
     }

@@ -48,6 +48,10 @@ function showTab(tabName) {
         loadAdminManagement();
     } else if (tabName === 'user-management') {
         loadUserManagement();
+    } else if (tabName === 'schools') {
+        loadPartnerSchoolsDisplay();
+    } else if (tabName === 'school-partners') {
+        loadSchoolPartnersManagement();
     } else if (tabName === 'school-accounts') {
         loadSchoolAccounts();
     } else if (tabName === 'consultations') {
@@ -62,9 +66,11 @@ function showTab(tabName) {
 async function loadDashboardData() {
     const admins = await fetchAdmins();
     const users = getUsers(); // users remain local for now
+    const partners = await getSchoolPartners();
     
     document.getElementById('totalAdmins').textContent = admins.length;
     document.getElementById('totalUsers').textContent = users.length;
+    document.getElementById('totalPartnerSchools').textContent = partners.length;
 }
 
 // Fetch admins from backend when possible; fallback to localStorage
@@ -182,6 +188,18 @@ function setupModalListeners() {
     if (editAdminForm) {
         editAdminForm.addEventListener('submit', handleEditAdmin);
     }
+    
+    // Add School Partner Form
+    const addSchoolPartnerForm = document.getElementById('addSchoolPartnerForm');
+    if (addSchoolPartnerForm) {
+        addSchoolPartnerForm.addEventListener('submit', handleAddSchoolPartner);
+    }
+    
+    // Edit School Partner Form
+    const editSchoolPartnerForm = document.getElementById('editSchoolPartnerForm');
+    if (editSchoolPartnerForm) {
+        editSchoolPartnerForm.addEventListener('submit', handleEditSchoolPartner);
+    }
 }
 
 function showAddAdminModal() {
@@ -267,7 +285,7 @@ async function handleAddAdmin(event) {
                     closeAddAdminModal();
                     loadAdminManagement();
                     loadDashboardData();
-                    alert('Admin added successfully!');
+                    showAdminNotification('Success', 'Admin added successfully!');
                     return;
                 }
             } catch (apiError) {
@@ -300,7 +318,7 @@ async function handleAddAdmin(event) {
         loadAdminManagement();
         loadDashboardData();
         
-        alert('Admin added successfully!');
+        showAdminNotification('Success', 'Admin added successfully!');
     } catch (error) {
         console.error('Add admin error:', error);
         showError('adminModalError', error.message || 'Unable to add admin');
@@ -369,7 +387,7 @@ function handleAddUser(event) {
     loadUserManagement();
     loadDashboardData();
     
-    alert('User added successfully!');
+    showAdminNotification('Success', 'User added successfully!');
 }
 
 // Edit User Functions
@@ -378,7 +396,7 @@ function editUser(email) {
     const user = users.find(u => u.email === email);
     
     if (!user) {
-        alert('User not found!');
+        showAdminNotification('Error', 'User not found!', 'error');
         return;
     }
     
@@ -475,7 +493,7 @@ function handleEditUser(event) {
     loadUserManagement();
     loadDashboardData();
     
-    alert('User updated successfully!');
+    showAdminNotification('Success', 'User updated successfully!');
 }
 
 // Edit Admin Functions
@@ -483,7 +501,7 @@ function editAdmin(adminId) {
     const admin = adminListCache.find(a => (a._id || a.id || a.username) === adminId);
     
     if (!admin) {
-        alert('Admin not found!');
+        showAdminNotification('Error', 'Admin not found!', 'error');
         return;
     }
     
@@ -537,7 +555,7 @@ async function handleEditAdmin(event) {
                     closeEditAdminModal();
                     loadAdminManagement();
                     loadDashboardData();
-                    alert('Admin updated successfully!');
+                    showAdminNotification('Success', 'Admin updated successfully!');
                     return;
                 }
             } catch (apiError) {
@@ -596,7 +614,7 @@ async function handleEditAdmin(event) {
         loadAdminManagement();
         loadDashboardData();
         
-        alert('Admin updated successfully!');
+        showAdminNotification('Success', 'Admin updated successfully!');
     } catch (error) {
         console.error('Edit admin error:', error);
         showError('editAdminModalError', error.message || 'Unable to update admin');
@@ -605,7 +623,13 @@ async function handleEditAdmin(event) {
 
 // Delete Functions
 async function deleteAdmin(adminId) {
-    if (!confirm('Are you sure you want to delete this admin?')) {
+    const confirmed = await showCustomConfirm(
+        'Are you sure you want to delete this admin? This action cannot be undone.',
+        'Delete Admin',
+        'Delete'
+    );
+    
+    if (!confirmed) {
         return;
     }
     
@@ -617,7 +641,7 @@ async function deleteAdmin(adminId) {
                     await fetchAdmins(true);
                     loadAdminManagement();
                     loadDashboardData();
-                    alert('Admin deleted successfully!');
+                    showAdminNotification('Success', 'Admin deleted successfully!');
                     return;
                 }
             } catch (apiError) {
@@ -628,7 +652,7 @@ async function deleteAdmin(adminId) {
         const admins = getAdmins();
         const adminToDelete = admins.find(a => (a._id || a.id || a.username) === adminId);
         if (adminToDelete && adminToDelete.username === 'admin') {
-            alert('Cannot delete the default admin!');
+            showAdminNotification('Error', 'Cannot delete the default admin!', 'error');
             return;
         }
 
@@ -639,26 +663,67 @@ async function deleteAdmin(adminId) {
         loadAdminManagement();
         loadDashboardData();
         
-        alert('Admin deleted successfully!');
+        showAdminNotification('Success', 'Admin deleted successfully!');
     } catch (error) {
         console.error('Delete admin error:', error);
-        alert(error.message || 'Unable to delete admin');
+        showAdminNotification('Error', error.message || 'Unable to delete admin', 'error');
     }
 }
 
 function deleteUser(email) {
-    if (!confirm(`Are you sure you want to delete this user?`)) {
-        return;
-    }
-    
-    const users = getUsers();
-    const filteredUsers = users.filter(u => u.email !== email);
+    showCustomConfirm(
+        'Are you sure you want to delete this user? This action cannot be undone.',
+        'Delete User',
+        'Delete'
+    ).then(confirmed => {
+        if (!confirmed) return;
+        
+        const users = getUsers();
+        const filteredUsers = users.filter(u => u.email !== email);
     
     saveUsers(filteredUsers);
     loadUserManagement();
     loadDashboardData();
     
-    alert('User deleted successfully!');
+    showAdminNotification('Success', 'User deleted successfully!');
+    });
+}
+
+// Custom Confirmation Modal
+let confirmCallback = null;
+
+function showCustomConfirm(message, title = 'Confirm Action', buttonText = 'Confirm') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('customConfirmModal');
+        const modalTitle = document.getElementById('confirmModalTitle');
+        const modalMessage = document.getElementById('confirmModalMessage');
+        const confirmBtn = document.getElementById('confirmModalBtn');
+        
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        confirmBtn.textContent = buttonText;
+        
+        confirmCallback = resolve;
+        modal.classList.add('show');
+    });
+}
+
+function confirmAction() {
+    const modal = document.getElementById('customConfirmModal');
+    modal.classList.remove('show');
+    if (confirmCallback) {
+        confirmCallback(true);
+        confirmCallback = null;
+    }
+}
+
+function cancelConfirm() {
+    const modal = document.getElementById('customConfirmModal');
+    modal.classList.remove('show');
+    if (confirmCallback) {
+        confirmCallback(false);
+        confirmCallback = null;
+    }
 }
 
 // Close modals when clicking outside
@@ -703,10 +768,16 @@ async function refreshDebugData() {
 }
 
 function clearAllData() {
-    if (confirm('Are you sure you want to clear ALL localStorage data? This will remove all users and admins (except the default admin).')) {
+    showCustomConfirm(
+        'Are you sure you want to clear ALL localStorage data? This will remove all users and admins (except the default admin).',
+        'Clear All Data',
+        'Clear All'
+    ).then(confirmed => {
+        if (!confirmed) return;
+        
         localStorage.clear();
         initializeDefaultAdmin();
-        alert('All data cleared! Default admin reinitialized.');
+        showAdminNotification('Success', 'All data cleared! Default admin reinitialized.');
         refreshDebugData();
         loadDashboardData();
         if (currentTab === 'admin-management') {
@@ -714,7 +785,7 @@ function clearAllData() {
         } else if (currentTab === 'user-management') {
             loadUserManagement();
         }
-    }
+    });
 }
 
 function addSampleUser() {
@@ -733,7 +804,7 @@ function addSampleUser() {
     };
     users.push(sampleUser);
     saveUsers(users);
-    alert('Sample user added!');
+    showAdminNotification('Success', 'Sample user added!');
     refreshDebugData();
     loadDashboardData();
     if (currentTab === 'user-management') {
@@ -1130,13 +1201,399 @@ document.getElementById('editSchoolForm').addEventListener('submit', function(e)
 });
 
 function deleteSchool(id) {
-    if (confirm('Are you sure you want to delete this school account? This action cannot be undone.')) {
+    showCustomConfirm(
+        'Are you sure you want to delete this school account? This action cannot be undone.',
+        'Delete School Account',
+        'Delete'
+    ).then(confirmed => {
+        if (!confirmed) return;
+        
         let schools = JSON.parse(localStorage.getItem('schools') || '[]');
         schools = schools.filter(s => s.id !== id);
         localStorage.setItem('schools', JSON.stringify(schools));
         
         showAdminNotification('Success', 'School account deleted successfully');
         loadSchoolAccounts();
+    });
+}
+
+// ===========================
+// School Partners Management
+// ===========================
+
+function getSchoolPartnersSync() {
+    // Get from localStorage immediately (synchronous)
+    return JSON.parse(localStorage.getItem('schoolPartners') || '[]');
+}
+
+async function getSchoolPartners() {
+    // Return localStorage data immediately
+    const localData = getSchoolPartnersSync();
+    
+    // Try to sync with backend in background (non-blocking)
+    if (typeof api !== 'undefined') {
+        api.getAllSchoolPartners().then(response => {
+            if (response && response.success && Array.isArray(response.partners)) {
+                // Update localStorage if backend has data
+                localStorage.setItem('schoolPartners', JSON.stringify(response.partners));
+            }
+        }).catch(error => {
+            console.warn('Backend sync failed:', error);
+        });
+    }
+    
+    return localData;
+}
+
+function loadSchoolPartnersManagement() {
+    // Load instantly from localStorage
+    const partners = getSchoolPartnersSync();
+    const tableBody = document.getElementById('schoolPartnersTableBody');
+    
+    if (!tableBody) return;
+    
+    if (partners.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="no-data">No school partners found. Add your first partner!</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    partners.forEach(partner => {
+        const partnerId = partner._id || partner.id;
+        html += `
+            <tr>
+                <td><strong>${partner.schoolName || partner.name}</strong></td>
+                <td>${partner.username}</td>
+                <td>${partner.email}</td>
+                <td>${formatDate(partner.createdDate || partner.createdAt)}</td>
+                <td>
+                    <button class="action-btn edit" onclick="editSchoolPartner('${partnerId}')">Edit</button>
+                    <button class="action-btn delete" onclick="deleteSchoolPartner('${partnerId}')">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.innerHTML = html;
+}
+
+// Load Partner Schools Display (for the "Partner Schools" tab)
+function loadPartnerSchoolsDisplay() {
+    // Load instantly from localStorage
+    const partners = getSchoolPartnersSync();
+    const schoolsList = document.getElementById('schoolsList');
+    
+    if (!schoolsList) return;
+    
+    if (partners.length === 0) {
+        schoolsList.innerHTML = `
+            <div class="no-data-message" style="text-align: center; padding: 60px 20px; color: #666;">
+                <div style="font-size: 48px; margin-bottom: 20px;">🏫</div>
+                <h3 style="color: #333; margin-bottom: 10px;">No Partner Schools Yet</h3>
+                <p style="margin-bottom: 20px;">Get started by adding your first school partner.</p>
+                <button class="btn btn-primary" onclick="showTab('school-partners')">
+                    Add School Partner
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    partners.forEach(partner => {
+        const schoolName = partner.schoolName || partner.name || 'School Partner';
+        const email = partner.email || 'N/A';
+        const username = partner.username || 'N/A';
+        
+        html += `
+            <div class="school-card">
+                <div class="school-logo-large">
+                    <h3>${schoolName}</h3>
+                </div>
+                <div class="school-info">
+                    <h4>${schoolName}</h4>
+                    <p>Partnered educational institution committed to academic excellence and student development.</p>
+                    <div class="school-stats">
+                        <span>📧 ${email}</span>
+                        <span>👤 ${username}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    schoolsList.innerHTML = html;
+}
+
+function showAddSchoolPartnerModal() {
+    const modal = document.getElementById('addSchoolPartnerModal');
+    modal.classList.add('show');
+    hideError('schoolPartnerModalError');
+}
+
+function closeAddSchoolPartnerModal() {
+    const modal = document.getElementById('addSchoolPartnerModal');
+    modal.classList.remove('show');
+    document.getElementById('addSchoolPartnerForm').reset();
+}
+
+function showEditSchoolPartnerModal() {
+    const modal = document.getElementById('editSchoolPartnerModal');
+    modal.classList.add('show');
+    hideError('editSchoolPartnerModalError');
+}
+
+function closeEditSchoolPartnerModal() {
+    const modal = document.getElementById('editSchoolPartnerModal');
+    modal.classList.remove('show');
+    document.getElementById('editSchoolPartnerForm').reset();
+}
+
+// Handle Add School Partner Form
+async function handleAddSchoolPartner(event) {
+    event.preventDefault();
+    hideError('schoolPartnerModalError');
+    
+    const name = document.getElementById('schoolPartnerName').value.trim();
+    const username = document.getElementById('schoolPartnerUsername').value.trim();
+    const email = document.getElementById('schoolPartnerEmail').value.trim();
+    const password = document.getElementById('schoolPartnerPassword').value;
+    const confirmPassword = document.getElementById('confirmSchoolPartnerPassword').value;
+    
+    // Validation
+    if (!name || !username || !email || !password || !confirmPassword) {
+        showError('schoolPartnerModalError', 'All fields are required.');
+        return;
+    }
+    
+    if (password.length < 8) {
+        showError('schoolPartnerModalError', 'Password must be at least 8 characters long.');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showError('schoolPartnerModalError', 'Passwords do not match.');
+        return;
+    }
+    
+    try {
+        // Create partner object first
+        const newPartner = {
+            id: Date.now().toString(),
+            name: name,
+            username: username,
+            email: email,
+            password: password,
+            status: 'active',
+            createdDate: new Date().toISOString()
+        };
+        
+        // Get current partners from localStorage
+        const partners = getSchoolPartnersSync();
+        
+        // Check duplicates
+        if (partners.some(p => p.name && p.name.toLowerCase() === name.toLowerCase())) {
+            showError('schoolPartnerModalError', 'A partner with this name already exists.');
+            return;
+        }
+        
+        if (partners.some(p => p.username && p.username.toLowerCase() === username.toLowerCase())) {
+            showError('schoolPartnerModalError', 'Username already exists.');
+            return;
+        }
+        
+        if (partners.some(p => p.email && p.email.toLowerCase() === email.toLowerCase())) {
+            showError('schoolPartnerModalError', 'Email already exists.');
+            return;
+        }
+        
+        // Optimistic update - save to localStorage immediately
+        partners.push(newPartner);
+        localStorage.setItem('schoolPartners', JSON.stringify(partners));
+        
+        // Close modal and update UI immediately
+        closeAddSchoolPartnerModal();
+        showAdminNotification('Success', 'School partner added successfully!');
+        
+        // Update UI in parallel
+        Promise.all([
+            loadSchoolPartnersManagement(),
+            loadPartnerSchoolsDisplay()
+        ]);
+        
+        // Try to sync with backend in background (non-blocking)
+        if (typeof api !== 'undefined') {
+            api.createSchoolPartner({
+                schoolName: name,
+                username: username,
+                email: email,
+                password: password
+            }).catch(error => {
+                console.warn('Backend sync failed:', error);
+                // Data is already saved in localStorage, so no need to show error
+            });
+        }
+    } catch (error) {
+        console.error('Add school partner error:', error);
+        showError('schoolPartnerModalError', error.message || 'Unable to add school partner');
     }
 }
 
+// Handle Edit School Partner Form
+async function handleEditSchoolPartner(e) {
+    e.preventDefault();
+    
+    const errorDiv = document.getElementById('editSchoolPartnerModalError');
+    hideError('editSchoolPartnerModalError');
+    
+    const id = document.getElementById('editSchoolPartnerId').value;
+    const name = document.getElementById('editSchoolPartnerName').value.trim();
+    const username = document.getElementById('editSchoolPartnerUsername').value.trim();
+    const email = document.getElementById('editSchoolPartnerEmail').value.trim();
+    const password = document.getElementById('editSchoolPartnerPassword').value;
+    const confirmPassword = document.getElementById('confirmEditSchoolPartnerPassword').value;
+    
+    if (!name || !username || !email) {
+        errorDiv.textContent = 'School name, username, and email are required';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Validate password if provided
+    if (password) {
+        if (password !== confirmPassword) {
+            errorDiv.textContent = 'Passwords do not match';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        if (password.length < 8) {
+            errorDiv.textContent = 'Password must be at least 8 characters';
+            errorDiv.style.display = 'block';
+            return;
+        }
+    }
+    
+    const partners = getSchoolPartnersSync();
+    const partnerIndex = partners.findIndex(p => p.id === id);
+    
+    if (partnerIndex === -1) {
+        errorDiv.textContent = 'Partner not found';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if name is taken by another partner
+    if (partners.some(p => p.name && p.name.toLowerCase() === name.toLowerCase() && p.id !== id)) {
+        errorDiv.textContent = 'A partner with this name already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if username is taken by another partner
+    if (partners.some(p => p.username && p.username.toLowerCase() === username.toLowerCase() && p.id !== id)) {
+        errorDiv.textContent = 'Username already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    // Check if email is taken by another partner
+    if (partners.some(p => p.email && p.email.toLowerCase() === email.toLowerCase() && p.id !== id)) {
+        errorDiv.textContent = 'Email already exists';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    partners[partnerIndex].name = name;
+    partners[partnerIndex].username = username;
+    partners[partnerIndex].email = email;
+    
+    // Update password only if provided
+    if (password) {
+        partners[partnerIndex].password = password;
+    }
+    
+    // Save to localStorage immediately
+    localStorage.setItem('schoolPartners', JSON.stringify(partners));
+    
+    // Close modal and show notification
+    closeEditSchoolPartnerModal();
+    showAdminNotification('Success', `School partner "${name}" updated successfully`);
+    
+    // Update UI in parallel
+    Promise.all([
+        loadSchoolPartnersManagement(),
+        loadPartnerSchoolsDisplay()
+    ]);
+    
+    // Sync with backend in background if available
+    if (typeof api !== 'undefined') {
+        const updateData = {
+            schoolName: name,
+            username: username,
+            email: email
+        };
+        if (password) {
+            updateData.password = password;
+        }
+        
+        api.updateSchoolPartner(id, updateData).catch(error => {
+            console.warn('Backend sync failed:', error);
+        });
+    }
+}
+
+function editSchoolPartner(id) {
+    const partners = getSchoolPartnersSync();
+    const partner = partners.find(p => p.id === id);
+    
+    if (!partner) {
+        showAdminNotification('Error', 'Partner not found', 'error');
+        return;
+    }
+    
+    document.getElementById('editSchoolPartnerId').value = partner.id;
+    document.getElementById('editSchoolPartnerName').value = partner.name || '';
+    document.getElementById('editSchoolPartnerUsername').value = partner.username || '';
+    document.getElementById('editSchoolPartnerEmail').value = partner.email || '';
+    
+    showEditSchoolPartnerModal();
+}
+
+function deleteSchoolPartner(id) {
+    const partners = getSchoolPartnersSync();
+    const partner = partners.find(p => p.id === id);
+    
+    if (!partner) {
+        showAdminNotification('Error', 'Partner not found', 'error');
+        return;
+    }
+    
+    showCustomConfirm(
+        `Are you sure you want to delete "${partner.name}"? This action cannot be undone.`,
+        'Delete School Partner',
+        'Delete'
+    ).then(confirmed => {
+        if (!confirmed) return;
+        
+        // Delete from localStorage immediately
+        const updatedPartners = partners.filter(p => p.id !== id);
+        localStorage.setItem('schoolPartners', JSON.stringify(updatedPartners));
+        
+        // Show notification
+        showAdminNotification('Success', `School partner "${partner.name}" deleted successfully`);
+        
+        // Update UI in parallel
+        Promise.all([
+            loadSchoolPartnersManagement(),
+            loadPartnerSchoolsDisplay()
+        ]);
+        
+        // Sync with backend in background if available
+        if (typeof api !== 'undefined') {
+            api.deleteSchoolPartner(id).catch(error => {
+                console.warn('Backend sync failed:', error);
+            });
+        }
+    });
+}

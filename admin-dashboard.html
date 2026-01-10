@@ -42,6 +42,10 @@
                     <span class="icon">🏫</span>
                     Partner Schools
                 </button>
+                <button class="menu-item" onclick="showTab('school-partners')">
+                    <span class="icon">➕</span>
+                    Manage Partners
+                </button>
                 <button class="menu-item" onclick="showTab('school-accounts')">
                     <span class="icon">🔑</span>
                     School Accounts
@@ -102,7 +106,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">🏫</div>
                         <div class="stat-details">
-                            <h3>6</h3>
+                            <h3 id="totalPartnerSchools">0</h3>
                             <p>Partner Schools</p>
                         </div>
                     </div>
@@ -174,6 +178,35 @@
                 </div>
             </div>
 
+            <!-- School Partners Management Tab -->
+            <div id="school-partners" class="tab-content">
+                <div class="tab-header">
+                    <h2>School Partners Management</h2>
+                    <button class="btn btn-primary" onclick="showAddSchoolPartnerModal()">
+                        <span>+</span> Add New School Partner
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>School Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schoolPartnersTableBody">
+                            <tr>
+                                <td colspan="5" class="no-data">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Partner Schools Tab -->
             <div id="schools" class="tab-content">
                 <h2>Our Partner Schools</h2>
@@ -181,89 +214,9 @@
                     Trusted educational institutions that have partnered with SAIRA ACAD for academic excellence.
                 </p>
 
-                <div class="schools-list">
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>Delhi Public School</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>Delhi Public School</h4>
-                            <p>One of India's premier school chains, committed to holistic education and academic excellence.</p>
-                            <div class="school-stats">
-                                <span>📍 Pan India</span>
-                                <span>👥 500+ Schools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>Kendriya Vidyalaya</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>Kendriya Vidyalaya</h4>
-                            <p>Central government schools providing quality education with emphasis on all-round development.</p>
-                            <div class="school-stats">
-                                <span>📍 Nationwide</span>
-                                <span>👥 1200+ Schools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>Ryan International</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>Ryan International School</h4>
-                            <p>Leading international school group focusing on innovative teaching and global perspectives.</p>
-                            <div class="school-stats">
-                                <span>📍 Multiple Cities</span>
-                                <span>👥 135+ Schools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>DAV Public School</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>DAV Public School</h4>
-                            <p>Renowned for academic rigor and value-based education across India.</p>
-                            <div class="school-stats">
-                                <span>📍 Pan India</span>
-                                <span>👥 900+ Schools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>St. Xavier's School</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>St. Xavier's School</h4>
-                            <p>Premier institution known for academic excellence and character formation.</p>
-                            <div class="school-stats">
-                                <span>📍 Major Cities</span>
-                                <span>👥 50+ Schools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="school-card">
-                        <div class="school-logo-large">
-                            <h3>Modern School</h3>
-                        </div>
-                        <div class="school-info">
-                            <h4>Modern School</h4>
-                            <p>Progressive education with focus on contemporary teaching methods and student development.</p>
-                            <div class="school-stats">
-                                <span>📍 Select Cities</span>
-                                <span>👥 20+ Schools</span>
-                            </div>
-                        </div>
+                <div id="schoolsList" class="schools-list">
+                    <div class="no-data-message" style="text-align: center; padding: 40px; color: #666;">
+                        Loading partner schools...
                     </div>
                 </div>
             </div>
@@ -728,6 +681,81 @@
         </main>
     </div>
 
+    <!-- Add School Partner Modal -->
+    <div id="addSchoolPartnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New School Partner</h3>
+                <button class="close-btn" onclick="closeAddSchoolPartnerModal()">&times;</button>
+            </div>
+            <form id="addSchoolPartnerForm" class="modal-form">
+                <div class="form-group">
+                    <label for="schoolPartnerName">School Name *</label>
+                    <input type="text" id="schoolPartnerName" required placeholder="Enter school name">
+                </div>
+                <div class="form-group">
+                    <label for="schoolPartnerUsername">Username *</label>
+                    <input type="text" id="schoolPartnerUsername" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="schoolPartnerEmail">School Email *</label>
+                    <input type="email" id="schoolPartnerEmail" required placeholder="Enter school email">
+                </div>
+                <div class="form-group">
+                    <label for="schoolPartnerPassword">Password *</label>
+                    <input type="password" id="schoolPartnerPassword" required placeholder="Enter password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmSchoolPartnerPassword">Confirm Password *</label>
+                    <input type="password" id="confirmSchoolPartnerPassword" required placeholder="Confirm password">
+                </div>
+                <div id="schoolPartnerModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddSchoolPartnerModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add School Partner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit School Partner Modal -->
+    <div id="editSchoolPartnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit School Partner</h3>
+                <button class="close-btn" onclick="closeEditSchoolPartnerModal()">&times;</button>
+            </div>
+            <form id="editSchoolPartnerForm" class="modal-form">
+                <input type="hidden" id="editSchoolPartnerId">
+                <div class="form-group">
+                    <label for="editSchoolPartnerName">School Name *</label>
+                    <input type="text" id="editSchoolPartnerName" required placeholder="Enter school name">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolPartnerUsername">Username *</label>
+                    <input type="text" id="editSchoolPartnerUsername" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolPartnerEmail">School Email *</label>
+                    <input type="email" id="editSchoolPartnerEmail" required placeholder="Enter school email">
+                </div>
+                <div class="form-group">
+                    <label for="editSchoolPartnerPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editSchoolPartnerPassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmEditSchoolPartnerPassword">Confirm New Password</label>
+                    <input type="password" id="confirmEditSchoolPartnerPassword" placeholder="Confirm new password">
+                </div>
+                <div id="editSchoolPartnerModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditSchoolPartnerModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Add Admin Modal -->
     <div id="addAdminModal" class="modal">
         <div class="modal-content">
@@ -1051,6 +1079,23 @@
         </div>
     </div>
 
+    <!-- Custom Confirmation Modal -->
+    <div id="customConfirmModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">Confirm Action</h3>
+            </div>
+            <div style="padding: 20px;">
+                <p id="confirmModalMessage" style="color: #666; font-size: 16px; line-height: 1.6;"></p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="cancelConfirm()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmModalBtn" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/admin-dashboard.js"></script>
 </body>
