@@ -1,45 +1,44 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const schoolPartnerSchema = new mongoose.Schema({
+const SchoolPartner = sequelize.define('SchoolPartner', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     schoolName: {
-        type: String,
-        required: true,
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     },
     password: {
-        type: String,
-        required: true,
-        minlength: 8
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            len: [8, 255]
+        }
     },
     status: {
-        type: String,
-        enum: ['active', 'inactive'],
-        default: 'active'
+        type: DataTypes.ENUM('active', 'inactive'),
+        defaultValue: 'active'
     },
     createdDate: {
-        type: Date,
-        default: Date.now
-    },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin'
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    tableName: 'school_partners'
 });
 
-module.exports = mongoose.model('SchoolPartner', schoolPartnerSchema);
+module.exports = SchoolPartner;

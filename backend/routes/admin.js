@@ -26,7 +26,7 @@ router.post('/login', [
         const { username, password } = req.body;
 
         // Find admin
-        const admin = await Admin.findOne({ username, status: 'active' });
+        const admin = await Admin.findOne({ where: { username, status: 'active' } });
         if (!admin) {
             return res.status(400).json({ 
                 success: false, 

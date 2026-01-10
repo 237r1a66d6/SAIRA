@@ -1,51 +1,60 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const MentorApplicationSchema = new mongoose.Schema({
+const MentorApplication = sequelize.define('MentorApplication', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     mentorName: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     mentorEmail: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isEmail: true
+        }
     },
     mentorPhone: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     mentorQualification: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     mentorExperience: {
-        type: Number,
-        required: true,
-        min: 10
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 10
+        }
     },
     mentorSpecialization: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     mentorAchievements: {
-        type: String,
-        required: true
+        type: DataTypes.TEXT,
+        allowNull: false
     },
     mentorAvailability: {
-        type: Number
+        type: DataTypes.INTEGER
     },
     mentorWhy: {
-        type: String,
-        required: true
+        type: DataTypes.TEXT,
+        allowNull: false
     },
     status: {
-        type: String,
-        enum: ['submitted', 'reviewing', 'interview', 'approved', 'rejected'],
-        default: 'submitted'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
+        type: DataTypes.ENUM('submitted', 'reviewing', 'interview', 'approved', 'rejected'),
+        defaultValue: 'submitted'
     }
+}, {
+    timestamps: true,
+    tableName: 'mentor_applications'
 });
 
-module.exports = mongoose.model('MentorApplication', MentorApplicationSchema);
+module.exports = MentorApplication;

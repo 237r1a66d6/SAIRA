@@ -1,6 +1,8 @@
 // School Partner Dashboard JavaScript
+import { API_BASE_URL } from './api-config.js';
 
 let currentTab = 'overview';
+let partnerToken = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication
@@ -15,9 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function checkPartnerAuth() {
+    partnerToken = localStorage.getItem('partnerToken');
     const partner = JSON.parse(localStorage.getItem('schoolPartner') || 'null');
+    
     if (!partner || !partner.username) {
-        window.location.href = 'partner-login.html';
+        window.location.href = 'school-login.html';
         return null;
     }
     return partner;
@@ -47,8 +51,59 @@ function displayPartnerInfo(partner) {
     }
 }
 
-function loadDashboardData() {
-    // Load applications from localStorage
+async function loadDashboardData() {
+    try {
+        // Try to fetch from backend if token exists
+        if (partnerToken) {
+            const [jobAppsRes, teacherAppsRes, mentorAppsRes] = await Promise.all([
+                fetch(`${API_BASE_URL}/school-partner/applications/jobs`, {
+                    headers: {
+                        'Authorization': `Bearer ${partnerToken}`
+                    }
+                }),
+                fetch(`${API_BASE_URL}/school-partner/applications/teachers`, {
+                    headers: {
+                        'Authorization': `Bearer ${partnerToken}`
+                    }
+                }),
+                fetch(`${API_BASE_URL}/school-partner/applications/mentors`, {
+                    headers: {
+                        'Authorization': `Bearer ${partnerToken}`
+                    }
+                })
+            ]);
+
+            const jobAppsData = await jobAppsRes.json();
+            const teacherAppsData = await teacherAppsRes.json();
+            const mentorAppsData = await mentorAppsRes.json();
+
+            const jobApps = jobAppsData.success ? jobAppsData.applications : [];
+            const teacherApps = teacherAppsData.success ? teacherAppsData.applications : [];
+            const mentorApps = mentorAppsData.success ? mentorAppsData.applications : [];
+
+            // Update stats
+            document.getElementById('totalJobApps').textContent = jobApps.length;
+            document.getElementById('totalTeacherApps').textContent = teacherApps.length;
+            document.getElementById('totalMentorApps').textContent = mentorApps.length;
+            document.getElementById('pendingReviews').textContent = jobApps.length + teacherApps.length + mentorApps.length;
+
+            // Load applications tables
+            loadJobApplications(jobApps);
+            loadTeacherApplications(teacherApps);
+            loadMentorApplications(mentorApps);
+        } else {
+            // Fallback to localStorage
+            loadFromLocalStorage();
+        }
+    } catch (error) {
+        console.error('Error loading dashboard data from backend:', error);
+        // Fallback to localStorage
+        loadFromLocalStorage();
+    }
+}
+
+function loadFromLocalStorage() {
+    // Load applications from localStorage as fallback
     const jobApps = JSON.parse(localStorage.getItem('jobApplications') || '[]');
     const teacherApps = JSON.parse(localStorage.getItem('teacherApplications') || '[]');
     const mentorApps = JSON.parse(localStorage.getItem('mentorApplications') || '[]');
@@ -59,7 +114,7 @@ function loadDashboardData() {
     document.getElementById('totalMentorApps').textContent = mentorApps.length;
     document.getElementById('pendingReviews').textContent = jobApps.length + teacherApps.length + mentorApps.length;
     
-    // Load job applications table
+    // Load applications tables
     loadJobApplications(jobApps);
     loadTeacherApplications(teacherApps);
     loadMentorApplications(mentorApps);
@@ -171,10 +226,9 @@ function showTab(tabName) {
 }
 
 function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('schoolPartner');
-        window.location.href = 'partner-login.html';
-    }
+    localStorage.removeItem('schoolPartner');
+    localStorage.removeItem('partnerToken');
+    window.location.href = 'index.html';
 }
 
 function formatDate(dateString) {
@@ -185,3 +239,6 @@ function formatDate(dateString) {
         day: 'numeric' 
     });
 }
+// Make functions globally available for inline event handlers
+window.logout = logout;
+window.showTab = showTab;

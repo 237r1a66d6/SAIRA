@@ -1,52 +1,59 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const JobApplicationSchema = new mongoose.Schema({
+const JobApplication = sequelize.define('JobApplication', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     applicantName: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     applicantEmail: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isEmail: true
+        }
     },
     applicantPhone: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     position: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     currentLocation: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     totalExperience: {
-        type: Number,
-        required: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     currentCompany: {
-        type: String
+        type: DataTypes.STRING
     },
     noticePeriod: {
-        type: Number
+        type: DataTypes.INTEGER
     },
     coverLetterText: {
-        type: String,
-        required: true
+        type: DataTypes.TEXT,
+        allowNull: false
     },
     resumeUrl: {
-        type: String
+        type: DataTypes.STRING
     },
     status: {
-        type: String,
-        enum: ['submitted', 'reviewing', 'interview', 'offered', 'hired', 'rejected'],
-        default: 'submitted'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
+        type: DataTypes.ENUM('submitted', 'reviewing', 'interview', 'offered', 'hired', 'rejected'),
+        defaultValue: 'submitted'
     }
+}, {
+    timestamps: true,
+    tableName: 'job_applications'
 });
 
-module.exports = mongoose.model('JobApplication', JobApplicationSchema);
+module.exports = JobApplication;

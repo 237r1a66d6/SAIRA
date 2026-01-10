@@ -1,52 +1,61 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     fullName: {
-        type: String,
-        required: true,
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     phoneNumber: {
-        type: String,
-        required: true,
-        match: /^[0-9]{10}$/
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            is: /^[0-9]{10}$/
+        }
     },
     qualification: {
-        type: String,
-        required: true,
-        enum: ['B.Ed', 'M.Ed', 'B.A', 'M.A', 'B.Sc', 'M.Sc', 'PhD', 'Other']
+        type: DataTypes.ENUM('B.Ed', 'M.Ed', 'B.A', 'M.A', 'B.Sc', 'M.Sc', 'PhD', 'Other'),
+        allowNull: false
     },
     email: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
         unique: true,
-        lowercase: true,
-        trim: true
+        validate: {
+            isEmail: true
+        }
     },
     password: {
-        type: String,
-        required: true,
-        minlength: 8
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            len: [8, 255]
+        }
     },
     registeredDate: {
-        type: Date,
-        default: Date.now
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
     progress: {
-        type: Number,
-        default: 0
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     enrolledCourses: {
-        type: Number,
-        default: 0
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     completedCourses: {
-        type: Number,
-        default: 0
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     inProgressCourses: {
-        type: Number,
-        default: 0
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     courses: [{
         courseName: String,
@@ -59,12 +68,12 @@ const userSchema = new mongoose.Schema({
         }
     }],
     status: {
-        type: String,
-        enum: ['active', 'inactive', 'suspended'],
-        default: 'active'
+        type: DataTypes.ENUM('active', 'inactive', 'suspended'),
+        defaultValue: 'active'
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    tableName: 'users'
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

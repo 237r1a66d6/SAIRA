@@ -4,7 +4,32 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const SchoolPartner = require('../models/SchoolPartner');
+const JobApplication = require('../models/JobApplication');
+const TeacherApplication = require('../models/TeacherApplication');
+const MentorApplication = require('../models/MentorApplication');
 const adminAuth = require('../middleware/auth');
+
+// Partner authentication middleware
+const partnerAuth = async (req, res, next) => {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'No authentication token' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        const partner = await SchoolPartner.findById(decoded.partner.id).select('-password');
+        
+        if (!partner || partner.status !== 'active') {
+            return res.status(401).json({ success: false, message: 'Partner not authorized' });
+        }
+
+        req.partner = partner;
+        next();
+    } catch (err) {
+        res.status(401).json({ success: false, message: 'Invalid token' });
+    }
+};
 
 // @route   POST /api/school-partner/login
 // @desc    School partner login
@@ -25,7 +50,7 @@ router.post('/login', [
         const { username, password } = req.body;
 
         // Find school partner
-        const partner = await SchoolPartner.findOne({ username, status: 'active' });
+        const partner = await SchoolPartner.findOne({ where: { username, status: 'active' } });
         if (!partner) {
             return res.status(400).json({ 
                 success: false, 
@@ -271,6 +296,72 @@ router.delete('/delete/:id', adminAuth, async (req, res) => {
         res.status(500).json({ 
             success: false, 
             message: 'Server error deleting school partner' 
+        });
+    }
+});
+
+// @route   GET /api/school-partner/applications/jobs
+// @desc    Get all job applications for partner dashboard
+// @access  Private (Partner)
+router.get('/applications/jobs', partnerAuth, async (req, res) => {
+    try {
+        const applications = await JobApplication.find()
+            .sort({ createdAt: -1 })
+            .select('-__v');
+
+        res.json({
+            success: true,
+            applications
+        });
+    } catch (err) {
+        console.error('Get job applications error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error fetching job applications' 
+        });
+    }
+});
+
+// @route   GET /api/school-partner/applications/teachers
+// @desc    Get all teacher applications for partner dashboard
+// @access  Private (Partner)
+router.get('/applications/teachers', partnerAuth, async (req, res) => {
+    try {
+        const applications = await TeacherApplication.find()
+            .sort({ createdAt: -1 })
+            .select('-__v');
+
+        res.json({
+            success: true,
+            applications
+        });
+    } catch (err) {
+        console.error('Get teacher applications error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error fetching teacher applications' 
+        });
+    }
+});
+
+// @route   GET /api/school-partner/applications/mentors
+// @desc    Get all mentor applications for partner dashboard
+// @access  Private (Partner)
+router.get('/applications/mentors', partnerAuth, async (req, res) => {
+    try {
+        const applications = await MentorApplication.find()
+            .sort({ createdAt: -1 })
+            .select('-__v');
+
+        res.json({
+            success: true,
+            applications
+        });
+    } catch (err) {
+        console.error('Get mentor applications error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error fetching mentor applications' 
         });
     }
 });

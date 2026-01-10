@@ -1,6 +1,11 @@
-// API Configuration
+// API Configuration with auto-detection
+const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:5000/api',
+    // Auto-switch between production and development
+    BASE_URL: isProd 
+        ? 'https://your-backend-url.onrender.com/api' // UPDATE THIS for production
+        : 'http://localhost:5000/api',
     ENDPOINTS: {
         // User endpoints
         USER_REGISTER: '/users/register',
@@ -195,3 +200,6 @@ function getAuthToken() {
 function removeAuthToken() {
     localStorage.removeItem('authToken');
 }
+
+// Export API_BASE_URL for ES6 modules
+export const API_BASE_URL = API_CONFIG.BASE_URL;
