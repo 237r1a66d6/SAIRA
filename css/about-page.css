@@ -191,6 +191,10 @@
     color: var(--primary-purple);
 }
 
+.who-section .card-description {
+    color: black !important;
+}
+
 /* Responsive grid adjustments */
 @media (max-width: 768px) {
     .card-grid {
@@ -217,7 +221,6 @@
 
 /* Purple Background Sections */
 .shift-section,
-.who-section,
 .proof-section {
     background: linear-gradient(135deg, var(--primary-purple), var(--dark-bg));
     position: relative;
@@ -245,7 +248,6 @@
 }
 
 .shift-section .section-title-main,
-.who-section .section-title-main,
 .proof-section .section-title-main {
     color: white;
 }
@@ -570,8 +572,8 @@
 
 /* CTA Final Section */
 .cta-final-section {
-    background: white;
-    color: var(--text-dark);
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-bg) 100%);
+    color: white;
     padding: 5rem 0;
     position: relative;
 }
@@ -581,7 +583,7 @@
 }
 
 .cta-final-section .section-title-main {
-    color: var(--primary-purple);
+    color: white;
 }
 
 .cta-final-section .container {
@@ -593,7 +595,7 @@
 .cta-description {
     font-size: 1.15rem;
     margin-bottom: 2.5rem;
-    color: var(--text-dark);
+    color: black !important;
     line-height: 1.8;
     max-width: 700px;
     margin-left: auto;
@@ -994,7 +996,7 @@
 }
 
 .who-section .section-title-main {
-    color: var(--primary-purple);
+    color: var(--primary-orange) !important;
 }
 
 /* Why We Exist Section */
@@ -1027,13 +1029,13 @@
 
 /* CTA Final Section */
 .cta-final-section {
-    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-bg) 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-bg) 100%) !important;
+    color: white !important;
     text-align: center;
 }
 
 .cta-final-section .section-title-main {
-    color: var(--primary-orange);
+    color: white !important;
     margin-bottom: 2rem;
 }
 
@@ -1056,4 +1058,70 @@
     .section-title-main {
         font-size: 2rem;
     }
+}
+
+/* Schools Page Specific Styles */
+.schools-who-section {
+    background: linear-gradient(135deg, var(--primary-purple), var(--dark-bg)) !important;
+}
+
+.schools-who-section .section-header-left {
+    text-align: center;
+}
+
+.schools-who-section .section-title-main {
+    color: var(--primary-orange) !important;
+}
+
+.schools-who-section .info-card,
+.schools-who-section .info-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.schools-who-section .card-title {
+    color: var(--primary-purple);
+}
+
+.schools-who-section .card-description {
+    color: black !important;
+}
+
+.schools-who-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.schools-why-section {
+    background: white !important;
+}
+
+.schools-why-section .section-header-left {
+    text-align: center;
+}
+
+.schools-why-section .section-title-main {
+    color: var(--primary-purple);
+}
+
+.schools-cta-final-section {
+    background: white !important;
+    color: var(--text-dark);
+    padding: 5rem 0;
+    position: relative;
+    text-align: center;
+}
+
+.schools-cta-final-section .section-label {
+    color: var(--primary-orange);
+}
+
+.schools-cta-final-section .section-title-main {
+    color: var(--primary-purple) !important;
+}
+
+.schools-cta-final-section .container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
 }
