@@ -192,8 +192,6 @@ academic ecosystem.
 
     <section class="about" id="process">
         <div class="container">
-            
-            <h2 class="section-title">Our Proven Process</h2>
             <p class="section-description">From concept to execution, see how we bring professional development to life in your teaching journey</p>
             
             <!-- Decorative Elements -->
@@ -207,43 +205,28 @@ academic ecosystem.
             
             <div class="process-grid">
                 <div class="process-step">
-                    <div class="process-illustration">
-                        <div class="process-lines"></div>
-                        <div class="process-target">
-                            <span class="process-plus"></span>
-                        </div>
-                        <div class="process-pin"></div>
-                    </div>
                     <div class="process-copy">
-                        <div class="step-number">01</div>
+                        <div class="process-badge">
+                            <span class="badge-number">01</span>
+                        </div>
                         <h3>Discovery & Analysis</h3>
                         <p>We delve deep into your teaching practices to identify areas ready for enhancement. We engage with you, analyze your workflows, and pinpoint where innovation can make a big impact.</p>
                     </div>
                 </div>
-                <div class="process-step reverse">
-                    <div class="process-illustration">
-                        <div class="process-lines"></div>
-                        <div class="process-target">
-                            <span class="process-plus"></span>
-                        </div>
-                        <div class="process-pin"></div>
-                    </div>
+                <div class="process-step">
                     <div class="process-copy">
-                        <div class="step-number">02</div>
+                        <div class="process-badge">
+                            <span class="badge-number">02</span>
+                        </div>
                         <h3>Development</h3>
                         <p>This is where we bring your tailored solutions to life. We'll design learning paths that fit seamlessly into your workflows, integrating advanced teaching strategies along the way.</p>
                     </div>
                 </div>
                 <div class="process-step">
-                    <div class="process-illustration">
-                        <div class="process-lines"></div>
-                        <div class="process-target">
-                            <span class="process-plus"></span>
-                        </div>
-                        <div class="process-pin"></div>
-                    </div>
                     <div class="process-copy">
-                        <div class="step-number">03</div>
+                        <div class="process-badge">
+                            <span class="badge-number">03</span>
+                        </div>
                         <h3>Deployment</h3>
                         <p>We smoothly roll out the solutions into your teaching practice, provide thorough training, and offer ongoing support to keep things running smoothly. We're here for you every step of the way.</p>
                     </div>
@@ -373,24 +356,49 @@ academic ecosystem.
             <p class="section-description">Answers to your most common questions about our professional development platform</p>
             <div class="faq-list">
                 <div class="faq-item">
-                    <h3 class="faq-question">What is SAIRA ACAD and how can it benefit my teaching?</h3>
-                    <p class="faq-answer">SAIRA ACAD is a professional development platform offering innovative courses, resources, and methodologies designed specifically for educators. We help teachers enhance their teaching effectiveness, improve student outcomes, and advance their careers through strategic academic innovation.</p>
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What is SAIRA ACAD and how can it benefit my teaching?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>SAIRA ACAD is a professional development platform offering innovative courses, resources, and methodologies designed specifically for educators. We help teachers enhance their teaching effectiveness, improve student outcomes, and advance their careers through strategic academic innovation.</p>
+                    </div>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">What courses does SAIRA ACAD offer?</h3>
-                    <p class="faq-answer">We offer comprehensive professional development courses across multiple subjects including Mathematics, Science, Languages, Social Studies, Arts, and Technology Integration. Each course is designed with modern pedagogical approaches and practical classroom applications.</p>
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What courses does SAIRA ACAD offer?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We offer comprehensive professional development courses across multiple subjects including Mathematics, Science, Languages, Social Studies, Arts, and Technology Integration. Each course is designed with modern pedagogical approaches and practical classroom applications.</p>
+                    </div>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">How long does it take to complete a course?</h3>
-                    <p class="faq-answer">Course duration varies depending on the subject and depth of content. Most courses can be completed in 8-12 weeks with flexible scheduling to accommodate your teaching commitments. You can learn at your own pace while maintaining your regular classroom responsibilities.</p>
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>How long does it take to complete a course?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Course duration varies depending on the subject and depth of content. Most courses can be completed in 8-12 weeks with flexible scheduling to accommodate your teaching commitments. You can learn at your own pace while maintaining your regular classroom responsibilities.</p>
+                    </div>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">What kind of support do you provide after enrollment?</h3>
-                    <p class="faq-answer">We provide continuous mentorship, access to expert educators, resource libraries, and a collaborative community of teachers. Our support includes regular check-ins, feedback on implementation, and ongoing professional development opportunities.</p>
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What kind of support do you provide after enrollment?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We provide continuous mentorship, access to expert educators, resource libraries, and a collaborative community of teachers. Our support includes regular check-ins, feedback on implementation, and ongoing professional development opportunities.</p>
+                    </div>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">How much does enrollment cost?</h3>
-                    <p class="faq-answer">We offer flexible pricing options to accommodate different needs and budgets. Contact us for detailed information about course fees, institutional partnerships, and available financial assistance options.</p>
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>How much does enrollment cost?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We offer flexible pricing options to accommodate different needs and budgets. Contact us for detailed information about course fees, institutional partnerships, and available financial assistance options.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -447,6 +455,22 @@ academic ecosystem.
     <script src="js/animations.js"></script>
     <script src="js/premium-interactions.js"></script>
     <script>
+        // FAQ Accordion Toggle
+        function toggleFaq(button) {
+            const faqItem = button.closest('.faq-item');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle current item
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
         // WhatsApp Contact Functionality
         document.getElementById('whatsappShareBtn').addEventListener('click', function(e) {
             e.preventDefault();

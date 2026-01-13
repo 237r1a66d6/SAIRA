@@ -71,16 +71,12 @@ async function handleRegister(event) {
                 console.log('Registration response:', response);
                 
                 if (response.success) {
-                    // Save token and user data
-                    saveAuthToken(response.token);
-                    setCurrentUser(response.user);
-                    
                     // Show success message
-                    showSuccess('successMessage', response.message || 'Registration successful!');
+                    showSuccess('successMessage', response.message || 'Registration successful! Redirecting to login page...');
                     
-                    // Redirect to dashboard after 1.5 seconds
+                    // Redirect to login page after 1.5 seconds
                     setTimeout(() => {
-                        window.location.href = 'user-dashboard.html';
+                        window.location.href = 'login.html';
                     }, 1500);
                     return;
                 }
@@ -129,15 +125,12 @@ async function handleRegister(event) {
         users.push(newUser);
         saveUsers(users);
         
-        // Set current user
-        setCurrentUser(newUser);
-        
         // Show success message
-        showSuccess('successMessage', 'Registration successful! Redirecting to dashboard...');
+        showSuccess('successMessage', 'Registration successful! Redirecting to login page...');
         
-        // Redirect to user dashboard
+        // Redirect to login page
         setTimeout(() => {
-            window.location.href = 'user-dashboard.html';
+            window.location.href = 'login.html';
         }, 1500);
         
     } catch (error) {
