@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                    <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-header">
+                    <h2>Teacher Login</h2>
+                    <p>Access your teacher dashboard</p>
+                </div>
+                
+                <form id="teacherLoginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large">Login</button>
+                </form>
+                
+                <div class="login-footer">
+                    <p>Don't have an account? <a href="register.html">Register Here</a></p>
+                    <p>Need help? <a href="contact-us.html">Contact Support</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/teacher-login.js"></script>
+</body>
+</html>
