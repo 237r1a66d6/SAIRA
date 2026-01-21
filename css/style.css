@@ -3932,8 +3932,16 @@ footer {
     margin: 0.5rem 0;
 }
 
+.contact-option-card a.btn {
+    color: var(--white);
+}
+
 .contact-option-card a:hover {
     color: var(--primary-purple);
+}
+
+.contact-option-card a.btn:hover {
+    color: var(--white);
 }
 
 .timings {
