@@ -4,8 +4,8 @@ const isProd = window.location.hostname !== 'localhost' && window.location.hostn
 const API_CONFIG = {
     // Auto-switch between production and development
     BASE_URL: isProd 
-        ? 'https://your-backend-url.onrender.com/api' // UPDATE THIS for production
-        : 'http://localhost:5000/api',
+        ? 'https://your-backend-url.onrender.com' // UPDATE THIS for production
+        : 'http://localhost:5000',
     ENDPOINTS: {
         // User endpoints
         USER_REGISTER: '/users/register',
@@ -201,5 +201,6 @@ function removeAuthToken() {
     localStorage.removeItem('authToken');
 }
 
-// Export API_BASE_URL for ES6 modules
-export const API_BASE_URL = API_CONFIG.BASE_URL;
+// Make API_BASE_URL globally available
+window.API_BASE_URL = API_CONFIG.BASE_URL;
+const API_BASE_URL = API_CONFIG.BASE_URL;

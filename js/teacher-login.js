@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
         // Clear previous error messages
@@ -14,34 +14,32 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage.textContent = '';
 
         // Basic validation
-        if (!username || !password) {
+        if (!email || !password) {
             showError('Please fill in all fields');
             return;
         }
 
         try {
-            // For now, we'll use a simple authentication
-            // In production, this should connect to your backend API
-            const response = await fetch(`${API_BASE_URL}/api/users/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
+            // Get teachers from localStorage
+            const teachers = getTeachers();
+            
+            // Find teacher with matching email and password
+            const teacher = teachers.find(t => t.email === email && t.password === password);
+            
+            if (teacher) {
+                // Store teacher data in localStorage
+                localStorage.setItem('currentTeacher', JSON.stringify(teacher));
+                localStorage.setItem('teacherToken', 'teacher-' + Date.now());
                 
-                // Store user data in localStorage
-                localStorage.setItem('teacherToken', data.token);
-                localStorage.setItem('teacherData', JSON.stringify(data.user));
+                // Show success message
+                showSuccess('Login successful! Redirecting...');
                 
-                // Redirect to teacher dashboard
-                window.location.href = 'teacher-dashboard.html';
+                // Redirect to teacher dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'teacher-dashboard.html';
+                }, 1000);
             } else {
-                const errorData = await response.json();
-                showError(errorData.message || 'Invalid username or password');
+                showError('Invalid email or password. Please check your credentials.');
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -52,5 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function showError(message) {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
+        errorMessage.style.color = '#dc3545';
+    }
+    
+    function showSuccess(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        errorMessage.style.color = '#28a745';
+    }
+    
+    function getTeachers() {
+        const teachers = localStorage.getItem('teachers');
+        return teachers ? JSON.parse(teachers) : [];
     }
 });

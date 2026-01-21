@@ -1,22 +1,36 @@
 // Careers Page Functions
 
 // Apply for a role
-function applyForRole(roleId) {
+function applyForRole(roleName) {
     const modal = document.getElementById('applicationModal');
     const positionField = document.getElementById('position');
     
-    // Set position based on role
-    const roleNames = {
-        'recruitment-specialist': 'Education Recruitment Specialist',
-        'content-writer': 'Educational Content Writer',
-        'bd-manager': 'Business Development Manager',
-        'software-engineer': 'Senior Software Engineer',
-        'career-counselor': 'Career Counselor',
-        'digital-marketing': 'Digital Marketing Specialist'
-    };
+    if (positionField) {
+        positionField.value = roleName;
+    }
     
-    if (positionField && roleNames[roleId]) {
-        positionField.value = roleNames[roleId];
+    modal.style.display = 'block';
+}
+
+// Apply for internship
+function applyForInternship() {
+    const modal = document.getElementById('applicationModal');
+    const positionField = document.getElementById('position');
+    
+    if (positionField) {
+        positionField.value = 'Internship Application';
+    }
+    
+    modal.style.display = 'block';
+}
+
+// Apply as general applicant
+function applyGeneral() {
+    const modal = document.getElementById('applicationModal');
+    const positionField = document.getElementById('position');
+    
+    if (positionField) {
+        positionField.value = 'General Application';
     }
     
     modal.style.display = 'block';

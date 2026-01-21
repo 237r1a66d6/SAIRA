@@ -48,6 +48,8 @@ function showTab(tabName) {
         loadAdminManagement();
     } else if (tabName === 'user-management') {
         loadUserManagement();
+    } else if (tabName === 'teacher-management') {
+        loadTeacherManagement();
     } else if (tabName === 'schools') {
         loadPartnerSchoolsDisplay();
     } else if (tabName === 'school-partners') {
@@ -56,6 +58,10 @@ function showTab(tabName) {
         loadSchoolAccounts();
     } else if (tabName === 'consultations') {
         loadConsultations();
+    } else if (tabName === 'partner-messages') {
+        loadPartnerMessages();
+    } else if (tabName === 'educator-messages') {
+        loadEducatorMessages();
     } else if (tabName === 'debug-storage') {
         refreshDebugData();
     }
@@ -66,10 +72,12 @@ function showTab(tabName) {
 async function loadDashboardData() {
     const admins = await fetchAdmins();
     const users = getUsers(); // users remain local for now
+    const teachers = getTeachers(); // teachers remain local for now
     const partners = await getSchoolPartners();
     
     document.getElementById('totalAdmins').textContent = admins.length;
     document.getElementById('totalUsers').textContent = users.length;
+    document.getElementById('totalTeachers').textContent = teachers.length;
     document.getElementById('totalPartnerSchools').textContent = partners.length;
 }
 
@@ -181,6 +189,18 @@ function setupModalListeners() {
     const editUserForm = document.getElementById('editUserForm');
     if (editUserForm) {
         editUserForm.addEventListener('submit', handleEditUser);
+    }
+    
+    // Add Teacher Form
+    const addTeacherForm = document.getElementById('addTeacherForm');
+    if (addTeacherForm) {
+        addTeacherForm.addEventListener('submit', handleAddTeacher);
+    }
+    
+    // Edit Teacher Form
+    const editTeacherForm = document.getElementById('editTeacherForm');
+    if (editTeacherForm) {
+        editTeacherForm.addEventListener('submit', handleEditTeacher);
     }
     
     // Edit Admin Form
@@ -689,6 +709,262 @@ function deleteUser(email) {
     });
 }
 
+// ===== TEACHER MANAGEMENT FUNCTIONS =====
+
+function showAddTeacherModal() {
+    const modal = document.getElementById('addTeacherModal');
+    modal.classList.add('show');
+    hideError('teacherModalError');
+}
+
+function closeAddTeacherModal() {
+    const modal = document.getElementById('addTeacherModal');
+    modal.classList.remove('show');
+    document.getElementById('addTeacherForm').reset();
+}
+
+function showEditTeacherModal() {
+    const modal = document.getElementById('editTeacherModal');
+    modal.classList.add('show');
+    hideError('editTeacherModalError');
+}
+
+function closeEditTeacherModal() {
+    const modal = document.getElementById('editTeacherModal');
+    modal.classList.remove('show');
+    document.getElementById('editTeacherForm').reset();
+}
+
+// Add Teacher Handler
+function handleAddTeacher(event) {
+    event.preventDefault();
+    hideError('teacherModalError');
+    
+    const fullName = document.getElementById('newTeacherName').value.trim();
+    const phoneNumber = document.getElementById('newTeacherPhone').value.trim();
+    const qualification = document.getElementById('newTeacherQualification').value;
+    const email = document.getElementById('newTeacherEmail').value.trim();
+    const password = document.getElementById('newTeacherPassword').value;
+    
+    // Validation
+    if (!fullName || !phoneNumber || !qualification || !email || !password) {
+        showError('teacherModalError', 'All fields are required.');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showError('teacherModalError', 'Please enter a valid email address.');
+        return;
+    }
+    
+    if (!isValidPhone(phoneNumber)) {
+        showError('teacherModalError', 'Please enter a valid 10-digit phone number.');
+        return;
+    }
+    
+    if (password.length < 8) {
+        showError('teacherModalError', 'Password must be at least 8 characters long.');
+        return;
+    }
+    
+    // Check if teacher exists
+    const teachers = getTeachers();
+    const existingTeacher = teachers.find(t => t.email === email);
+    
+    if (existingTeacher) {
+        showError('teacherModalError', 'Teacher with this email already exists.');
+        return;
+    }
+    
+    // Create new teacher
+    const newTeacher = {
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        qualification: qualification,
+        email: email,
+        password: password,
+        registeredDate: new Date().toISOString(),
+        progress: 0,
+        enrolledCourses: 0,
+        completedCourses: 0,
+        inProgressCourses: 0
+    };
+    
+    teachers.push(newTeacher);
+    saveTeachers(teachers);
+    
+    closeAddTeacherModal();
+    loadTeacherManagement();
+    loadDashboardData();
+    
+    showAdminNotification('Success', 'Teacher added successfully!');
+}
+
+// Edit Teacher Functions
+function editTeacher(email) {
+    const teachers = getTeachers();
+    const teacher = teachers.find(t => t.email === email);
+    
+    if (!teacher) {
+        showAdminNotification('Error', 'Teacher not found!', 'error');
+        return;
+    }
+    
+    // Fill form with teacher data
+    document.getElementById('editTeacherEmail').value = teacher.email;
+    document.getElementById('editTeacherName').value = teacher.fullName;
+    document.getElementById('editTeacherNewEmail').value = teacher.email;
+    document.getElementById('editTeacherPhone').value = teacher.phoneNumber;
+    document.getElementById('editTeacherQualification').value = teacher.qualification;
+    document.getElementById('editTeacherPassword').value = '';
+    document.getElementById('confirmEditTeacherPassword').value = '';
+    
+    showEditTeacherModal();
+}
+
+function handleEditTeacher(event) {
+    event.preventDefault();
+    hideError('editTeacherModalError');
+    
+    const oldEmail = document.getElementById('editTeacherEmail').value;
+    const fullName = document.getElementById('editTeacherName').value.trim();
+    const newEmail = document.getElementById('editTeacherNewEmail').value.trim();
+    const phoneNumber = document.getElementById('editTeacherPhone').value.trim();
+    const qualification = document.getElementById('editTeacherQualification').value;
+    const newPassword = document.getElementById('editTeacherPassword').value;
+    const confirmPassword = document.getElementById('confirmEditTeacherPassword').value;
+    
+    // Validation
+    if (!fullName || !newEmail || !phoneNumber || !qualification) {
+        showError('editTeacherModalError', 'All required fields must be filled.');
+        return;
+    }
+    
+    if (!isValidEmail(newEmail)) {
+        showError('editTeacherModalError', 'Please enter a valid email address.');
+        return;
+    }
+    
+    if (!isValidPhone(phoneNumber)) {
+        showError('editTeacherModalError', 'Please enter a valid 10-digit phone number.');
+        return;
+    }
+    
+    // Check if new email already exists (if email changed)
+    if (oldEmail !== newEmail) {
+        const teachers = getTeachers();
+        const existingTeacher = teachers.find(t => t.email === newEmail);
+        if (existingTeacher) {
+            showError('editTeacherModalError', 'A teacher with this email already exists.');
+            return;
+        }
+    }
+    
+    // Validate password if provided
+    if (newPassword) {
+        if (newPassword.length < 8) {
+            showError('editTeacherModalError', 'Password must be at least 8 characters long.');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showError('editTeacherModalError', 'Passwords do not match.');
+            return;
+        }
+    }
+    
+    // Update teacher
+    const teachers = getTeachers();
+    const teacherIndex = teachers.findIndex(t => t.email === oldEmail);
+    
+    if (teacherIndex === -1) {
+        showError('editTeacherModalError', 'Teacher not found!');
+        return;
+    }
+    
+    teachers[teacherIndex].fullName = fullName;
+    teachers[teacherIndex].email = newEmail;
+    teachers[teacherIndex].phoneNumber = phoneNumber;
+    teachers[teacherIndex].qualification = qualification;
+    
+    // Update password if provided
+    if (newPassword) {
+        teachers[teacherIndex].password = newPassword;
+    }
+    
+    saveTeachers(teachers);
+    
+    closeEditTeacherModal();
+    loadTeacherManagement();
+    loadDashboardData();
+    
+    showAdminNotification('Success', 'Teacher updated successfully!');
+}
+
+function deleteTeacher(email) {
+    showCustomConfirm(
+        'Are you sure you want to delete this teacher? This action cannot be undone.',
+        'Delete Teacher',
+        'Delete'
+    ).then(confirmed => {
+        if (!confirmed) return;
+        
+        const teachers = getTeachers();
+        const filteredTeachers = teachers.filter(t => t.email !== email);
+    
+    saveTeachers(filteredTeachers);
+    loadTeacherManagement();
+    loadDashboardData();
+    
+    showAdminNotification('Success', 'Teacher deleted successfully!');
+    });
+}
+
+// Load Teacher Management
+function loadTeacherManagement() {
+    const teachers = getTeachers();
+    const tbody = document.getElementById('teacherTableBody');
+    
+    if (!tbody) return;
+    
+    if (teachers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="no-data">No teachers found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = teachers.map(teacher => `
+        <tr>
+            <td>${escapeHtml(teacher.fullName)}</td>
+            <td>${escapeHtml(teacher.email)}</td>
+            <td>${escapeHtml(teacher.phoneNumber)}</td>
+            <td>${escapeHtml(teacher.qualification)}</td>
+            <td>
+                <div class="progress-info">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${teacher.progress || 0}%"></div>
+                    </div>
+                    <span class="progress-text">${teacher.progress || 0}%</span>
+                </div>
+            </td>
+            <td class="actions-cell">
+                <button onclick="editTeacher('${escapeHtml(teacher.email)}')" class="btn-icon" title="Edit">✏️</button>
+                <button onclick="deleteTeacher('${escapeHtml(teacher.email)}')" class="btn-icon" title="Delete">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Get/Save Teachers from localStorage
+function getTeachers() {
+    const teachers = localStorage.getItem('teachers');
+    return teachers ? JSON.parse(teachers) : [];
+}
+
+function saveTeachers(teachers) {
+    localStorage.setItem('teachers', JSON.stringify(teachers));
+}
+
+// ===== END TEACHER MANAGEMENT FUNCTIONS =====
+
 // Custom Confirmation Modal
 let confirmCallback = null;
 
@@ -1004,6 +1280,346 @@ function markAllAsRead() {
     
     loadConsultations();
     checkNewConsultations();
+}
+
+// Load Partner Messages
+async function loadPartnerMessages() {
+    const tbody = document.getElementById('partnerMessagesTableBody');
+    
+    if (!tbody) {
+        console.error('Partner messages table body not found');
+        return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="8" class="no-data">Loading partner messages...</td></tr>';
+    
+    try {
+        console.log('Fetching partner contacts from:', `${window.API_BASE_URL}/api/forms/contacts/partners`);
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts/partners`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Partner contacts result:', result);
+        
+        if (result.success && result.contacts) {
+            const contacts = result.contacts;
+            
+            if (contacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No partner messages yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = contacts.map(contact => `
+                <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
+                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                    <td>${contact.contactName}</td>
+                    <td>${contact.contactEmail}</td>
+                    <td>${contact.contactPhone}</td>
+                    <td>${contact.contactSubject}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${contact.contactMessage}
+                    </td>
+                    <td>
+                        <span class="status-badge status-${contact.status}">
+                            ${contact.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="replyToPartnerContact(${contact.id})" class="btn-icon btn-reply" title="Reply">
+                            ✉️ Reply
+                        </button>
+                        <button onclick="markPartnerContactAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read">
+                            ✓ Mark Read
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading partner messages</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading partner messages:', error);
+        tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error: ${error.message}</td></tr>`;
+    }
+}
+
+// Load Educator Messages
+async function loadEducatorMessages() {
+    const tbody = document.getElementById('educatorMessagesTableBody');
+    
+    if (!tbody) {
+        console.error('Educator messages table body not found');
+        return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="8" class="no-data">Loading educator messages...</td></tr>';
+    
+    try {
+        console.log('Fetching educator contacts from:', `${window.API_BASE_URL}/api/forms/contacts/educators`);
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts/educators`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Educator contacts result:', result);
+        
+        if (result.success && result.contacts) {
+            const contacts = result.contacts;
+            
+            if (contacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No educator messages yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = contacts.map(contact => `
+                <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
+                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                    <td>${contact.contactName}</td>
+                    <td>${contact.contactEmail}</td>
+                    <td>${contact.contactPhone}</td>
+                    <td>${contact.contactSubject}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${contact.contactMessage}
+                    </td>
+                    <td>
+                        <span class="status-badge status-${contact.status}">
+                            ${contact.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="replyToEducatorContact(${contact.id})" class="btn-icon btn-reply" title="Reply">
+                            ✉️ Reply
+                        </button>
+                        <button onclick="markEducatorContactAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read">
+                            ✓ Mark Read
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading educator messages</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading educator messages:', error);
+        tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error: ${error.message}</td></tr>`;
+    }
+}
+
+// Load Contact Messages (Legacy)
+async function loadContactMessages() {
+    const tbody = document.getElementById('contactMessagesTableBody');
+    
+    if (!tbody) {
+        console.error('Contact messages table body not found');
+        return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="8" class="no-data">Loading contact messages...</td></tr>';
+    
+    try {
+        console.log('Fetching contacts from:', `${window.API_BASE_URL}/api/forms/contacts`);
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts`);
+        console.log('Response status:', response.status);
+        
+        const result = await response.json();
+        console.log('Result:', result);
+        
+        if (result.success && result.contacts) {
+            const contacts = result.contacts;
+            
+            if (contacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-data">No contact messages yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = contacts.map(contact => `
+                <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
+                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <span class="type-badge ${contact.contactType === 'partner' ? 'type-partner' : 'type-educator'}">
+                            ${contact.contactType === 'partner' ? 'Partner' : 'Educator'}
+                        </span>
+                    </td>
+                    <td>${contact.contactName}</td>
+                    <td>${contact.contactEmail}</td>
+                    <td>${contact.contactPhone}</td>
+                    <td>${contact.contactSubject}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${contact.contactMessage}
+                    </td>
+                    <td>
+                        <span class="status-badge status-${contact.status}">
+                            ${contact.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="replyToContact(${contact.id})" class="btn-icon" title="Reply">✉️</button>
+                        <button onclick="markContactAsRead(${contact.id})" class="btn-icon" title="Mark as Read">✓</button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            console.error('Invalid response format:', result);
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading contact messages</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading contact messages:', error);
+        tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error: ${error.message}</td></tr>`;
+    }
+}
+
+// Reply to Contact
+async function replyToContact(contactId) {
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts`);
+        const result = await response.json();
+        
+        if (result.success && result.contacts) {
+            const contact = result.contacts.find(c => c.id === contactId);
+            
+            if (contact) {
+                document.getElementById('replyContactId').value = contactId;
+                document.getElementById('replyContactName').textContent = contact.contactName;
+                document.getElementById('replyContactEmail').textContent = contact.contactEmail;
+                document.getElementById('replyContactPhone').textContent = contact.contactPhone;
+                document.getElementById('replyContactSubject').textContent = contact.contactSubject;
+                document.getElementById('replyContactMessage').textContent = contact.contactMessage;
+                document.getElementById('replySubject').value = `Re: ${contact.contactSubject}`;
+                
+                document.getElementById('contactReplyModal').style.display = 'block';
+                
+                // Mark as read
+                await markContactAsRead(contactId);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching contact details:', error);
+        showAdminNotification('Error', 'Failed to load contact details', 'error');
+    }
+}
+
+// Close Contact Reply Modal
+function closeContactReplyModal() {
+    document.getElementById('contactReplyModal').style.display = 'none';
+    document.getElementById('contactReplyForm').reset();
+}
+
+// Handle Contact Reply Form Submission
+document.addEventListener('DOMContentLoaded', function() {
+    const replyForm = document.getElementById('contactReplyForm');
+    if (replyForm) {
+        replyForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const contactId = document.getElementById('replyContactId').value;
+            const email = document.getElementById('replyContactEmail').textContent;
+            const subject = document.getElementById('replySubject').value;
+            const message = document.getElementById('replyMessage').value;
+            
+            try {
+                // Send reply through backend API
+                const response = await fetch(`${API_BASE_URL}/api/forms/contact/${contactId}/reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email,
+                        subject,
+                        message
+                    })
+                });
+                
+                if (response.ok) {
+                    showAdminNotification('Reply Sent', 
+                        `Your reply has been sent to ${email}. Subject: ${subject}`, 
+                        'success');
+                    closeContactReplyModal();
+                    loadContactMessages();
+                } else {
+                    showAdminNotification('Error', 'Failed to send reply', 'error');
+                }
+            } catch (error) {
+                console.error('Error sending reply:', error);
+                showAdminNotification('Error', 'Failed to send reply', 'error');
+            }
+        });
+    }
+});
+
+// Mark Partner Contact as Read
+async function markPartnerContactAsRead(contactId) {
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contact/partner/${contactId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'read' })
+        });
+        
+        if (response.ok) {
+            loadPartnerMessages();
+        }
+    } catch (error) {
+        console.error('Error marking partner contact as read:', error);
+    }
+}
+
+// Mark Educator Contact as Read
+async function markEducatorContactAsRead(contactId) {
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contact/educator/${contactId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'read' })
+        });
+        
+        if (response.ok) {
+            loadEducatorMessages();
+        }
+    } catch (error) {
+        console.error('Error marking educator contact as read:', error);
+    }
+}
+
+// Reply functions for Partner and Educator contacts
+async function replyToPartnerContact(contactId) {
+    // TODO: Implement reply modal for partner contacts
+    console.log('Reply to partner contact:', contactId);
+}
+
+async function replyToEducatorContact(contactId) {
+    // TODO: Implement reply modal for educator contacts
+    console.log('Reply to educator contact:', contactId);
+}
+
+// Mark Contact as Read
+async function markContactAsRead(contactId) {
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/api/forms/contact/${contactId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'read' })
+        });
+        
+        if (response.ok) {
+            loadContactMessages();
+        }
+    } catch (error) {
+        console.error('Error marking contact as read:', error);
+    }
 }
 
 // Show admin notification
