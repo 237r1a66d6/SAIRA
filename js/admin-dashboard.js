@@ -4,6 +4,12 @@ let currentTab = 'overview';
 let adminListCache = [];
 let adminSource = 'local';
 
+// Simple notification function
+function showNotification(message, type = 'success') {
+    const alertType = type === 'success' ? 'success' : 'error';
+    alert(message);
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     // Check authentication
     const admin = checkAuth('admin');
@@ -207,6 +213,31 @@ function setupModalListeners() {
     const editAdminForm = document.getElementById('editAdminForm');
     if (editAdminForm) {
         editAdminForm.addEventListener('submit', handleEditAdmin);
+    }
+    
+    // Delete Confirmation Modal Buttons - Ensure they work
+    const deleteModal = document.getElementById('deleteConfirmModal');
+    if (deleteModal) {
+        const deleteBtn = deleteModal.querySelector('.btn-danger');
+        const cancelBtn = deleteModal.querySelector('.btn-secondary');
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Delete button clicked via event listener');
+                confirmDelete();
+            });
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Cancel button clicked via event listener');
+                closeDeleteConfirm();
+            });
+        }
     }
     
     // Add School Partner Form
@@ -1108,48 +1139,161 @@ function checkNewConsultations() {
     }
 }
 
-function loadConsultations() {
-    const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+async function loadConsultations() {
     const tbody = document.getElementById('consultationsTableBody');
     const notification = document.getElementById('consultationNotification');
     const notificationText = document.getElementById('notificationText');
     
-    const unreadCount = consultations.filter(c => !c.viewed).length;
-    
-    if (unreadCount > 0) {
-        notificationText.textContent = `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`;
-        notification.style.display = 'flex';
-    } else {
-        notification.style.display = 'none';
+    // Show loading state
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="9" class="no-data">Loading consultations...</td></tr>';
     }
     
-    if (consultations.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="no-data">No consultations yet</td></tr>';
-        return;
+    try {
+        // Fetch from backend
+        const response = await fetch(`${API_BASE_URL}/api/forms/consultations`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const consultations = data.consultations || [];
+            
+            // Store in localStorage for offline access
+            localStorage.setItem('consultations', JSON.stringify(consultations));
+            
+            // Count unread consultations
+            const unreadCount = consultations.filter(c => !c.viewed).length;
+            
+            if (notification && notificationText) {
+                if (unreadCount > 0) {
+                    notificationText.textContent = `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`;
+                    notification.style.display = 'flex';
+                } else {
+                    notification.style.display = 'none';
+                }
+            }
+            
+            if (!tbody) return;
+            
+            if (consultations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-data">No consultations yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = consultations.reverse().map(consultation => `
+                <tr style="${!consultation.viewed ? 'background-color: #fff8e1;' : ''}">
+                    <td>${(consultation._id || consultation.id || '').substring(0, 8)}...</td>
+                    <td>${consultation.consultName}</td>
+                    <td>${consultation.consultEmail}</td>
+                    <td>${consultation.consultPhone}</td>
+                    <td>${consultation.consultationType || 'General'}</td>
+                    <td>${new Date(consultation.consultDate).toLocaleDateString()}</td>
+                    <td>${consultation.consultTime}</td>
+                    <td>
+                        <span class="status-badge status-${consultation.status}">
+                            ${consultation.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="viewConsultation('${consultation._id || consultation.id}')" class="btn-icon" title="View">👁️</button>
+                        <button onclick="updateConsultationStatus('${consultation._id || consultation.id}', 'confirmed')" class="btn-icon" title="Confirm">✅</button>
+                        <button onclick="updateConsultationStatus('${consultation._id || consultation.id}', 'declined')" class="btn-icon" title="Decline">❌</button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            // Fallback to localStorage if API fails
+            const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+            const unreadCount = consultations.filter(c => !c.viewed).length;
+            
+            if (notification && notificationText) {
+                if (unreadCount > 0) {
+                    notificationText.textContent = `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`;
+                    notification.style.display = 'flex';
+                } else {
+                    notification.style.display = 'none';
+                }
+            }
+            
+            if (!tbody) return;
+            
+            if (consultations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-data">No consultations yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = consultations.reverse().map(consultation => `
+                <tr style="${!consultation.viewed ? 'background-color: #fff8e1;' : ''}">
+                    <td>${(consultation.id || '').substring(0, 8)}...</td>
+                    <td>${consultation.consultName}</td>
+                    <td>${consultation.consultEmail}</td>
+                    <td>${consultation.consultPhone}</td>
+                    <td>${consultation.consultationType || 'General'}</td>
+                    <td>${new Date(consultation.consultDate).toLocaleDateString()}</td>
+                    <td>${consultation.consultTime}</td>
+                    <td>
+                        <span class="status-badge status-${consultation.status}">
+                            ${consultation.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="viewConsultation('${consultation.id}')" class="btn-icon" title="View">👁️</button>
+                        <button onclick="updateConsultationStatus('${consultation.id}', 'confirmed')" class="btn-icon" title="Confirm">✅</button>
+                        <button onclick="updateConsultationStatus('${consultation.id}', 'declined')" class="btn-icon" title="Decline">❌</button>
+                        <button onclick="deleteConsultation('${consultation.id}')" class="btn-icon" title="Delete">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Load consultations error:', error);
+        // Fallback to localStorage
+        const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+        const unreadCount = consultations.filter(c => !c.viewed).length;
+        
+        if (notification && notificationText) {
+            if (unreadCount > 0) {
+                notificationText.textContent = `You have ${unreadCount} new consultation booking${unreadCount > 1 ? 's' : ''}`;
+                notification.style.display = 'flex';
+            } else {
+                notification.style.display = 'none';
+            }
+        }
+        
+        if (!tbody) return;
+        
+        if (consultations.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="no-data">No consultations yet</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = consultations.reverse().map(consultation => `
+            <tr style="${!consultation.viewed ? 'background-color: #fff8e1;' : ''}">
+                <td>${(consultation.id || '').substring(0, 8)}...</td>
+                <td>${consultation.consultName}</td>
+                <td>${consultation.consultEmail}</td>
+                <td>${consultation.consultPhone}</td>
+                <td>${consultation.consultationType || 'General'}</td>
+                <td>${new Date(consultation.consultDate).toLocaleDateString()}</td>
+                <td>${consultation.consultTime}</td>
+                <td>
+                    <span class="status-badge status-${consultation.status}">
+                        ${consultation.status}
+                    </span>
+                </td>
+                <td>
+                    <button onclick="viewConsultation('${consultation.id}')" class="btn-icon" title="View">👁️</button>
+                    <button onclick="updateConsultationStatus('${consultation.id}', 'confirmed')" class="btn-icon" title="Confirm">✅</button>
+                    <button onclick="updateConsultationStatus('${consultation.id}', 'declined')" class="btn-icon" title="Decline">❌</button>
+                    <button onclick="deleteConsultation('${consultation.id}')" class="btn-icon" title="Delete">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
     }
-    
-    tbody.innerHTML = consultations.reverse().map(consultation => `
-        <tr style="${!consultation.viewed ? 'background-color: #fff8e1;' : ''}">
-            <td>${consultation.id.substring(0, 8)}...</td>
-            <td>${consultation.consultName}</td>
-            <td>${consultation.consultEmail}</td>
-            <td>${consultation.consultPhone}</td>
-            <td>${consultation.consultationType || 'General'}</td>
-            <td>${new Date(consultation.consultDate).toLocaleDateString()}</td>
-            <td>${consultation.consultTime}</td>
-            <td>
-                <span class="status-badge status-${consultation.status}">
-                    ${consultation.status}
-                </span>
-            </td>
-            <td>
-                <button onclick="viewConsultation('${consultation.id}')" class="btn-icon" title="View">👁️</button>
-                <button onclick="updateConsultationStatus('${consultation.id}', 'confirmed')" class="btn-icon" title="Confirm">✅</button>
-                <button onclick="updateConsultationStatus('${consultation.id}', 'declined')" class="btn-icon" title="Decline">❌</button>
-                <button onclick="deleteConsultation('${consultation.id}')" class="btn-icon" title="Delete">🗑️</button>
-            </td>
-        </tr>
-    `).join('');
 }
 
 function viewConsultation(id) {
@@ -1243,34 +1387,68 @@ SAIRA ACAD Team
 let consultationToDelete = null;
 
 function deleteConsultation(id) {
+    console.log('Delete consultation called with ID:', id);
     consultationToDelete = id;
     const modal = document.getElementById('deleteConfirmModal');
-    modal.style.display = 'flex';
-    setTimeout(() => {
-        modal.classList.add('show');
-    }, 10);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    } else {
+        console.error('Modal not found');
+    }
 }
 
 function closeDeleteConfirm() {
+    console.log('Close delete confirm called');
     const modal = document.getElementById('deleteConfirmModal');
-    modal.classList.remove('show');
-    setTimeout(() => {
-        modal.style.display = 'none';
-        consultationToDelete = null;
-    }, 300);
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            consultationToDelete = null;
+        }, 300);
+    }
 }
 
 function confirmDelete() {
-    if (consultationToDelete) {
-        let consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
-        consultations = consultations.filter(c => c.id !== consultationToDelete);
-        localStorage.setItem('consultations', JSON.stringify(consultations));
-        
-        closeDeleteConfirm();
-        showAdminNotification('Deleted', 'Consultation deleted successfully');
-        loadConsultations();
-        checkNewConsultations();
+    console.log('Confirm delete called, ID:', consultationToDelete);
+    
+    if (!consultationToDelete) {
+        console.error('No consultation ID to delete');
+        return;
     }
+    
+    // Remove from localStorage and UI immediately
+    let consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+    console.log('Before delete, consultations:', consultations.length);
+    
+    consultations = consultations.filter(c => {
+        const itemId = c.id || c._id || '';
+        const match = String(itemId) !== String(consultationToDelete);
+        console.log(`Comparing ${itemId} with ${consultationToDelete}: ${match}`);
+        return match;
+    });
+    
+    console.log('After delete, consultations:', consultations.length);
+    localStorage.setItem('consultations', JSON.stringify(consultations));
+    
+    closeDeleteConfirm();
+    showAdminNotification('Deleted', 'Consultation removed');
+    loadConsultations();
+    checkNewConsultations();
+    
+    // Try to delete from backend in the background (don't wait for it)
+    fetch(`${API_BASE_URL}/api/forms/consultation/${consultationToDelete}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
+    }).then(res => res.json()).then(data => {
+        console.log('Backend delete response:', data);
+    }).catch(err => console.log('Backend delete failed:', err));
 }
 
 function markAllAsRead() {
@@ -1294,8 +1472,13 @@ async function loadPartnerMessages() {
     tbody.innerHTML = '<tr><td colspan="8" class="no-data">Loading partner messages...</td></tr>';
     
     try {
-        console.log('Fetching partner contacts from:', `${window.API_BASE_URL}/api/forms/contacts/partners`);
-        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts/partners`);
+        const token = localStorage.getItem('adminToken');
+        console.log('Fetching partner contacts from:', `${window.API_BASE_URL}/api/admin/contacts/partners`);
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         console.log('Response status:', response.status);
         
         if (!response.ok) {
@@ -1313,37 +1496,42 @@ async function loadPartnerMessages() {
                 return;
             }
             
-            tbody.innerHTML = contacts.map(contact => `
+            tbody.innerHTML = contacts.map(contact => {
+                // Truncate message to first 5 words
+                const words = contact.contactMessage.split(' ');
+                const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
+                
+                return `
                 <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
-                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
                     <td>${contact.contactName}</td>
                     <td>${contact.contactEmail}</td>
                     <td>${contact.contactPhone}</td>
                     <td>${contact.contactSubject}</td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                        ${contact.contactMessage}
+                    <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
+                        ${truncatedMessage}
                     </td>
                     <td>
                         <span class="status-badge status-${contact.status}">
                             ${contact.status}
                         </span>
                     </td>
-                    <td>
-                        <button onclick="replyToPartnerContact(${contact.id})" class="btn-icon btn-reply" title="Reply">
-                            ✉️ Reply
+                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                    <td style="display: flex; gap: 8px; align-items: center;">
+                        <button onclick="viewPartnerMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
+                            View
                         </button>
-                        <button onclick="markPartnerContactAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read">
-                            ✓ Mark Read
+                        <button onclick="markPartnerAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
+                            ✓
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading partner messages</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading partner messages</td></tr>';
         }
     } catch (error) {
         console.error('Error loading partner messages:', error);
-        tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data">Error: ${error.message}</td></tr>`;
     }
 }
 
@@ -1359,8 +1547,13 @@ async function loadEducatorMessages() {
     tbody.innerHTML = '<tr><td colspan="8" class="no-data">Loading educator messages...</td></tr>';
     
     try {
-        console.log('Fetching educator contacts from:', `${window.API_BASE_URL}/api/forms/contacts/educators`);
-        const response = await fetch(`${window.API_BASE_URL}/api/forms/contacts/educators`);
+        const token = localStorage.getItem('adminToken');
+        console.log('Fetching educator contacts from:', `${window.API_BASE_URL}/api/admin/contacts/educators`);
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         console.log('Response status:', response.status);
         
         if (!response.ok) {
@@ -1378,37 +1571,42 @@ async function loadEducatorMessages() {
                 return;
             }
             
-            tbody.innerHTML = contacts.map(contact => `
+            tbody.innerHTML = contacts.map(contact => {
+                // Truncate message to first 5 words
+                const words = contact.contactMessage.split(' ');
+                const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
+                
+                return `
                 <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
-                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
                     <td>${contact.contactName}</td>
                     <td>${contact.contactEmail}</td>
                     <td>${contact.contactPhone}</td>
                     <td>${contact.contactSubject}</td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                        ${contact.contactMessage}
+                    <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
+                        ${truncatedMessage}
                     </td>
                     <td>
                         <span class="status-badge status-${contact.status}">
                             ${contact.status}
                         </span>
                     </td>
-                    <td>
-                        <button onclick="replyToEducatorContact(${contact.id})" class="btn-icon btn-reply" title="Reply">
-                            ✉️ Reply
+                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                    <td style="display: flex; gap: 8px; align-items: center;">
+                        <button onclick="viewEducatorMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
+                            View
                         </button>
-                        <button onclick="markEducatorContactAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read">
-                            ✓ Mark Read
+                        <button onclick="markEducatorAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
+                            ✓
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading educator messages</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading educator messages</td></tr>';
         }
     } catch (error) {
         console.error('Error loading educator messages:', error);
-        tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data">Error: ${error.message}</td></tr>`;
     }
 }
 
@@ -2212,4 +2410,255 @@ function deleteSchoolPartner(id) {
             });
         }
     });
+}
+
+// View Partner Message Details
+function viewPartnerMessage(id, name, email, phone, subject, message, status) {
+    const modal = document.getElementById('messageViewModal');
+    const title = document.getElementById('messageViewTitle');
+    const content = document.getElementById('messageViewContent');
+    
+    title.textContent = '🤝 Partner Message Details';
+    content.innerHTML = `
+        <div style="background: linear-gradient(135deg, #f5f7ff 0%, #fff5f7 100%); padding: 20px; border-radius: 12px; border: 2px solid #e0e7ff; margin-bottom: 20px;">
+            <div style="display: grid; gap: 15px;">
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Name:</span>
+                    <span style="color: #333;">${name}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Email:</span>
+                    <span style="color: #333;">${email}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Phone:</span>
+                    <span style="color: #333;">${phone}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Subject:</span>
+                    <span style="color: #333;">${subject}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Status:</span>
+                    <span class="status-badge status-${status}">${status}</span>
+                </div>
+            </div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #e0e7ff;">
+            <h4 style="color: #6366f1; margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">📝 Message:</h4>
+            <p style="color: #555; line-height: 1.8; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${message}</p>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+// View Educator Message Details
+function viewEducatorMessage(id, name, email, phone, subject, message, status) {
+    const modal = document.getElementById('messageViewModal');
+    const title = document.getElementById('messageViewTitle');
+    const content = document.getElementById('messageViewContent');
+    
+    title.textContent = '👨‍🏫 Educator Message Details';
+    content.innerHTML = `
+        <div style="background: linear-gradient(135deg, #f5f7ff 0%, #fff5f7 100%); padding: 20px; border-radius: 12px; border: 2px solid #e0e7ff; margin-bottom: 20px;">
+            <div style="display: grid; gap: 15px;">
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Name:</span>
+                    <span style="color: #333;">${name}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Email:</span>
+                    <span style="color: #333;">${email}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Phone:</span>
+                    <span style="color: #333;">${phone}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Subject:</span>
+                    <span style="color: #333;">${subject}</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="font-weight: 600; color: #6366f1; min-width: 80px;">Status:</span>
+                    <span class="status-badge status-${status}">${status}</span>
+                </div>
+            </div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #e0e7ff;">
+            <h4 style="color: #6366f1; margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">📝 Message:</h4>
+            <p style="color: #555; line-height: 1.8; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${message}</p>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+// Close Message View Modal
+function closeMessageViewModal() {
+    const modal = document.getElementById('messageViewModal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+
+// Show Delete Confirmation Modal
+function showDeleteConfirmModal(message, onConfirm) {
+    const modal = document.getElementById('deleteConfirmModal');
+    const messageElement = document.getElementById('deleteConfirmMessage');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    
+    messageElement.textContent = message;
+    
+    // Remove any existing event listeners by cloning the button
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    
+    // Add the new event listener
+    newConfirmBtn.onclick = () => {
+        closeDeleteConfirmModal();
+        onConfirm();
+    };
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+// Close Delete Confirmation Modal
+function closeDeleteConfirmModal() {
+    const modal = document.getElementById('deleteConfirmModal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+
+// Delete Partner Message
+async function deletePartnerMessage(id) {
+    showDeleteConfirmModal(
+        'Are you sure you want to delete this partner message? This action cannot be undone.',
+        async () => {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Partner message deleted successfully!', 'success');
+                    loadPartnerMessages(); // Reload the table
+                } else {
+                    showNotification('Failed to delete message: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Delete partner message error:', error);
+                showNotification('Error deleting message. Please try again.', 'error');
+            }
+        }
+    );
+}
+
+// Delete Educator Message
+async function deleteEducatorMessage(id) {
+    showDeleteConfirmModal(
+        'Are you sure you want to delete this educator message? This action cannot be undone.',
+        async () => {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Educator message deleted successfully!', 'success');
+                    loadEducatorMessages(); // Reload the table
+                } else {
+                    showNotification('Failed to delete message: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Delete educator message error:', error);
+                showNotification('Error deleting message. Please try again.', 'error');
+            }
+        }
+    );
+}
+
+// Mark Partner Message as Read
+async function markPartnerAsRead(id) {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: 'read' })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showAdminNotification('Success', 'Message marked as read');
+            loadPartnerMessages();
+        } else {
+            showAdminNotification('Error', result.message || 'Failed to update status');
+        }
+    } catch (error) {
+        console.error('Error marking partner message as read:', error);
+        showAdminNotification('Error', 'Failed to update message status');
+    }
+}
+
+// Mark Educator Message as Read
+async function markEducatorAsRead(id) {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: 'read' })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showAdminNotification('Success', 'Message marked as read');
+            
+            // Update UI directly without reloading
+            const row = document.querySelector(`button[onclick="markEducatorAsRead(${id})"]`)?.closest('tr');
+            if (row) {
+                const statusCell = row.querySelector('.badge');
+                if (statusCell) {
+                    statusCell.textContent = 'Read';
+                    statusCell.className = 'badge badge-read';
+                }
+                
+                // Disable the tick button
+                const tickButton = row.querySelector(`button[onclick="markEducatorAsRead(${id})"]`);
+                if (tickButton) {
+                    tickButton.disabled = true;
+                    tickButton.style.opacity = '0.5';
+                    tickButton.style.cursor = 'not-allowed';
+                }
+            }
+        } else {
+            showAdminNotification('Error', result.message || 'Failed to update status');
+        }
+    } catch (error) {
+        console.error('Error marking educator message as read:', error);
+        showAdminNotification('Error', 'Failed to update message status');
+    }
 }

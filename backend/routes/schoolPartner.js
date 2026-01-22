@@ -18,7 +18,9 @@ const partnerAuth = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-        const partner = await SchoolPartner.findById(decoded.partner.id).select('-password');
+        const partner = await SchoolPartner.findByPk(decoded.partner.id, {
+            attributes: { exclude: ['password'] }
+        });
         
         if (!partner || partner.status !== 'active') {
             return res.status(401).json({ success: false, message: 'Partner not authorized' });
@@ -146,15 +148,13 @@ router.post('/create', adminAuth, [
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create new school partner
-        partner = new SchoolPartner({
+        partner = await SchoolPartner.create({
             schoolName,
             username: username.toLowerCase(),
             email: email.toLowerCase(),
             password: hashedPassword,
             createdBy: req.admin.id
         });
-
-        await partner.save();
 
         res.json({
             success: true,
@@ -181,9 +181,10 @@ router.post('/create', adminAuth, [
 // @access  Private (Admin)
 router.get('/all', adminAuth, async (req, res) => {
     try {
-        const partners = await SchoolPartner.find()
-            .select('-password')
-            .sort({ createdDate: -1 });
+        const partners = await SchoolPartner.findAll({
+            attributes: { exclude: ['password'] },
+            order: [['createdDate', 'DESC']]
+        });
 
         res.json({
             success: true,
@@ -205,7 +206,7 @@ router.put('/update/:id', adminAuth, async (req, res) => {
     try {
         const { schoolName, username, email, password } = req.body;
         
-        const partner = await SchoolPartner.findById(req.params.id);
+        const partner = await SchoolPartner.findByPk(req.params.id);
         if (!partner) {
             return res.status(404).json({ 
                 success: false, 
@@ -277,7 +278,7 @@ router.put('/update/:id', adminAuth, async (req, res) => {
 // @access  Private (Admin)
 router.delete('/delete/:id', adminAuth, async (req, res) => {
     try {
-        const partner = await SchoolPartner.findById(req.params.id);
+        const partner = await SchoolPartner.findByPk(req.params.id);
         if (!partner) {
             return res.status(404).json({ 
                 success: false, 
@@ -305,9 +306,9 @@ router.delete('/delete/:id', adminAuth, async (req, res) => {
 // @access  Private (Partner)
 router.get('/applications/jobs', partnerAuth, async (req, res) => {
     try {
-        const applications = await JobApplication.find()
-            .sort({ createdAt: -1 })
-            .select('-__v');
+        const applications = await JobApplication.findAll({
+            order: [['createdAt', 'DESC']]
+        });
 
         res.json({
             success: true,
@@ -327,9 +328,9 @@ router.get('/applications/jobs', partnerAuth, async (req, res) => {
 // @access  Private (Partner)
 router.get('/applications/teachers', partnerAuth, async (req, res) => {
     try {
-        const applications = await TeacherApplication.find()
-            .sort({ createdAt: -1 })
-            .select('-__v');
+        const applications = await TeacherApplication.findAll({
+            order: [['createdAt', 'DESC']]
+        });
 
         res.json({
             success: true,
@@ -349,9 +350,9 @@ router.get('/applications/teachers', partnerAuth, async (req, res) => {
 // @access  Private (Partner)
 router.get('/applications/mentors', partnerAuth, async (req, res) => {
     try {
-        const applications = await MentorApplication.find()
-            .sort({ createdAt: -1 })
-            .select('-__v');
+        const applications = await MentorApplication.findAll({
+            order: [['createdAt', 'DESC']]
+        });
 
         res.json({
             success: true,

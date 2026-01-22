@@ -10,6 +10,8 @@ const MentorApplication = require('../models/MentorApplication');
 const JobApplication = require('../models/JobApplication');
 const Contact = require('../models/Contact');
 const Consultation = require('../models/Consultation');
+const PartnerContact = require('../models/PartnerContact');
+const EducatorContact = require('../models/EducatorContact');
 
 // @route   POST /api/forms/enrollment
 // @desc    Submit enrollment for mentorship/training program
@@ -231,7 +233,7 @@ router.post('/job-application', upload.single('applicantResume'), async (req, re
 });
 
 // @route   POST /api/forms/contact
-// @desc    Submit contact form
+// @desc    Submit contact form (routes to separate tables based on type)
 // @access  Public
 router.post('/contact', async (req, res) => {
     try {
@@ -244,27 +246,90 @@ router.post('/contact', async (req, res) => {
             contactMessage
         } = req.body;
 
-        const contact = new Contact({
-            contactName,
-            contactEmail,
-            contactPhone,
-            contactType,
-            contactSubject,
-            contactMessage
-        });
+        // Route to appropriate table based on contactType
+        if (contactType === 'partner') {
+            // Check for duplicate email in PartnerContact
+            const existingPartner = await PartnerContact.findOne({ 
+                where: { contactEmail } 
+            });
 
-        await contact.save();
+            if (existingPartner) {
+                return res.json({
+                    success: true,
+                    duplicate: true,
+                    message: 'You have already submitted a message as a partner'
+                });
+            }
 
-        res.json({
-            success: true,
-            message: 'Contact form submitted successfully',
-            contactId: contact._id
-        });
+            const partnerContact = await PartnerContact.create({
+                contactName,
+                contactEmail,
+                contactPhone,
+                contactSubject,
+                contactMessage
+            });
+
+            return res.json({
+                success: true,
+                message: 'Partner contact form submitted successfully',
+                contactId: partnerContact.id,
+                contactType: 'partner'
+            });
+
+        } else if (contactType === 'educator') {
+            // Check for duplicate email in EducatorContact
+            const existingEducator = await EducatorContact.findOne({ 
+                where: { contactEmail } 
+            });
+
+            if (existingEducator) {
+                return res.json({
+                    success: true,
+                    duplicate: true,
+                    message: 'You have already submitted a message as an educator'
+                });
+            }
+
+            const educatorContact = await EducatorContact.create({
+                contactName,
+                contactEmail,
+                contactPhone,
+                contactSubject,
+                contactMessage
+            });
+
+            return res.json({
+                success: true,
+                message: 'Educator contact form submitted successfully',
+                contactId: educatorContact.id,
+                contactType: 'educator'
+            });
+
+        } else {
+            // Fallback to general Contact table if type is not specified
+            const contact = new Contact({
+                contactName,
+                contactEmail,
+                contactPhone,
+                contactType,
+                contactSubject,
+                contactMessage
+            });
+
+            await contact.save();
+
+            return res.json({
+                success: true,
+                message: 'Contact form submitted successfully',
+                contactId: contact._id
+            });
+        }
     } catch (error) {
         console.error('Contact form error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error submitting contact form'
+            message: 'Error submitting contact form',
+            error: error.message
         });
     }
 });
@@ -285,7 +350,7 @@ router.post('/consultation', async (req, res) => {
             consultTopic
         } = req.body;
 
-        const consultation = new Consultation({
+        const consultation = await Consultation.create({
             consultationType,
             consultName,
             consultEmail,
@@ -296,18 +361,67 @@ router.post('/consultation', async (req, res) => {
             consultTopic
         });
 
-        await consultation.save();
-
         res.json({
             success: true,
             message: 'Consultation booked successfully',
-            consultationId: consultation._id
+            consultationId: consultation.id
         });
     } catch (error) {
         console.error('Consultation booking error:', error);
         res.status(500).json({
             success: false,
             message: 'Error booking consultation'
+        });
+    }
+});
+
+// @route   DELETE /api/forms/consultation/:id
+// @desc    Delete a consultation
+// @access  Private (Admin)
+router.delete('/consultation/:id', async (req, res) => {
+    try {
+        const consultation = await Consultation.findByPk(req.params.id);
+        
+        if (!consultation) {
+            return res.status(404).json({
+                success: false,
+                message: 'Consultation not found'
+            });
+        }
+
+        await consultation.destroy();
+
+        res.json({
+            success: true,
+            message: 'Consultation deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete consultation error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting consultation'
+        });
+    }
+});
+
+// @route   GET /api/forms/consultations
+// @desc    Get all consultations (Admin)
+// @access  Private (Admin)
+router.get('/consultations', async (req, res) => {
+    try {
+        const consultations = await Consultation.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+        
+        res.json({
+            success: true,
+            consultations
+        });
+    } catch (error) {
+        console.error('Get consultations error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching consultations'
         });
     }
 });

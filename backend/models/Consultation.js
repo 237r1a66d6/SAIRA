@@ -1,47 +1,60 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const ConsultationSchema = new mongoose.Schema({
+const Consultation = sequelize.define('Consultation', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     consultationType: {
-        type: String,
-        required: true,
-        enum: ['school', 'teacher']
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isIn: [['school', 'teacher']]
+        }
     },
     consultName: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     consultEmail: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     consultPhone: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     consultOrg: {
-        type: String
+        type: DataTypes.STRING
     },
     consultDate: {
-        type: Date,
-        required: true
+        type: DataTypes.DATE,
+        allowNull: false
     },
     consultTime: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     consultTopic: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     status: {
-        type: String,
-        enum: ['scheduled', 'confirmed', 'completed', 'cancelled', 'rescheduled'],
-        default: 'scheduled'
+        type: DataTypes.STRING,
+        defaultValue: 'scheduled',
+        validate: {
+            isIn: [['scheduled', 'confirmed', 'completed', 'cancelled', 'rescheduled']]
+        }
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    viewed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
+}, {
+    timestamps: true,
+    tableName: 'consultations'
 });
 
-module.exports = mongoose.model('Consultation', ConsultationSchema);
+module.exports = Consultation;

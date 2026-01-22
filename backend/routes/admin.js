@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const Admin = require('../models/Admin');
 const User = require('../models/User');
+const PartnerContact = require('../models/PartnerContact');
+const EducatorContact = require('../models/EducatorContact');
 const adminAuth = require('../middleware/auth');
 
 // @route   POST /api/admin/login
@@ -85,7 +87,10 @@ router.post('/login', [
 // @access  Private (Admin only)
 router.get('/admins', adminAuth, async (req, res) => {
     try {
-        const admins = await Admin.find().select('-password').sort({ createdAt: -1 });
+        const admins = await Admin.findAll({
+            attributes: { exclude: ['password'] },
+            order: [['createdAt', 'DESC']]
+        });
         res.json({ success: true, count: admins.length, admins });
     } catch (error) {
         console.error('Get admins error:', error);
@@ -190,17 +195,18 @@ router.put('/admins/:id', adminAuth, [
             updates.password = await bcrypt.hash(updates.password, 10);
         }
 
-        const admin = await Admin.findByIdAndUpdate(
-            req.params.id,
-            updates,
-            { new: true, runValidators: true }
-        ).select('-password');
-
+        const admin = await Admin.findByPk(req.params.id);
         if (!admin) {
             return res.status(404).json({ success: false, message: 'Admin not found' });
         }
 
-        res.json({ success: true, message: 'Admin updated successfully', admin });
+        await admin.update(updates);
+        // Refetch without password
+        const updatedAdmin = await Admin.findByPk(req.params.id, {
+            attributes: { exclude: ['password'] }
+        });
+
+        res.json({ success: true, message: 'Admin updated successfully', admin: updatedAdmin });
     } catch (error) {
         console.error('Update admin error:', error);
         res.status(500).json({ success: false, message: 'Server error' });
@@ -212,7 +218,7 @@ router.put('/admins/:id', adminAuth, [
 // @access  Private (Admin only)
 router.delete('/admins/:id', adminAuth, async (req, res) => {
     try {
-        const admin = await Admin.findById(req.params.id);
+        const admin = await Admin.findByPk(req.params.id);
 
         if (!admin) {
             return res.status(404).json({ success: false, message: 'Admin not found' });
@@ -222,7 +228,7 @@ router.delete('/admins/:id', adminAuth, async (req, res) => {
             return res.status(400).json({ success: false, message: 'Default admin cannot be deleted' });
         }
 
-        await Admin.findByIdAndDelete(req.params.id);
+        await admin.destroy();
 
         res.json({ success: true, message: 'Admin deleted successfully' });
     } catch (error) {
@@ -236,7 +242,10 @@ router.delete('/admins/:id', adminAuth, async (req, res) => {
 // @access  Private (Admin only)
 router.get('/users', adminAuth, async (req, res) => {
     try {
-        const users = await User.find().select('-password').sort({ registeredDate: -1 });
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] },
+            order: [['registeredDate', 'DESC']]
+        });
         res.json({ 
             success: true, 
             count: users.length,
@@ -256,12 +265,13 @@ router.get('/users', adminAuth, async (req, res) => {
 // @access  Private (Admin only)
 router.get('/stats', adminAuth, async (req, res) => {
     try {
-        const totalUsers = await User.countDocuments();
-        const activeUsers = await User.countDocuments({ status: 'active' });
-        const recentUsers = await User.find()
-            .sort({ registeredDate: -1 })
-            .limit(5)
-            .select('-password');
+        const totalUsers = await User.count();
+        const activeUsers = await User.count({ where: { status: 'active' } });
+        const recentUsers = await User.findAll({
+            order: [['registeredDate', 'DESC']],
+            limit: 5,
+            attributes: { exclude: ['password'] }
+        });
 
         res.json({
             success: true,
@@ -295,18 +305,19 @@ router.put('/users/:id/status', adminAuth, async (req, res) => {
             });
         }
 
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            { status },
-            { new: true }
-        ).select('-password');
-
+        const user = await User.findByPk(req.params.id);
         if (!user) {
             return res.status(404).json({ 
                 success: false, 
                 message: 'User not found' 
             });
         }
+
+        await user.update({ status });
+        // Refetch without password
+        const updatedUser = await User.findByPk(req.params.id, {
+            attributes: { exclude: ['password'] }
+        });
 
         res.json({ 
             success: true, 
@@ -327,7 +338,7 @@ router.put('/users/:id/status', adminAuth, async (req, res) => {
 // @access  Private (Admin only)
 router.delete('/users/:id', adminAuth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findByPk(req.params.id);
         
         if (!user) {
             return res.status(404).json({ 
@@ -335,6 +346,8 @@ router.delete('/users/:id', adminAuth, async (req, res) => {
                 message: 'User not found' 
             });
         }
+
+        await user.destroy();
 
         res.json({ 
             success: true, 
@@ -345,6 +358,172 @@ router.delete('/users/:id', adminAuth, async (req, res) => {
         res.status(500).json({ 
             success: false, 
             message: 'Server error' 
+        });
+    }
+});
+
+// @route   GET /api/admin/contacts/partners
+// @desc    Get all partner contact messages
+// @access  Private (Admin only)
+router.get('/contacts/partners', adminAuth, async (req, res) => {
+    try {
+        const partnerContacts = await PartnerContact.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.json({
+            success: true,
+            contacts: partnerContacts
+        });
+    } catch (error) {
+        console.error('Get partner contacts error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+// @route   GET /api/admin/contacts/educators
+// @desc    Get all educator contact messages
+// @access  Private (Admin only)
+router.get('/contacts/educators', adminAuth, async (req, res) => {
+    try {
+        const educatorContacts = await EducatorContact.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.json({
+            success: true,
+            contacts: educatorContacts
+        });
+    } catch (error) {
+        console.error('Get educator contacts error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+// @route   PUT /api/admin/contacts/partners/:id/status
+// @desc    Update partner contact status
+// @access  Private (Admin only)
+router.put('/contacts/partners/:id/status', adminAuth, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const contact = await PartnerContact.findByPk(req.params.id);
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: 'Contact not found'
+            });
+        }
+
+        contact.status = status;
+        await contact.save();
+
+        res.json({
+            success: true,
+            message: 'Status updated successfully',
+            contact
+        });
+    } catch (error) {
+        console.error('Update partner contact status error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+// @route   PUT /api/admin/contacts/educators/:id/status
+// @desc    Update educator contact status
+// @access  Private (Admin only)
+router.put('/contacts/educators/:id/status', adminAuth, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const contact = await EducatorContact.findByPk(req.params.id);
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: 'Contact not found'
+            });
+        }
+
+        contact.status = status;
+        await contact.save();
+
+        res.json({
+            success: true,
+            message: 'Status updated successfully',
+            contact
+        });
+    } catch (error) {
+        console.error('Update educator contact status error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+// @route   DELETE /api/admin/contacts/partners/:id
+// @desc    Delete partner contact
+// @access  Private (Admin only)
+router.delete('/contacts/partners/:id', adminAuth, async (req, res) => {
+    try {
+        const contact = await PartnerContact.findByPk(req.params.id);
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: 'Contact not found'
+            });
+        }
+
+        await contact.destroy();
+
+        res.json({
+            success: true,
+            message: 'Partner contact deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete partner contact error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
+// @route   DELETE /api/admin/contacts/educators/:id
+// @desc    Delete educator contact
+// @access  Private (Admin only)
+router.delete('/contacts/educators/:id', adminAuth, async (req, res) => {
+    try {
+        const contact = await EducatorContact.findByPk(req.params.id);
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: 'Contact not found'
+            });
+        }
+
+        await contact.destroy();
+
+        res.json({
+            success: true,
+            message: 'Educator contact deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete educator contact error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
         });
     }
 });

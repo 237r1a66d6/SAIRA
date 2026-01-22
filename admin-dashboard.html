@@ -50,9 +50,13 @@
                     <span class="icon">🔑</span>
                     School Accounts
                 </button>
-                <button class="menu-item" onclick="showTab('consultations')">
-                    <span class="icon">📅</span>
-                    Consultations <span id="consultationBadge" class="notification-badge" style="display:none;"></span>
+                <button class="menu-item" onclick="showTab('partner-messages')">
+                    <span class="icon">🤝</span>
+                    Partner Messages <span id="partnerMessagesBadge" class="notification-badge" style="display:none;"></span>
+                </button>
+                <button class="menu-item" onclick="showTab('educator-messages')">
+                    <span class="icon">👨‍🏫</span>
+                    Educator Messages <span id="educatorMessagesBadge" class="notification-badge" style="display:none;"></span>
                 </button>
                 <button class="menu-item" onclick="showTab('services')">
                     <span class="icon">🛠️</span>
@@ -244,32 +248,60 @@
                 </div>
             </div>
 
-            <!-- Consultations Tab -->
-            <div id="consultations" class="tab-content">
-                <h2>Consultation Bookings</h2>
-                <div id="consultationNotification" class="notification-banner" style="display:none;">
-                    <span id="notificationText"></span>
-                    <button onclick="markAllAsRead()" class="btn btn-sm">Mark All as Read</button>
+            <!-- Partner Messages Tab -->
+            <div id="partner-messages" class="tab-content">
+                <h2>Partner Messages</h2>
+                <div id="partnerMessagesNotification" class="notification-banner" style="display:none;">
+                    <span id="partnerNotificationText"></span>
                 </div>
                 
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Type</th>
-                                <th>Date</th>
-                                <th>Time</th>
+                                <th>Subject</th>
+                                <th style="min-width: 100px; max-width: 120px;">Message</th>
                                 <th>Status</th>
+                                <th>Date</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="consultationsTableBody">
+                        <tbody id="partnerMessagesTableBody">
                             <tr>
-                                <td colspan="9" class="no-data">No consultations yet</td>
+                                <td colspan="8" class="no-data">No partner messages yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Educator Messages Tab -->
+            <div id="educator-messages" class="tab-content">
+                <h2>Educator Messages</h2>
+                <div id="educatorMessagesNotification" class="notification-banner" style="display:none;">
+                    <span id="educatorNotificationText"></span>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Subject</th>
+                                <th style="min-width: 100px; max-width: 120px;">Message</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="educatorMessagesTableBody">
+                            <tr>
+                                <td colspan="8" class="no-data">No educator messages yet</td>
                             </tr>
                         </tbody>
                     </table>
@@ -902,6 +934,38 @@
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="cancelConfirm()">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmModalBtn" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message View Modal -->
+    <div id="messageViewModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="messageViewTitle">Message Details</h3>
+                <button class="close-btn" onclick="closeMessageViewModal()">&times;</button>
+            </div>
+            <div style="padding: 25px;">
+                <div id="messageViewContent"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" onclick="closeMessageViewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
+                <h3>⚠️ Confirm Deletion</h3>
+            </div>
+            <div style="padding: 30px 25px;">
+                <p id="deleteConfirmMessage" style="color: #555; font-size: 16px; line-height: 1.6; margin: 0;"></p>
+            </div>
+            <div class="modal-actions" style="padding: 20px 25px; background: #f8f9fa; border-top: 1px solid #e0e7ff;">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteConfirmModal()" style="background: #6c757d;">Cancel</button>
+                <button type="button" class="btn" id="confirmDeleteBtn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">Delete</button>
             </div>
         </div>
     </div>

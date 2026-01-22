@@ -195,7 +195,9 @@ router.post('/login', [
 // @access  Private (add auth middleware in production)
 router.get('/profile/:id', async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-password');
+        const user = await User.findByPk(req.params.id, {
+            attributes: { exclude: ['password'] }
+        });
         if (!user) {
             return res.status(404).json({ 
                 success: false, 
@@ -219,12 +221,7 @@ router.put('/profile/:id', async (req, res) => {
     try {
         const { fullName, phoneNumber, qualification } = req.body;
         
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            { fullName, phoneNumber, qualification },
-            { new: true }
-        ).select('-password');
-
+        const user = await User.findByPk(req.params.id);
         if (!user) {
             return res.status(404).json({ 
                 success: false, 
@@ -232,10 +229,16 @@ router.put('/profile/:id', async (req, res) => {
             });
         }
 
+        await user.update({ fullName, phoneNumber, qualification });
+        // Refetch without password
+        const updatedUser = await User.findByPk(req.params.id, {
+            attributes: { exclude: ['password'] }
+        });
+
         res.json({ 
             success: true, 
             message: 'Profile updated successfully',
-            user 
+            user: updatedUser 
         });
     } catch (error) {
         console.error('Update profile error:', error);

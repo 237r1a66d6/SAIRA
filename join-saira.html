@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join SAIRA ACAD - Transform Education Together</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        @keyframes arrowPulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(5px);
+            }
+        }
+        
+        .process-arrow {
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -155,8 +171,8 @@
                 <h2 style="font-size: 2.5rem; font-weight: 700; color: #2d3748;">Our Working Process</h2>
             </div>
             
-            <div class="process-timeline" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
-                <div class="process-step" style="text-align: center;">
+            <div class="process-timeline" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; position: relative;">
+                <div class="process-step" style="text-align: center; position: relative;">
                     <div class="process-badge" style="width: 80px; height: 80px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f9a826" stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -165,18 +181,26 @@
                         </svg>
                     </div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: #2d3748; margin-bottom: 10px;">Planning</h3>
+                    <!-- Arrow 1 -->
+                    <div class="process-arrow" style="position: absolute; top: 70px; right: -30px; width: 30px; height: 2px; background: #f9a826; opacity: 0.5;">
+                        <div style="position: absolute; right: -8px; top: -4px; width: 0; height: 0; border-left: 8px solid #f9a826; border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                    </div>
                 </div>
 
-                <div class="process-step" style="text-align: center;">
+                <div class="process-step" style="text-align: center; position: relative;">
                     <div class="process-badge" style="width: 80px; height: 80px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f9a826" stroke-width="2">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                         </svg>
                     </div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: #2d3748; margin-bottom: 10px;">Analysis</h3>
+                    <!-- Arrow 2 -->
+                    <div class="process-arrow" style="position: absolute; top: 70px; right: -30px; width: 30px; height: 2px; background: #f9a826; opacity: 0.5; animation-delay: 0.3s;">
+                        <div style="position: absolute; right: -8px; top: -4px; width: 0; height: 0; border-left: 8px solid #f9a826; border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                    </div>
                 </div>
 
-                <div class="process-step" style="text-align: center;">
+                <div class="process-step" style="text-align: center; position: relative;">
                     <div class="process-badge" style="width: 80px; height: 80px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f9a826" stroke-width="2">
                             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -185,9 +209,13 @@
                         </svg>
                     </div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: #2d3748; margin-bottom: 10px;">Design</h3>
+                    <!-- Arrow 3 -->
+                    <div class="process-arrow" style="position: absolute; top: 70px; right: -30px; width: 30px; height: 2px; background: #f9a826; opacity: 0.5; animation-delay: 0.6s;">
+                        <div style="position: absolute; right: -8px; top: -4px; width: 0; height: 0; border-left: 8px solid #f9a826; border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                    </div>
                 </div>
 
-                <div class="process-step" style="text-align: center;">
+                <div class="process-step" style="text-align: center; position: relative;">
                     <div class="process-badge" style="width: 80px; height: 80px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f9a826" stroke-width="2">
                             <polyline points="16 18 22 12 16 6"></polyline>

@@ -44,7 +44,8 @@ async function handleAdminLogin(event) {
                 
                 if (response.success) {
                     // Save token and admin data
-                    saveAuthToken(response.token);
+                    localStorage.setItem('adminToken', response.token);  // Save as adminToken for dashboard
+                    localStorage.setItem('authToken', response.token);    // Also save as authToken for API calls
                     setCurrentAdmin(response.admin);
                     
                     // Redirect to admin dashboard

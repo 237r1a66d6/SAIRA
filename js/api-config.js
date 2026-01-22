@@ -8,25 +8,25 @@ const API_CONFIG = {
         : 'http://localhost:5000',
     ENDPOINTS: {
         // User endpoints
-        USER_REGISTER: '/users/register',
-        USER_LOGIN: '/users/login',
-        USER_PROFILE: '/users/profile',
+        USER_REGISTER: '/api/users/register',
+        USER_LOGIN: '/api/users/login',
+        USER_PROFILE: '/api/users/profile',
         
         // Admin endpoints
-        ADMIN_LOGIN: '/admin/login',
-        ADMIN_USERS: '/admin/users',
-        ADMIN_STATS: '/admin/stats',
-        ADMIN_USER_STATUS: '/admin/users',
-        ADMIN_LIST: '/admin/admins',
-        ADMIN_CREATE: '/admin/admins',
-        ADMIN_UPDATE: '/admin/admins',
+        ADMIN_LOGIN: '/api/admin/login',
+        ADMIN_USERS: '/api/admin/users',
+        ADMIN_STATS: '/api/admin/stats',
+        ADMIN_USER_STATUS: '/api/admin/users',
+        ADMIN_LIST: '/api/admin/admins',
+        ADMIN_CREATE: '/api/admin/admins',
+        ADMIN_UPDATE: '/api/admin/admins',
         
         // School Partner endpoints
-        PARTNER_LOGIN: '/school-partner/login',
-        PARTNER_CREATE: '/school-partner/create',
-        PARTNER_LIST: '/school-partner/all',
-        PARTNER_UPDATE: '/school-partner/update',
-        PARTNER_DELETE: '/school-partner/delete'
+        PARTNER_LOGIN: '/api/school-partner/login',
+        PARTNER_CREATE: '/api/school-partner/create',
+        PARTNER_LIST: '/api/school-partner/all',
+        PARTNER_UPDATE: '/api/school-partner/update',
+        PARTNER_DELETE: '/api/school-partner/delete'
     }
 };
 
@@ -35,7 +35,8 @@ const api = {
     // Make API request
     async request(endpoint, options = {}) {
         const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-        const token = localStorage.getItem('authToken');
+        // Check for adminToken first (for admin routes), then fall back to authToken
+        const token = localStorage.getItem('adminToken') || localStorage.getItem('authToken');
         
         const config = {
             headers: {
