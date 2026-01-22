@@ -1,5 +1,13 @@
 // Careers Page Functions
 
+function getApiBaseUrl() {
+    if (window.API_BASE_URL) return window.API_BASE_URL;
+    const prod = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    if (!prod) return 'http://localhost:5000';
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
 // Apply for a role
 function applyForRole(roleName) {
     const modal = document.getElementById('applicationModal');
@@ -48,7 +56,7 @@ async function handleJobApplication(event) {
     const formData = new FormData(event.target);
     
     try {
-        const response = await fetch('/api/job-applications', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/job-application`, {
             method: 'POST',
             body: formData
         });

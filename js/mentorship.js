@@ -1,5 +1,13 @@
 // Mentorship & Training Page Functions
 
+function getApiBaseUrl() {
+    if (window.API_BASE_URL) return window.API_BASE_URL;
+    const prod = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    if (!prod) return 'http://localhost:5000';
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
 // Show enrollment modal
 function showEnrollmentForm() {
     document.getElementById('enrollmentModal').style.display = 'block';
@@ -27,7 +35,7 @@ async function handleEnrollment(event) {
     const data = Object.fromEntries(formData);
     
     try {
-        const response = await fetch('/api/enrollments', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/enrollment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

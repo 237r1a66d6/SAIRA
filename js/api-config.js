@@ -1,11 +1,29 @@
 // API Configuration with auto-detection
 const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
+function normalizeBaseUrl(url) {
+    return String(url || '').trim().replace(/\/+$/, '');
+}
+
+function getDefaultProdApiBaseUrl() {
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
+function resolveApiBaseUrl() {
+    // Optional override hooks for deployments
+    // 1) window.SAIRA_API_BASE_URL (you can set this in a small inline script)
+    // 2) localStorage.SAIRA_API_BASE_URL (quick testing without redeploy)
+    const override = window.SAIRA_API_BASE_URL || localStorage.getItem('SAIRA_API_BASE_URL');
+    const base = override ? normalizeBaseUrl(override) : (isProd ? getDefaultProdApiBaseUrl() : 'http://localhost:5000');
+
+    // This file's ENDPOINTS include the '/api' prefix, so ensure BASE_URL is the origin (no trailing '/api')
+    return normalizeBaseUrl(base.replace(/\/api$/i, ''));
+}
+
 const API_CONFIG = {
     // Auto-switch between production and development
-    BASE_URL: isProd 
-        ? 'https://your-backend-url.onrender.com' // UPDATE THIS for production
-        : 'http://localhost:5000',
+    BASE_URL: resolveApiBaseUrl(),
     ENDPOINTS: {
         // User endpoints
         USER_REGISTER: '/api/users/register',
