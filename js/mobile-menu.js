@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const mobileButtons = navButtons.cloneNode(true);
         mobileButtons.classList.add('mobile');
         containernav.appendChild(mobileButtons);
+        
+        // Store reference to mobile buttons
+        window.mobileButtonsElement = mobileButtons;
     }
     
     // Insert toggle button before nav-buttons
@@ -47,9 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add show class after a brief delay for animation
         if (navMenu.classList.contains('mobile-active')) {
-            setTimeout(() => navMenu.classList.add('show'), 10);
+            setTimeout(() => {
+                navMenu.classList.add('show');
+                if (window.mobileButtonsElement) {
+                    window.mobileButtonsElement.classList.add('show');
+                }
+            }, 10);
         } else {
             navMenu.classList.remove('show');
+            if (window.mobileButtonsElement) {
+                window.mobileButtonsElement.classList.remove('show');
+            }
         }
     }
 
@@ -58,6 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileToggle.classList.remove('active');
         navMenu.classList.remove('mobile-active', 'show');
         overlay.classList.remove('active');
+        if (window.mobileButtonsElement) {
+            window.mobileButtonsElement.classList.remove('show');
+        }
         document.body.style.overflow = '';
     }
 
