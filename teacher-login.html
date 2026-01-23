@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                        <p class="tagline">Guiding Academic Excellence</p>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">Home</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-box">
+                <h2>Teacher Login</h2>
+                <p class="auth-subtitle">Login to access your teacher dashboard</p>
+                
+                <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; color: #1976D2; font-size: 0.9rem;">
+                        📌 <strong>Note:</strong> Teacher accounts must be created by an administrator. Please contact the admin to create your account in the Admin Dashboard → Teachers Management section.
+                    </p>
+                </div>
+                
+                <form id="teacherLoginForm" class="auth-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="username">Email *</label>
+                        <input type="email" id="username" name="username" required placeholder="Enter your email" autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
+                    </div>
+
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="contact-us.html">Contact Us</a></p>
+                    <p class="admin-link"><a href="contact-us.html">Contact Support</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/teacher-login.js"></script>
+</body>
+</html>

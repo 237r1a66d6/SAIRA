@@ -1,11 +1,30 @@
 // Production-ready API Configuration
 const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
+function normalizeBaseUrl(url) {
+    return String(url || '').trim().replace(/\/+$/, '');
+}
+
+function getDefaultProdApiBaseUrl() {
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}/api`;
+}
+
+function resolveApiBaseUrl() {
+    // Optional override hooks for deployments
+    // 1) window.SAIRA_API_BASE_URL
+    // 2) localStorage.SAIRA_API_BASE_URL
+    const override = window.SAIRA_API_BASE_URL || localStorage.getItem('SAIRA_API_BASE_URL');
+    const base = override ? normalizeBaseUrl(override) : (isProd ? getDefaultProdApiBaseUrl() : 'http://localhost:5000/api');
+
+    // This file's ENDPOINTS do NOT include '/api', so ensure BASE_URL ends with '/api'
+    const normalized = normalizeBaseUrl(base);
+    return /\/api$/i.test(normalized) ? normalized : `${normalized}/api`;
+}
+
 const API_CONFIG = {
     // Automatically use production or development URL
-    BASE_URL: isProd 
-        ? 'https://your-backend-url.onrender.com/api' // UPDATE THIS for production
-        : 'http://localhost:5000/api',
+    BASE_URL: resolveApiBaseUrl(),
     
     ENDPOINTS: {
         // User endpoints
@@ -46,13 +65,15 @@ const API_CONFIG = {
 const api = {
     async request(endpoint, options = {}) {
         const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-        
+
+        const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
         const defaultOptions = {
+            ...options,
             headers: {
-                'Content-Type': 'application/json',
+                ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
                 ...options.headers
-            },
-            ...options
+            }
         };
 
         // Add auth token if available

@@ -65,29 +65,67 @@
                 </div>
                 
                 <div class="hero-visual" style="position: relative; height: 500px;">
-                    <!-- Orbit Background Image -->
-                    <img src="assets/orbit.png" alt="" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: auto; max-width: 550px; z-index: 1;">
+                    <!-- Decorative background shape -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 450px; background: radial-gradient(circle, rgba(184, 163, 232, 0.25) 0%, rgba(249, 168, 38, 0.1) 70%); border-radius: 50%; filter: blur(40px);"></div>
+                    
+                    <!-- Organic shape -->
+                    <svg style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; height: 420px; opacity: 0.2;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#b8a3e8" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.2,73.1,42.5C64.8,55.8,53.8,67.8,40.3,75.2C26.8,82.6,10.8,85.4,-4.3,82.9C-19.4,80.4,-33.7,72.6,-46.5,63.9C-59.3,55.2,-70.6,45.6,-77.8,33.4C-85,21.2,-88.1,6.4,-86.8,-7.9C-85.5,-22.2,-79.8,-36,-70.8,-47.9C-61.8,-59.8,-49.5,-69.8,-36.1,-77.3C-22.7,-84.8,-8.1,-89.8,4.9,-87.5C17.9,-85.2,30.6,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
+                    </svg>
+                    
+                    <!-- Decorative dots with light rings -->
+                    <!-- Top left orange dot -->
+                    <div style="position: absolute; top: 8%; left: 10%;">
+                        <div style="width: 8px; height: 8px; background: #f9a826; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Left side dot with ring -->
+                    <div style="position: absolute; top: 35%; left: 5%;">
+                        <div style="width: 30px; height: 30px; border: 1.5px solid rgba(184, 163, 232, 0.3); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                        <div style="width: 6px; height: 6px; background: #b8a3e8; border-radius: 50%; position: relative; z-index: 2; margin: 12px;"></div>
+                    </div>
+                    
+                    <!-- Bottom left purple dot -->
+                    <div style="position: absolute; bottom: 18%; left: 12%;">
+                        <div style="width: 7px; height: 7px; background: #5a4794; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Right side orange dot -->
+                    <div style="position: absolute; top: 52%; right: 8%;">
+                        <div style="width: 8px; height: 8px; background: #f7b84d; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Bottom right dot with ring -->
+                    <div style="position: absolute; bottom: 32%; right: 15%;">
+                        <div style="width: 28px; height: 28px; border: 1.5px solid rgba(249, 168, 38, 0.3); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                        <div style="width: 7px; height: 7px; background: #f9a826; border-radius: 50%; position: relative; z-index: 2; margin: 10.5px;"></div>
+                    </div>
+                    
+                    <!-- Top right area dot -->
+                    <div style="position: absolute; top: 25%; right: 18%;">
+                        <div style="width: 6px; height: 6px; background: #e8dcff; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
                     
                     <!-- Floating Cards -->
-                    <div style="position: absolute; top: 20%; right: 5%; background: white; padding: 18px 28px; border-radius: 15px; box-shadow: 0 12px 35px rgba(61, 47, 124, 0.2); display: flex; align-items: center; gap: 15px; animation: float 3s ease-in-out infinite; z-index: 2;">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(184, 163, 232, 0.2) 0%, rgba(184, 163, 232, 0.05) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.3rem;">🤝</span>
+                    <div style="position: absolute; top: 20%; right: 15%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite;">
+                        <div style="width: 35px; height: 35px; background: rgba(184, 163, 232, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">🏫</span>
                         </div>
-                        <span style="font-size: 1rem; font-weight: 600; color: #3d2f7c;">Academic Partnership</span>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Academic Partnership</span>
                     </div>
                     
-                    <div style="position: absolute; top: 42%; left: 2%; background: white; padding: 18px 28px; border-radius: 15px; box-shadow: 0 12px 35px rgba(61, 47, 124, 0.2); display: flex; align-items: center; gap: 15px; animation: float 3s ease-in-out infinite 0.5s; z-index: 2;">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(184, 163, 232, 0.2) 0%, rgba(184, 163, 232, 0.05) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.3rem;">💬</span>
+                    <div style="position: absolute; top: 45%; left: 10%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite 0.5s;">
+                        <div style="width: 35px; height: 35px; background: rgba(184, 163, 232, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">✓</span>
                         </div>
-                        <span style="font-size: 1rem; font-weight: 600; color: #3d2f7c;">Continuous Support</span>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Continuous Support</span>
                     </div>
                     
-                    <div style="position: absolute; bottom: 18%; right: 15%; background: white; padding: 18px 28px; border-radius: 15px; box-shadow: 0 12px 35px rgba(61, 47, 124, 0.2); display: flex; align-items: center; gap: 15px; animation: float 3s ease-in-out infinite 1s; z-index: 2;">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(249, 184, 77, 0.2) 0%, rgba(249, 184, 77, 0.05) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.3rem;">🎓</span>
+                    <div style="position: absolute; bottom: 20%; right: 20%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite 1s;">
+                        <div style="width: 35px; height: 35px; background: rgba(249, 184, 77, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">👥</span>
                         </div>
-                        <span style="font-size: 1rem; font-weight: 600; color: #3d2f7c;">Classroom-Ready</span>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Classroom-Ready</span>
                     </div>
                         <span style="font-size: 0.95rem; font-weight: 600; color: #3a3a3a;"></span>
                     </div>
@@ -108,30 +146,26 @@
         <div class="logo-slider-wrapper">
             <div class="logo-slider-track">
                 <div class="logo-slide">
-                    <img src="assets/Solitare International School.png" alt="Solitaire International School">
-                    <img src="assets/The Westfield International School.png" alt="The Westfield International School">
-                    <img src="assets/sattva International School.png" alt="Sattva International School">
-                    <img src="assets/The Brightvilli School.png" alt="The Brightvilli School">
-                    <img src="assets/Solitare International School.png" alt="Solitaire International School">
-                    <img src="assets/The Westfield International School.png" alt="The Westfield International School">
-                    <img src="assets/sattva International School.png" alt="Sattva International School">
-                    <img src="assets/The Brightvilli School.png" alt="The Brightvilli School">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools">
+                    <img src="assets/westfield.png" alt="Westfield Logo">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools">
+                    <img src="assets/westfield.png" alt="Westfield Logo">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo">
                 </div>
                 <div class="logo-slide">
-                    <img src="assets/Solitare International School.png" alt="Solitaire International School">
-                    <img src="assets/The Westfield International School.png" alt="The Westfield International School">
-                    <img src="assets/sattva International School.png" alt="Sattva International School">
-                    <img src="assets/The Brightvilli School.png" alt="The Brightvilli School">
-                    <img src="assets/Solitare International School.png" alt="Solitaire International School">
-                    <img src="assets/The Westfield International School.png" alt="The Westfield International School">
-                    <img src="assets/sattva International School.png" alt="Sattva International School">
-                    <img src="assets/The Brightvilli School.png" alt="The Brightvilli School">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools">
+                    <img src="assets/westfield.png" alt="Westfield Logo">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools">
+                    <img src="assets/westfield.png" alt="Westfield Logo">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo">
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="about-saira" style="background: linear-gradient(135deg, #5a4794 0%, #7b61b8 100%); padding: 80px 0;">
+    <section class="about-saira">
         <div class="container">
             <div class="about-saira-content">
                 <div class="about-saira-text">
@@ -227,12 +261,16 @@ We believe in long-term academic partnerships that actually improve classrooms.<
         <div class="container">
             <div style="max-width: 1100px; margin: 0 auto;">
                 <div style="text-align: center; margin-bottom: 50px;">
+                    <div style="display: inline-flex; align-items: center; gap: 15px; background: rgba(61, 47, 124, 0.1); padding: 15px 30px; border-radius: 50px; margin-bottom: 30px;">
+                        <span style="font-size: 2.5rem;">🏫</span>
+                        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; color: var(--primary-purple);">Schools</h3>
+                    </div>
                     <h2 style="font-size: 2.8rem; font-weight: 700; margin-bottom: 20px; color: var(--primary-purple);">Saira for Schools</h2>
                     <p style="font-size: 1.3rem; line-height: 1.8; color: #555; font-weight: 500;">Academic partnership for consistent teaching quality.</p>
                 </div>
                 
-                <div style="text-align: center; max-width: 900px; margin: 0 auto 40px;">
-                    <p style="font-size: 1.1rem; line-height: 1.9; margin-bottom: 15px; color: #555;">
+                <div style="text-align: left; max-width: 900px; margin: 0 auto 40px;">
+                    <p style="font-size: 1.1rem; line-height: 1.9; margin-bottom: 30px; color: #555;">
                         Schools invest in professional development, but often see limited long-term impact.
                     </p>
                     <p style="font-size: 1.1rem; line-height: 1.9; margin-bottom: 40px; color: #555;">

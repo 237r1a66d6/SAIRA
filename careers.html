@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Careers - SAIRA ACAD</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
 </head>
 <body>
     <div class="containernav">
@@ -17,17 +19,17 @@
         </div>
         <div class="nav-menu">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="services.html" class="nav-link">Services</a>
-            <a href="index.html#benefits" class="nav-link">Benefits</a>
-            <a href="index.html#faq" class="nav-link">FAQ</a>
-            <a href="contact-us.html" class="nav-link">Contact</a>
+            <a href="schools-page.html" class="nav-link">Schools</a>
+            <a href="join-saira.html" class="nav-link">Teachers</a>
+            <a href="careers.html" class="nav-link">Careers</a>
+            <a href="contact-us.html" class="nav-link">Contact Us</a>
             <div class="dropdown">
                 <button class="dropdown-btn nav-link">About <span class="dropdown-arrow">▼</span></button>
                 <div class="dropdown-content">
                     <a href="about-us.html">About Us</a>
-                    <a href="mentorship-training.html">Mentorship</a>
+                    <a href="mentorship-training.html" style="display: none;">Mentorship</a>
                     <a href="success-stories.html">Success Stories</a>
-                    <a href="resources.html">Resources</a>
+                    <a href="resources.html" style="display: none;">Resources</a>
                 </div>
             </div>
         </div>
@@ -40,90 +42,108 @@
     <section class="page-header">
         <div class="container">
             <h1 class="page-title">Careers at SAIRA ACAD</h1>
-            <p class="page-subtitle">Join Our Mission to Transform Education</p>
+            <p class="page-subtitle">Shape the Future of Education with Us</p>
         </div>
     </section>
 
-    <!-- Why Join Us -->
+    <!-- Career Overview -->
     <section class="content-section">
         <div class="container">
-            <h2 class="section-heading text-center">Why Join SAIRA ACAD?</h2>
-            <p class="section-subtitle text-center">Be Part of Something Meaningful</p>
+            <div class="career-intro text-center">
+                <h2 class="section-heading">Build Your Career While Making an Impact</h2>
+                <p class="section-subtitle">At SAIRA ACAD, we offer diverse opportunities for passionate individuals who want to contribute to educational excellence. Whether you're looking for a full-time role, an internship, or want to share your expertise as a mentor, we have a place for you.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Internships Section -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <div class="section-header-with-icon">
+                <div class="section-icon">🎓</div>
+                <h2 class="section-heading">Internships</h2>
+            </div>
+            <p class="section-subtitle text-center">Kick-Start Your Career in Education Technology</p>
             
             <div class="two-column-layout">
                 <div class="content-text">
-                    <h3>Make a Real Impact</h3>
-                    <p>At SAIRA ACAD, you're not just building a career—you're transforming the educational landscape. 
-                    Every day, our team connects talented educators with forward-thinking schools, creates learning opportunities 
-                    through mentorship programs, and empowers individuals to reach their full potential.</p>
+                    <h3>Why Intern with Us?</h3>
+                    <p>Our internship program is designed to give you real-world experience in the EdTech sector. You'll work on meaningful projects, learn from experienced professionals, and gain insights into how education and technology intersect.</p>
                     
-                    <h4>What Makes Us Different:</h4>
+                    <h4>What You'll Get:</h4>
                     <ul class="feature-list">
-                        <li><strong>Purpose-Driven Work:</strong> Your efforts directly impact education quality and teacher careers</li>
-                        <li><strong>Growth Opportunities:</strong> Continuous learning and clear career progression paths</li>
-                        <li><strong>Innovative Culture:</strong> Work with cutting-edge technology in the EdTech space</li>
-                        <li><strong>Collaborative Environment:</strong> Join a passionate team of education enthusiasts</li>
-                        <li><strong>Work-Life Balance:</strong> Flexible work arrangements and supportive policies</li>
-                        <li><strong>Competitive Benefits:</strong> Market-leading compensation and comprehensive benefits</li>
+                        <li>Hands-on experience in education technology</li>
+                        <li>Mentorship from industry experts</li>
+                        <li>Certificate of completion</li>
+                        <li>Stipend for full-time internships</li>
+                        <li>Potential for full-time employment</li>
+                        <li>Networking opportunities in the EdTech sector</li>
                     </ul>
+                    
+                    <h4>Available Internship Areas:</h4>
+                    <ul class="feature-list">
+                        <li><strong>Content Development:</strong> Create educational materials and blog posts</li>
+                        <li><strong>Recruitment Support:</strong> Assist with teacher-school matching</li>
+                        <li><strong>Digital Marketing:</strong> Social media, SEO, and content marketing</li>
+                        <li><strong>Software Development:</strong> Work on platform features (Full-stack/Frontend/Backend)</li>
+                        <li><strong>Business Development:</strong> Research and outreach to schools</li>
+                        <li><strong>Operations:</strong> Process optimization and data management</li>
+                    </ul>
+                    
+                    <h4>Eligibility:</h4>
+                    <p>Current students or recent graduates (within 1 year) from any recognized university. Duration: 2-6 months.</p>
+                    
+                    <button class="btn btn-primary btn-large" onclick="applyForInternship()">Apply for Internship</button>
                 </div>
                 <div class="content-image">
-                    <img src="assets/teacher-collaboration.jpg" alt="Team at SAIRA ACAD" />
+                    <div class="internship-benefits-box">
+                        <h3>Internship Benefits</h3>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">💰</span>
+                            <div>
+                                <h4>Competitive Stipend</h4>
+                                <p>Monthly stipend for full-time interns</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">📚</span>
+                            <div>
+                                <h4>Learning & Growth</h4>
+                                <p>Access to courses and training programs</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">🏆</span>
+                            <div>
+                                <h4>Recognition</h4>
+                                <p>Certificate and letter of recommendation</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">🚀</span>
+                            <div>
+                                <h4>Career Launch</h4>
+                                <p>Pre-placement offer opportunities</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Company Culture -->
-    <section class="content-section bg-light">
-        <div class="container">
-            <h2 class="section-heading text-center">Our Culture & Values</h2>
-            
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon">🎯</div>
-                    <h3>Mission-Driven</h3>
-                    <p>We're passionate about improving education and empowering educators. Every decision we make aligns with our mission to create better learning environments.</p>
-                </div>
-
-                <div class="value-card">
-                    <div class="value-icon">🚀</div>
-                    <h3>Innovation First</h3>
-                    <p>We embrace new ideas and technologies. Experimentation is encouraged, and we celebrate both successes and learning from failures.</p>
-                </div>
-
-                <div class="value-card">
-                    <div class="value-icon">🤝</div>
-                    <h3>Collaboration</h3>
-                    <p>We believe in the power of teamwork. Diverse perspectives make us stronger, and we support each other to achieve collective goals.</p>
-                </div>
-
-                <div class="value-card">
-                    <div class="value-icon">🌱</div>
-                    <h3>Continuous Growth</h3>
-                    <p>Learning never stops here. We invest in our team's professional development through training, mentorship, and growth opportunities.</p>
-                </div>
-
-                <div class="value-card">
-                    <div class="value-icon">💎</div>
-                    <h3>Excellence</h3>
-                    <p>We set high standards and strive for quality in everything we do. Excellence is our habit, not our occasional act.</p>
-                </div>
-
-                <div class="value-card">
-                    <div class="value-icon">❤️</div>
-                    <h3>Empathy</h3>
-                    <p>We put ourselves in others' shoes—whether it's our teachers, schools, or team members. Understanding drives better solutions.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Open Roles -->
+    <!-- Open Roles Section -->
     <section class="content-section">
         <div class="container">
-            <h2 class="section-heading text-center">Open Positions</h2>
-            <p class="section-subtitle text-center">Find Your Next Opportunity</p>
+            <div class="section-header-with-icon">
+                <div class="section-icon">💼</div>
+                <h2 class="section-heading">Open Roles</h2>
+            </div>
+            <p class="section-subtitle text-center">Join Our Team Full-Time</p>
+            
+            <div class="roles-intro text-center">
+                <p>We're looking for talented, passionate individuals to join our growing team. If you're excited about transforming education and want to make a real difference, explore our current openings below.</p>
+            </div>
             
             <div class="jobs-grid">
                 <div class="job-card">
@@ -131,45 +151,25 @@
                         <h3>Education Recruitment Specialist</h3>
                         <span class="job-badge">Full-Time</span>
                     </div>
-                    <div class="job-location">📍 Bangalore / Remote</div>
-                    <div class="job-department">Department: Recruitment</div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Bangalore / Remote</div>
+                        <div class="job-department">🏢 Recruitment</div>
+                        <div class="job-experience">⏱️ 2+ years</div>
+                    </div>
                     <p class="job-description">
-                        Work directly with schools and teachers to facilitate successful placements. Requires excellent 
-                        communication skills and understanding of educational hiring processes.
+                        Connect exceptional teachers with outstanding schools. You'll manage the end-to-end recruitment 
+                        process, build relationships, and ensure the perfect match between educators and institutions.
                     </p>
                     <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
+                        <strong>What We're Looking For:</strong>
                         <ul>
                             <li>2+ years in recruitment (education sector preferred)</li>
-                            <li>Strong relationship management skills</li>
-                            <li>Understanding of educational institutions</li>
-                            <li>Bachelor's degree required</li>
+                            <li>Excellent communication and relationship management</li>
+                            <li>Understanding of educational institutions and hiring</li>
+                            <li>Bachelor's degree in any discipline</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" onclick="applyForRole('recruitment-specialist')">Apply Now</button>
-                </div>
-
-                <div class="job-card">
-                    <div class="job-header">
-                        <h3>Educational Content Writer</h3>
-                        <span class="job-badge">Full-Time</span>
-                    </div>
-                    <div class="job-location">📍 Remote</div>
-                    <div class="job-department">Department: Content & Marketing</div>
-                    <p class="job-description">
-                        Create compelling content for our blog, resources, and training materials. Help teachers and schools 
-                        through informative and engaging educational content.
-                    </p>
-                    <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
-                        <ul>
-                            <li>3+ years of content writing experience</li>
-                            <li>Background in education (teaching/EdTech)</li>
-                            <li>Excellent writing and research skills</li>
-                            <li>Portfolio of published work</li>
-                        </ul>
-                    </div>
-                    <button class="btn btn-primary" onclick="applyForRole('content-writer')">Apply Now</button>
+                    <button class="btn btn-primary" onclick="applyForRole('Education Recruitment Specialist')">Apply Now</button>
                 </div>
 
                 <div class="job-card">
@@ -177,45 +177,77 @@
                         <h3>Business Development Manager</h3>
                         <span class="job-badge">Full-Time</span>
                     </div>
-                    <div class="job-location">📍 Mumbai / Delhi / Bangalore</div>
-                    <div class="job-department">Department: Business Development</div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Mumbai / Delhi / Bangalore</div>
+                        <div class="job-department">🏢 Business Development</div>
+                        <div class="job-experience">⏱️ 5+ years</div>
+                    </div>
                     <p class="job-description">
-                        Identify and onboard new school partnerships. Build relationships with educational institutions 
-                        and drive business growth in assigned territories.
+                        Drive growth by onboarding new school partnerships. Build strategic relationships with educational 
+                        institutions and expand our presence across regions.
                     </p>
                     <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
+                        <strong>What We're Looking For:</strong>
                         <ul>
-                            <li>5+ years in B2B sales/business development</li>
-                            <li>Experience in education/EdTech sector</li>
-                            <li>Proven track record of meeting targets</li>
+                            <li>5+ years in B2B sales or business development</li>
+                            <li>Experience in education/EdTech sector preferred</li>
+                            <li>Proven track record of achieving targets</li>
                             <li>Strong negotiation and presentation skills</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" onclick="applyForRole('bd-manager')">Apply Now</button>
+                    <button class="btn btn-primary" onclick="applyForRole('Business Development Manager')">Apply Now</button>
                 </div>
 
                 <div class="job-card">
                     <div class="job-header">
-                        <h3>Senior Software Engineer</h3>
+                        <h3>Full Stack Developer</h3>
                         <span class="job-badge">Full-Time</span>
                     </div>
-                    <div class="job-location">📍 Bangalore / Hybrid</div>
-                    <div class="job-department">Department: Technology</div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Bangalore / Hybrid</div>
+                        <div class="job-department">🏢 Technology</div>
+                        <div class="job-experience">⏱️ 3+ years</div>
+                    </div>
                     <p class="job-description">
-                        Build and scale our platform that connects schools with teachers. Work on matching algorithms, 
-                        user management systems, and data analytics features.
+                        Build and scale our platform that connects thousands of teachers with schools. Work on matching 
+                        algorithms, user dashboards, and innovative features.
                     </p>
                     <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
+                        <strong>What We're Looking For:</strong>
                         <ul>
-                            <li>4+ years full-stack development experience</li>
-                            <li>Proficiency in Node.js, React, MongoDB</li>
-                            <li>Experience with scalable architecture</li>
-                            <li>Problem-solving and team collaboration</li>
+                            <li>3+ years full-stack development experience</li>
+                            <li>Proficiency in Node.js, React, MongoDB/SQL</li>
+                            <li>Experience with REST APIs and cloud platforms</li>
+                            <li>Strong problem-solving abilities</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" onclick="applyForRole('software-engineer')">Apply Now</button>
+                    <button class="btn btn-primary" onclick="applyForRole('Full Stack Developer')">Apply Now</button>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3>Content Writer (Education)</h3>
+                        <span class="job-badge">Full-Time</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Remote</div>
+                        <div class="job-department">🏢 Content & Marketing</div>
+                        <div class="job-experience">⏱️ 2+ years</div>
+                    </div>
+                    <p class="job-description">
+                        Create engaging content for blogs, resources, and training materials. Help teachers and schools 
+                        through informative and inspiring educational content.
+                    </p>
+                    <div class="job-requirements">
+                        <strong>What We're Looking For:</strong>
+                        <ul>
+                            <li>2+ years of content writing experience</li>
+                            <li>Background in education (teaching/EdTech preferred)</li>
+                            <li>Excellent writing, editing, and research skills</li>
+                            <li>Portfolio of published work</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="applyForRole('Content Writer')">Apply Now</button>
                 </div>
 
                 <div class="job-card">
@@ -223,22 +255,25 @@
                         <h3>Career Counselor</h3>
                         <span class="job-badge">Full-Time</span>
                     </div>
-                    <div class="job-location">📍 Pune / Remote</div>
-                    <div class="job-department">Department: Teacher Success</div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Pune / Remote</div>
+                        <div class="job-department">🏢 Teacher Success</div>
+                        <div class="job-experience">⏱️ 3+ years</div>
+                    </div>
                     <p class="job-description">
-                        Guide teachers through career decisions, provide counseling on professional development, and 
-                        help them navigate job opportunities aligned with their goals.
+                        Guide teachers through career transitions and professional development. Provide counseling to help 
+                        educators find opportunities aligned with their goals and aspirations.
                     </p>
                     <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
+                        <strong>What We're Looking For:</strong>
                         <ul>
                             <li>Master's in Psychology/Counseling/Education</li>
-                            <li>3+ years counseling experience</li>
-                            <li>Understanding of teaching career paths</li>
-                            <li>Empathetic and patient approach</li>
+                            <li>3+ years counseling or career guidance experience</li>
+                            <li>Understanding of teaching career paths in India</li>
+                            <li>Empathetic, patient, and excellent listener</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" onclick="applyForRole('career-counselor')">Apply Now</button>
+                    <button class="btn btn-primary" onclick="applyForRole('Career Counselor')">Apply Now</button>
                 </div>
 
                 <div class="job-card">
@@ -246,93 +281,215 @@
                         <h3>Digital Marketing Specialist</h3>
                         <span class="job-badge">Full-Time</span>
                     </div>
-                    <div class="job-location">📍 Remote</div>
-                    <div class="job-department">Department: Marketing</div>
+                    <div class="job-meta">
+                        <div class="job-location">📍 Remote</div>
+                        <div class="job-department">🏢 Marketing</div>
+                        <div class="job-experience">⏱️ 3+ years</div>
+                    </div>
                     <p class="job-description">
-                        Drive online presence through SEO, SEM, social media, and content marketing. Help teachers and 
-                        schools discover our platform and services.
+                        Drive our online presence through SEO, SEM, social media, and content marketing. Help teachers and 
+                        schools discover how we can support their success.
                     </p>
                     <div class="job-requirements">
-                        <strong>Key Requirements:</strong>
+                        <strong>What We're Looking For:</strong>
                         <ul>
                             <li>3+ years in digital marketing</li>
-                            <li>Expertise in Google Ads, SEO, social media</li>
-                            <li>Analytics and data-driven approach</li>
-                            <li>EdTech experience is a plus</li>
+                            <li>Expertise in Google Ads, SEO, social media marketing</li>
+                            <li>Data-driven approach with analytics experience</li>
+                            <li>EdTech or education sector experience is a plus</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary" onclick="applyForRole('digital-marketing')">Apply Now</button>
+                    <button class="btn btn-primary" onclick="applyForRole('Digital Marketing Specialist')">Apply Now</button>
+                </div>
+            </div>
+            
+            <div class="no-match-cta text-center">
+                <h3>Don't See a Perfect Match?</h3>
+                <p>We're always looking for talented individuals. Send us your resume and we'll keep you in mind for future opportunities.</p>
+                <button class="btn btn-secondary btn-large" onclick="applyGeneral()">Submit General Application</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join as Mentor/Trainer Section -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <div class="section-header-with-icon">
+                <div class="section-icon">👨‍🏫</div>
+                <h2 class="section-heading">Join as Mentor / Trainer</h2>
+            </div>
+            <p class="section-subtitle text-center">Share Your Expertise on a Flexible Basis</p>
+            
+            <div class="mentor-cta-section">
+                <div class="two-column-layout">
+                    <div class="content-text">
+                        <h3>Become Part of Our Expert Network</h3>
+                        <p>Are you an experienced educator or education professional with deep expertise in your field? 
+                        Join our network of mentors and trainers to guide the next generation of teachers. This is ideal 
+                        for those who want to contribute to teacher development without committing to full-time employment.</p>
+                        
+                        <h4>What Does a SAIRA ACAD Mentor Do?</h4>
+                        <ul class="feature-list">
+                            <li>Conduct training sessions on specialized teaching methods</li>
+                            <li>Provide one-on-one mentorship to aspiring teachers</li>
+                            <li>Deliver webinars and workshops on education best practices</li>
+                            <li>Review and provide feedback on lesson plans and teaching strategies</li>
+                            <li>Share real-world classroom experiences and insights</li>
+                        </ul>
+                        
+                        <h4>Benefits of Being a Mentor:</h4>
+                        <ul class="feature-list">
+                            <li><strong>Flexible Schedule:</strong> Choose your availability and commitment level</li>
+                            <li><strong>Competitive Compensation:</strong> Earn per session or engagement</li>
+                            <li><strong>Make an Impact:</strong> Shape future educators and teaching practices</li>
+                            <li><strong>Expand Your Network:</strong> Connect with education professionals nationwide</li>
+                            <li><strong>Professional Recognition:</strong> Build your reputation as an expert</li>
+                            <li><strong>Access Resources:</strong> Use our platform and materials for your sessions</li>
+                        </ul>
+                        
+                        <h4>Who Can Apply?</h4>
+                        <ul class="feature-list">
+                            <li>10+ years of teaching or education leadership experience</li>
+                            <li>Specialized expertise in subject areas or pedagogy</li>
+                            <li>Strong communication and presentation skills</li>
+                            <li>Passion for developing future educators</li>
+                            <li>Available for minimum 4 hours per month</li>
+                        </ul>
+                        
+                        <div class="mentor-types">
+                            <h4>Mentor Categories:</h4>
+                            <div class="mentor-type-grid">
+                                <div class="mentor-type-card">
+                                    <h5>📚 Subject Experts</h5>
+                                    <p>Math, Science, Languages, Social Studies specialists</p>
+                                </div>
+                                <div class="mentor-type-card">
+                                    <h5>🎓 Pedagogy Specialists</h5>
+                                    <p>Teaching methods, classroom management experts</p>
+                                </div>
+                                <div class="mentor-type-card">
+                                    <h5>🎨 Special Education</h5>
+                                    <p>Arts, Sports, Special needs education</p>
+                                </div>
+                                <div class="mentor-type-card">
+                                    <h5>👔 Education Leadership</h5>
+                                    <p>Principals, coordinators, curriculum designers</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="work-with-us.html" class="btn btn-primary btn-large">Apply as Mentor / Trainer</a>
+                    </div>
+                    <div class="content-image">
+                        <div class="mentor-info-box">
+                            <h3>Mentor Program Overview</h3>
+                            
+                            <div class="info-item">
+                                <span class="info-icon">⏰</span>
+                                <div>
+                                    <h4>Flexible Timing</h4>
+                                    <p>Set your own schedule. Conduct sessions when it works for you.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-icon">💵</span>
+                                <div>
+                                    <h4>Attractive Compensation</h4>
+                                    <p>₹1,500 - ₹5,000 per session based on expertise and format.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-icon">🌐</span>
+                                <div>
+                                    <h4>Online & Offline</h4>
+                                    <p>Choose to conduct sessions virtually or in-person.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-icon">🤝</span>
+                                <div>
+                                    <h4>Community Support</h4>
+                                    <p>Join a network of experienced mentors. Collaborate and learn.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="testimonial-box">
+                                <p>"Being a SAIRA ACAD mentor allows me to share my 15 years of teaching experience with aspiring educators. It's flexible, rewarding, and makes a real difference."</p>
+                                <p class="testimonial-author">- Dr. Priya Sharma, Education Mentor</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Join as Mentor/Trainer -->
-    <section class="content-section bg-light">
+    <!-- Why Choose SAIRA ACAD -->
+    <section class="content-section">
         <div class="container">
-            <div class="mentor-cta-section">
-                <h2 class="section-heading text-center">Join as Mentor / Trainer</h2>
-                <p class="section-subtitle text-center">Share Your Expertise on a Flexible Basis</p>
+            <h2 class="section-heading text-center">Why Choose SAIRA ACAD</h2>
+            <p class="section-subtitle text-center">What Makes Us Different</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon-large">🎯</div>
+                    <h3>Purpose-Driven Mission</h3>
+                    <p>Every role at SAIRA ACAD contributes to improving education quality across India. Your work directly impacts teachers, students, and schools.</p>
+                </div>
                 
-                <div class="two-column-layout">
-                    <div class="content-text">
-                        <h3>Become Part of Our Expert Network</h3>
-                        <p>If you're an experienced educator or education professional, consider joining our mentor/trainer 
-                        network. This is ideal for those who want to contribute to teacher development without committing 
-                        to full-time employment.</p>
-                        
-                        <h4>Benefits of Being a SAIRA ACAD Mentor:</h4>
-                        <ul class="feature-list">
-                            <li>Flexible engagement—choose your availability</li>
-                            <li>Competitive compensation per session</li>
-                            <li>Work with motivated, aspiring educators</li>
-                            <li>Build your professional reputation</li>
-                            <li>Access to our training resources and community</li>
-                            <li>Make meaningful impact on education</li>
-                        </ul>
-                        
-                        <h4>We're Looking For:</h4>
-                        <ul class="feature-list">
-                            <li>10+ years of teaching or education leadership experience</li>
-                            <li>Expertise in specific subjects or education domains</li>
-                            <li>Strong communication and mentoring abilities</li>
-                            <li>Passion for teacher development</li>
-                        </ul>
-                        
-                        <a href="work-with-us.html" class="btn btn-primary btn-large">Apply as Mentor</a>
-                    </div>
-                    <div class="content-image">
-                        <img src="assets/teacher-collaboration.jpg" alt="Mentor Network" />
-                    </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon-large">🚀</div>
+                    <h3>Growth & Learning</h3>
+                    <p>We invest in your professional development. Access training programs, attend conferences, and grow with the company.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon-large">🤝</div>
+                    <h3>Collaborative Culture</h3>
+                    <p>Work with passionate, like-minded individuals who care about education. We celebrate diversity and encourage innovation.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon-large">⚖️</div>
+                    <h3>Work-Life Balance</h3>
+                    <p>We believe in sustainable productivity. Enjoy flexible work arrangements, remote options, and supportive policies.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Application Process -->
-    <section class="content-section">
+    <section class="content-section bg-light">
         <div class="container">
             <h2 class="section-heading text-center">Our Hiring Process</h2>
+            <p class="section-subtitle text-center">What to Expect When You Apply</p>
+            
             <div class="process-steps">
                 <div class="process-step">
                     <div class="step-number">1</div>
-                    <h3>Apply Online</h3>
-                    <p>Submit your application through our portal. Ensure your resume highlights relevant experience and achievements.</p>
+                    <h3>Submit Application</h3>
+                    <p>Apply online with your resume and cover letter. Tell us why you're excited about SAIRA ACAD and the role.</p>
                 </div>
+                
                 <div class="process-step">
                     <div class="step-number">2</div>
                     <h3>Initial Screening</h3>
-                    <p>Our recruitment team reviews applications. Shortlisted candidates receive a call for initial discussion.</p>
+                    <p>Our team reviews applications. Shortlisted candidates receive a call or email within 5-7 business days.</p>
                 </div>
+                
                 <div class="process-step">
                     <div class="step-number">3</div>
-                    <h3>Interviews</h3>
-                    <p>Multiple rounds including technical/functional assessment and culture fit evaluation with team members.</p>
+                    <h3>Interviews & Assessment</h3>
+                    <p>2-3 rounds including technical/functional assessment, culture fit discussion, and meet-the-team session.</p>
                 </div>
+                
                 <div class="process-step">
                     <div class="step-number">4</div>
                     <h3>Offer & Onboarding</h3>
-                    <p>Selected candidates receive offers. Comprehensive onboarding ensures smooth integration into the team.</p>
+                    <p>Selected candidates receive offers with detailed information. Comprehensive onboarding ensures a smooth start.</p>
                 </div>
             </div>
         </div>
@@ -416,9 +573,27 @@
             </div>
         </div>
     </footer>
+    
+    <!-- WhatsApp Floating Button -->
+    <a href="#" id="whatsappShareBtn" class="whatsapp-float" aria-label="Share on WhatsApp" title="Share on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="32" height="32">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+    
+    <script src="js/mobile-menu.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/premium-interactions.js"></script>
     <script src="js/careers.js"></script>
+    <script>
+        document.getElementById('whatsappShareBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const phoneNumber = '918125878585';
+            const message = encodeURIComponent('Hello, I am interested in SAIRA ACAD programs. I would like to know more.');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
     <script src="js/dropdown.js"></script>
 </body>
 </html>

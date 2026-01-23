@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar dashboard-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1><span class="highlight">SAIRA</span> <span style="color: ghostwhite;">ACAD</span></h1>
+                    <p class="tagline">Teacher Portal</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <span id="teacherName" class="user-name"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showTab('overview')">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </button>
+                <button class="menu-item" onclick="showTab('courses')">
+                    <span class="icon">📚</span>
+                    My Courses
+                </button>
+                <button class="menu-item" onclick="showTab('resources')">
+                    <span class="icon">📖</span>
+                    Resources
+                </button>
+                <button class="menu-item" onclick="showTab('mentorship')">
+                    <span class="icon">🎓</span>
+                    Mentorship
+                </button>
+                <button class="menu-item" onclick="showTab('profile')">
+                    <span class="icon">⚙️</span>
+                    Profile
+                </button>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Welcome, <span id="teacherNameDisplay"></span>!</h2>
+                <p class="section-description">Track your progress and access your learning resources</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-details">
+                            <h3 id="totalCourses">0</h3>
+                            <p>Enrolled Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-details">
+                            <h3 id="completedCourses">0</h3>
+                            <p>Completed Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-details">
+                            <h3 id="certifications">0</h3>
+                            <p>Certifications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-details">
+                            <h3 id="learningHours">0</h3>
+                            <p>Learning Hours</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-section">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showTab('courses')">
+                            Browse Courses
+                        </button>
+                        <button class="btn btn-secondary" onclick="showTab('resources')">
+                            Access Resources
+                        </button>
+                        <button class="btn btn-secondary" onclick="showTab('mentorship')">
+                            Get Mentorship
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-section">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <span class="activity-icon">📚</span>
+                            <div class="activity-details">
+                                <p><strong>Course Progress</strong></p>
+                                <p class="activity-time">Continue learning from where you left off</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">🎓</span>
+                            <div class="activity-details">
+                                <p><strong>New Resources Available</strong></p>
+                                <p class="activity-time">Check out the latest teaching materials</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">💡</span>
+                            <div class="activity-details">
+                                <p><strong>Mentorship Session</strong></p>
+                                <p class="activity-time">Schedule your next mentorship session</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Tab -->
+            <div id="courses" class="tab-content">
+                <h2>My Courses</h2>
+                <p class="section-description">Access your enrolled courses and track your progress</p>
+                
+                <div class="courses-grid-dashboard">
+                    <div class="course-card-dashboard">
+                        <div class="course-header">
+                            <h3>Advanced Teaching Methodologies</h3>
+                            <span class="badge badge-progress">In Progress</span>
+                        </div>
+                        <p>Learn cutting-edge teaching techniques to enhance classroom engagement and student learning outcomes.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="course-footer">
+                            <span>65% Complete</span>
+                            <button class="btn btn-sm btn-primary">Continue</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card-dashboard">
+                        <div class="course-header">
+                            <h3>Digital Classroom Management</h3>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                        <p>Master the tools and strategies for effective online and hybrid classroom management.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="course-footer">
+                            <span>100% Complete</span>
+                            <button class="btn btn-sm btn-secondary">View Certificate</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card-dashboard">
+                        <div class="course-header">
+                            <h3>Student Assessment Strategies</h3>
+                            <span class="badge badge-new">New</span>
+                        </div>
+                        <p>Develop effective assessment techniques to measure and improve student learning.</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="course-footer">
+                            <span>Not Started</span>
+                            <button class="btn btn-sm btn-primary">Start Course</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div id="resources" class="tab-content">
+                <h2>Teaching Resources</h2>
+                <p class="section-description">Access a wide range of teaching materials and tools</p>
+                
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon">📄</div>
+                        <h3>Lesson Plans</h3>
+                        <p>Ready-to-use lesson plans for various subjects and grade levels</p>
+                        <button class="btn btn-primary">Browse</button>
+                    </div>
+
+                    <div class="resource-card">
+                        <div class="resource-icon">🎥</div>
+                        <h3>Video Tutorials</h3>
+                        <p>Comprehensive video guides on teaching methodologies and techniques</p>
+                        <button class="btn btn-primary">Watch</button>
+                    </div>
+
+                    <div class="resource-card">
+                        <div class="resource-icon">📊</div>
+                        <h3>Assessment Tools</h3>
+                        <p>Templates and tools for creating effective assessments</p>
+                        <button class="btn btn-primary">Download</button>
+                    </div>
+
+                    <div class="resource-card">
+                        <div class="resource-icon">📚</div>
+                        <h3>Reading Materials</h3>
+                        <p>E-books, articles, and research papers on educational topics</p>
+                        <button class="btn btn-primary">Read</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mentorship Tab -->
+            <div id="mentorship" class="tab-content">
+                <h2>Mentorship Program</h2>
+                <p class="section-description">Connect with experienced educators and enhance your teaching skills</p>
+                
+                <div class="mentorship-section">
+                    <div class="mentor-info-card">
+                        <h3>Your Mentor</h3>
+                        <div class="mentor-details">
+                            <div class="mentor-avatar">👨‍🏫</div>
+                            <div>
+                                <h4>Dr. Rajesh Kumar</h4>
+                                <p>20+ years of teaching experience</p>
+                                <p>Specialization: Mathematics & STEM Education</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Schedule Session</button>
+                    </div>
+
+                    <div class="sessions-list">
+                        <h3>Upcoming Sessions</h3>
+                        <div class="session-item">
+                            <div class="session-date">
+                                <span class="date-day">25</span>
+                                <span class="date-month">Jan</span>
+                            </div>
+                            <div class="session-details">
+                                <h4>One-on-One Mentorship</h4>
+                                <p>Discussion: Classroom Management Techniques</p>
+                                <p class="session-time">2:00 PM - 3:00 PM</p>
+                            </div>
+                            <button class="btn btn-sm btn-secondary">Join</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <h2>Profile Settings</h2>
+                
+                <div class="profile-section">
+                    <div class="profile-card">
+                        <h3>Personal Information</h3>
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <label>Full Name:</label>
+                                <span id="profileFullName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Username:</label>
+                                <span id="profileUsername"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Email:</label>
+                                <span id="profileEmail"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Phone:</label>
+                                <span id="profilePhone"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Member Since:</label>
+                                <span id="profileJoinDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Support & Resources</h3>
+                        <p>Need assistance or want to explore more resources?</p>
+                        <div class="action-buttons">
+                            <a href="contact-us.html" class="btn btn-primary">Contact Support</a>
+                            <a href="resources.html" class="btn btn-secondary">View All Resources</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/teacher-dashboard.js"></script>
+</body>
+</html>

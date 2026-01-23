@@ -1,32 +1,50 @@
 // API Configuration with auto-detection
 const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
+function normalizeBaseUrl(url) {
+    return String(url || '').trim().replace(/\/+$/, '');
+}
+
+function getDefaultProdApiBaseUrl() {
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
+function resolveApiBaseUrl() {
+    // Optional override hooks for deployments
+    // 1) window.SAIRA_API_BASE_URL (you can set this in a small inline script)
+    // 2) localStorage.SAIRA_API_BASE_URL (quick testing without redeploy)
+    const override = window.SAIRA_API_BASE_URL || localStorage.getItem('SAIRA_API_BASE_URL');
+    const base = override ? normalizeBaseUrl(override) : (isProd ? getDefaultProdApiBaseUrl() : 'http://localhost:5000');
+
+    // This file's ENDPOINTS include the '/api' prefix, so ensure BASE_URL is the origin (no trailing '/api')
+    return normalizeBaseUrl(base.replace(/\/api$/i, ''));
+}
+
 const API_CONFIG = {
     // Auto-switch between production and development
-    BASE_URL: isProd 
-        ? 'https://your-backend-url.onrender.com/api' // UPDATE THIS for production
-        : 'http://localhost:5000/api',
+    BASE_URL: resolveApiBaseUrl(),
     ENDPOINTS: {
         // User endpoints
-        USER_REGISTER: '/users/register',
-        USER_LOGIN: '/users/login',
-        USER_PROFILE: '/users/profile',
+        USER_REGISTER: '/api/users/register',
+        USER_LOGIN: '/api/users/login',
+        USER_PROFILE: '/api/users/profile',
         
         // Admin endpoints
-        ADMIN_LOGIN: '/admin/login',
-        ADMIN_USERS: '/admin/users',
-        ADMIN_STATS: '/admin/stats',
-        ADMIN_USER_STATUS: '/admin/users',
-        ADMIN_LIST: '/admin/admins',
-        ADMIN_CREATE: '/admin/admins',
-        ADMIN_UPDATE: '/admin/admins',
+        ADMIN_LOGIN: '/api/admin/login',
+        ADMIN_USERS: '/api/admin/users',
+        ADMIN_STATS: '/api/admin/stats',
+        ADMIN_USER_STATUS: '/api/admin/users',
+        ADMIN_LIST: '/api/admin/admins',
+        ADMIN_CREATE: '/api/admin/admins',
+        ADMIN_UPDATE: '/api/admin/admins',
         
         // School Partner endpoints
-        PARTNER_LOGIN: '/school-partner/login',
-        PARTNER_CREATE: '/school-partner/create',
-        PARTNER_LIST: '/school-partner/all',
-        PARTNER_UPDATE: '/school-partner/update',
-        PARTNER_DELETE: '/school-partner/delete'
+        PARTNER_LOGIN: '/api/school-partner/login',
+        PARTNER_CREATE: '/api/school-partner/create',
+        PARTNER_LIST: '/api/school-partner/all',
+        PARTNER_UPDATE: '/api/school-partner/update',
+        PARTNER_DELETE: '/api/school-partner/delete'
     }
 };
 
@@ -35,7 +53,8 @@ const api = {
     // Make API request
     async request(endpoint, options = {}) {
         const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-        const token = localStorage.getItem('authToken');
+        // Check for adminToken first (for admin routes), then fall back to authToken
+        const token = localStorage.getItem('adminToken') || localStorage.getItem('authToken');
         
         const config = {
             headers: {
@@ -201,5 +220,6 @@ function removeAuthToken() {
     localStorage.removeItem('authToken');
 }
 
-// Export API_BASE_URL for ES6 modules
-export const API_BASE_URL = API_CONFIG.BASE_URL;
+// Make API_BASE_URL globally available
+window.API_BASE_URL = API_CONFIG.BASE_URL;
+const API_BASE_URL = API_CONFIG.BASE_URL;

@@ -1,22 +1,44 @@
 // Careers Page Functions
 
+function getApiBaseUrl() {
+    if (window.API_BASE_URL) return window.API_BASE_URL;
+    const prod = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    if (!prod) return 'http://localhost:5000';
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
 // Apply for a role
-function applyForRole(roleId) {
+function applyForRole(roleName) {
     const modal = document.getElementById('applicationModal');
     const positionField = document.getElementById('position');
     
-    // Set position based on role
-    const roleNames = {
-        'recruitment-specialist': 'Education Recruitment Specialist',
-        'content-writer': 'Educational Content Writer',
-        'bd-manager': 'Business Development Manager',
-        'software-engineer': 'Senior Software Engineer',
-        'career-counselor': 'Career Counselor',
-        'digital-marketing': 'Digital Marketing Specialist'
-    };
+    if (positionField) {
+        positionField.value = roleName;
+    }
     
-    if (positionField && roleNames[roleId]) {
-        positionField.value = roleNames[roleId];
+    modal.style.display = 'block';
+}
+
+// Apply for internship
+function applyForInternship() {
+    const modal = document.getElementById('applicationModal');
+    const positionField = document.getElementById('position');
+    
+    if (positionField) {
+        positionField.value = 'Internship Application';
+    }
+    
+    modal.style.display = 'block';
+}
+
+// Apply as general applicant
+function applyGeneral() {
+    const modal = document.getElementById('applicationModal');
+    const positionField = document.getElementById('position');
+    
+    if (positionField) {
+        positionField.value = 'General Application';
     }
     
     modal.style.display = 'block';
@@ -34,7 +56,7 @@ async function handleJobApplication(event) {
     const formData = new FormData(event.target);
     
     try {
-        const response = await fetch('/api/job-applications', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/job-application`, {
             method: 'POST',
             body: formData
         });

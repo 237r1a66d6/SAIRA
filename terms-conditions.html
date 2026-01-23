@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms & Conditions - SAIRA ACAD</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
 </head>
 <body>
     <div class="containernav">
@@ -17,9 +19,19 @@
         </div>
         <div class="nav-menu">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="about-us.html" class="nav-link">About Us</a>
-            <a href="services.html" class="nav-link">Services</a>
-            <a href="contact-us.html" class="nav-link">Contact</a>
+            <a href="schools-page.html" class="nav-link">Schools</a>
+            <a href="join-saira.html" class="nav-link">Teachers</a>
+            <a href="careers.html" class="nav-link">Careers</a>
+            <a href="contact-us.html" class="nav-link">Contact Us</a>
+            <div class="dropdown">
+                <button class="dropdown-btn nav-link">About <span class="dropdown-arrow">▼</span></button>
+                <div class="dropdown-content">
+                    <a href="about-us.html">About Us</a>
+                    <a href="mentorship-training.html" style="display: none;">Mentorship</a>
+                    <a href="success-stories.html">Success Stories</a>
+                    <a href="resources.html" style="display: none;">Resources</a>
+                </div>
+            </div>
         </div>
         <div class="nav-buttons">
             <a href="login.html" class="btn btn-secondary">Login</a>
@@ -338,6 +350,7 @@
             </div>
         </div>
     </footer>
+    <script src="js/mobile-menu.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/premium-interactions.js"></script>
 </body>

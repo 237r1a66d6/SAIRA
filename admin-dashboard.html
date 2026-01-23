@@ -50,21 +50,17 @@
                     <span class="icon">🔑</span>
                     School Accounts
                 </button>
-                <button class="menu-item" onclick="showTab('consultations')">
-                    <span class="icon">📅</span>
-                    Consultations <span id="consultationBadge" class="notification-badge" style="display:none;"></span>
+                <button class="menu-item" onclick="showTab('partner-messages')">
+                    <span class="icon">🤝</span>
+                    Partner Messages <span id="partnerMessagesBadge" class="notification-badge" style="display:none;"></span>
+                </button>
+                <button class="menu-item" onclick="showTab('educator-messages')">
+                    <span class="icon">👨‍🏫</span>
+                    Educator Messages <span id="educatorMessagesBadge" class="notification-badge" style="display:none;"></span>
                 </button>
                 <button class="menu-item" onclick="showTab('services')">
                     <span class="icon">🛠️</span>
                     Services
-                </button>
-                <button class="menu-item" onclick="showTab('resources')">
-                    <span class="icon">📚</span>
-                    Resources
-                </button>
-                <button class="menu-item" onclick="showTab('work-with-us')">
-                    <span class="icon">💼</span>
-                    Work With Us
                 </button>
                 <button class="menu-item" onclick="showTab('debug-storage')">
                     <span class="icon">🔍</span>
@@ -252,32 +248,60 @@
                 </div>
             </div>
 
-            <!-- Consultations Tab -->
-            <div id="consultations" class="tab-content">
-                <h2>Consultation Bookings</h2>
-                <div id="consultationNotification" class="notification-banner" style="display:none;">
-                    <span id="notificationText"></span>
-                    <button onclick="markAllAsRead()" class="btn btn-sm">Mark All as Read</button>
+            <!-- Partner Messages Tab -->
+            <div id="partner-messages" class="tab-content">
+                <h2>Partner Messages</h2>
+                <div id="partnerMessagesNotification" class="notification-banner" style="display:none;">
+                    <span id="partnerNotificationText"></span>
                 </div>
                 
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Type</th>
-                                <th>Date</th>
-                                <th>Time</th>
+                                <th>Subject</th>
+                                <th style="min-width: 100px; max-width: 120px;">Message</th>
                                 <th>Status</th>
+                                <th>Date</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="consultationsTableBody">
+                        <tbody id="partnerMessagesTableBody">
                             <tr>
-                                <td colspan="9" class="no-data">No consultations yet</td>
+                                <td colspan="8" class="no-data">No partner messages yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Educator Messages Tab -->
+            <div id="educator-messages" class="tab-content">
+                <h2>Educator Messages</h2>
+                <div id="educatorMessagesNotification" class="notification-banner" style="display:none;">
+                    <span id="educatorNotificationText"></span>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Subject</th>
+                                <th style="min-width: 100px; max-width: 120px;">Message</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="educatorMessagesTableBody">
+                            <tr>
+                                <td colspan="8" class="no-data">No educator messages yet</td>
                             </tr>
                         </tbody>
                     </table>
@@ -493,187 +517,6 @@
                                 <li>Resource sharing</li>
                                 <li>Collaboration opportunities</li>
                             </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resources Tab -->
-            <div id="resources" class="tab-content">
-                <div class="tab-header">
-                    <h2>Resources</h2>
-                    <p style="color: #666;">Your Knowledge Hub for Educational Excellence</p>
-                </div>
-                
-                <div style="margin-bottom: 3rem;">
-                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Blog & Insights</h3>
-                    <p style="color: #666; margin-bottom: 2rem;">Latest trends, tips, and insights from education experts</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                        <div class="service-card">
-                            <div class="service-icon">🎯</div>
-                            <h4>10 Classroom Management Strategies</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Teaching Tips • December 15, 2024 • 5 min read</em></p>
-                            <p>Effective classroom management is the foundation of successful teaching. Discover proven strategies that help create a positive learning environment and maximize student engagement.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div class="service-icon">🎓</div>
-                            <h4>Navigate Your First Year as a Teacher</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Career Advice • December 10, 2024 • 7 min read</em></p>
-                            <p>Starting your teaching career can be overwhelming. Here's a comprehensive guide to help new teachers thrive in their first year.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div class="service-icon">💻</div>
-                            <h4>Top 15 EdTech Tools for Modern Classrooms</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>EdTech • December 5, 2024 • 6 min read</em></p>
-                            <p>Technology is transforming education. Explore the best EdTech tools that enhance learning and make teaching more effective.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div class="service-icon">🏫</div>
-                            <h4>School Administrator's Guide to Hiring</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Recruitment • November 28, 2024 • 8 min read</em></p>
-                            <p>Finding and retaining excellent teachers is crucial for school success. Learn the best practices for teacher recruitment.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div class="service-icon">🤝</div>
-                            <h4>Why Every Teacher Needs a Mentor</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Professional Development • November 20, 2024 • 5 min read</em></p>
-                            <p>Mentorship accelerates professional growth and builds teaching confidence. Discover the benefits of having a teaching mentor.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div class="service-icon">♿</div>
-                            <h4>Creating Inclusive Classrooms</h4>
-                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;"><em>Special Education • November 15, 2024 • 10 min read</em></p>
-                            <p>Every student deserves quality education. Learn how to create inclusive learning environments that support diverse learners.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Hiring Tips for Schools</h3>
-                    <p style="color: #666; margin-bottom: 2rem;">Expert advice for school administrators and HR professionals</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                        <div class="service-card">
-                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">1</div>
-                            <h4>Define Clear Job Requirements</h4>
-                            <p>Create detailed job descriptions that outline specific qualifications, experience levels, and teaching methodologies required.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">2</div>
-                            <h4>Look Beyond Certifications</h4>
-                            <p>While credentials are important, assess candidates' passion for teaching, communication skills, adaptability, and cultural fit.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">3</div>
-                            <h4>Conduct Demo Classes</h4>
-                            <p>Observe candidates teaching a real or simulated class. This reveals their teaching style and classroom management abilities.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-orange); margin-bottom: 0.5rem;">4</div>
-                            <h4>Check References Thoroughly</h4>
-                            <p>Contact previous employers to verify experience, teaching effectiveness, and professional conduct.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Work With Us Tab -->
-            <div id="work-with-us" class="tab-content">
-                <div class="tab-header">
-                    <h2>Work With Us</h2>
-                    <p style="color: #666;">Connect Schools with Teachers, Build Better Educational Futures</p>
-                </div>
-                
-                <div style="margin-bottom: 3rem;">
-                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Schools - Hire Teachers</h3>
-                    <p style="color: #666; margin-bottom: 2rem;">Find Qualified Educators for Your Institution</p>
-                    
-                    <div class="service-card" style="max-width: 900px;">
-                        <h4>✨ Why Partner with SAIRA ACAD?</h4>
-                        <ul class="service-features">
-                            <li><strong>Pre-Vetted Candidates:</strong> Access our database of 2000+ certified and experienced teachers</li>
-                            <li><strong>Quick Hiring:</strong> Fill positions faster with our streamlined recruitment process</li>
-                            <li><strong>Quality Assurance:</strong> All candidates undergo rigorous screening and background checks</li>
-                            <li><strong>Diverse Talent Pool:</strong> Teachers across all subjects, grades, and teaching methodologies</li>
-                            <li><strong>Flexible Options:</strong> Full-time, part-time, substitute, and contract positions</li>
-                            <li><strong>Cost-Effective:</strong> Reduce recruitment costs and time-to-hire significantly</li>
-                            <li><strong>Ongoing Support:</strong> Post-placement support to ensure successful integration</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 3rem;">
-                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">For Teachers - Find Your Dream Job</h3>
-                    <p style="color: #666; margin-bottom: 2rem;">Apply for Teaching Positions Across Leading Schools</p>
-                    
-                    <div class="service-card" style="max-width: 900px;">
-                        <h4>✨ Why Apply Through SAIRA ACAD?</h4>
-                        <ul class="service-features">
-                            <li><strong>Wide Range of Opportunities:</strong> Access jobs from 500+ partner schools</li>
-                            <li><strong>Career Growth:</strong> Positions across all levels - from entry to leadership roles</li>
-                            <li><strong>Personalized Matching:</strong> Get matched with schools that fit your profile and preferences</li>
-                            <li><strong>Application Support:</strong> Assistance with resume building and interview preparation</li>
-                            <li><strong>Salary Guidance:</strong> Transparent salary information and negotiation support</li>
-                            <li><strong>Free Service:</strong> No charges for teachers - our services are completely free for educators</li>
-                            <li><strong>Fast Placement:</strong> Get placed within 2-4 weeks of registration</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Sample Job Openings</h3>
-                    <p style="color: #666; margin-bottom: 2rem;">Browse latest opportunities from our partner schools</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-                        <div class="service-card">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                                <h4 style="margin: 0;">Mathematics Teacher</h4>
-                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
-                            </div>
-                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Delhi Public School, Bangalore</p>
-                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
-                                <span>📚 Grades 9-12</span>
-                                <span>💼 3+ years exp.</span>
-                                <span>💰 ₹40k-60k/month</span>
-                            </div>
-                            <p>Seeking experienced mathematics teacher for senior secondary classes. CBSE curriculum expertise required.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                                <h4 style="margin: 0;">English Language Teacher</h4>
-                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
-                            </div>
-                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Ryan International School, Mumbai</p>
-                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
-                                <span>📚 Grades 6-10</span>
-                                <span>💼 2+ years exp.</span>
-                                <span>💰 ₹35k-50k/month</span>
-                            </div>
-                            <p>Dynamic English teacher needed for middle and high school. Strong communication skills essential.</p>
-                        </div>
-
-                        <div class="service-card">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                                <h4 style="margin: 0;">Science Teacher</h4>
-                                <span style="background: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Full-Time</span>
-                            </div>
-                            <p style="color: var(--primary-purple); font-weight: 600; margin-bottom: 1rem;">Kendriya Vidyalaya, Chennai</p>
-                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
-                                <span>📚 Grades 6-8</span>
-                                <span>💼 2+ years exp.</span>
-                                <span>💰 ₹30k-45k/month</span>
-                            </div>
-                            <p>Enthusiastic science teacher for middle school. Experience with practical labs and experiments preferred.</p>
                         </div>
                     </div>
                 </div>
@@ -1091,6 +934,38 @@
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="cancelConfirm()">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmModalBtn" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message View Modal -->
+    <div id="messageViewModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="messageViewTitle">Message Details</h3>
+                <button class="close-btn" onclick="closeMessageViewModal()">&times;</button>
+            </div>
+            <div style="padding: 25px;">
+                <div id="messageViewContent"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" onclick="closeMessageViewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
+                <h3>⚠️ Confirm Deletion</h3>
+            </div>
+            <div style="padding: 30px 25px;">
+                <p id="deleteConfirmMessage" style="color: #555; font-size: 16px; line-height: 1.6; margin: 0;"></p>
+            </div>
+            <div class="modal-actions" style="padding: 20px 25px; background: #f8f9fa; border-top: 1px solid #e0e7ff;">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteConfirmModal()" style="background: #6c757d;">Cancel</button>
+                <button type="button" class="btn" id="confirmDeleteBtn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">Delete</button>
             </div>
         </div>
     </div>

@@ -1,5 +1,13 @@
 // Work With Us Page Functions
 
+function getApiBaseUrl() {
+    if (window.API_BASE_URL) return window.API_BASE_URL;
+    const prod = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    if (!prod) return 'http://localhost:5000';
+    const host = window.location.hostname.replace(/^www\./, '');
+    return `https://api.${host}`;
+}
+
 // Show school requirement form
 function showSchoolForm() {
     document.getElementById('schoolFormModal').style.display = 'block';
@@ -38,7 +46,7 @@ async function handleSchoolRequirement(event) {
     const data = Object.fromEntries(formData);
     
     try {
-        const response = await fetch('/api/school-requirements', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/school-requirement`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -66,7 +74,7 @@ async function handleTeacherResume(event) {
     const formData = new FormData(event.target);
     
     try {
-        const response = await fetch('/api/teacher-applications', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/teacher-application`, {
             method: 'POST',
             body: formData
         });
@@ -92,7 +100,7 @@ async function handleMentorApplication(event) {
     const data = Object.fromEntries(formData);
     
     try {
-        const response = await fetch('/api/mentor-applications', {
+        const response = await fetch(`${getApiBaseUrl()}/api/forms/mentor-application`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

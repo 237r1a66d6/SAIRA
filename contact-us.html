@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - SAIRA ACAD</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
     <link rel="stylesheet" href="css/contact-page.css">
 </head>
 <body>
@@ -18,17 +20,17 @@
         </div>
         <div class="nav-menu">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="services.html" class="nav-link">Services</a>
-            <a href="index.html#benefits" class="nav-link">Benefits</a>
-            <a href="index.html#faq" class="nav-link">FAQ</a>
-            <a href="contact-us.html" class="nav-link">Contact</a>
+            <a href="schools-page.html" class="nav-link">Schools</a>
+            <a href="join-saira.html" class="nav-link">Teachers</a>
+            <a href="careers.html" class="nav-link">Careers</a>
+            <a href="contact-us.html" class="nav-link">Contact Us</a>
             <div class="dropdown">
                 <button class="dropdown-btn nav-link">About <span class="dropdown-arrow">▼</span></button>
                 <div class="dropdown-content">
                     <a href="about-us.html">About Us</a>
-                    <a href="mentorship-training.html">Mentorship</a>
+                    <a href="mentorship-training.html" style="display: none;">Mentorship</a>
                     <a href="success-stories.html">Success Stories</a>
-                    <a href="resources.html">Resources</a>
+                    <a href="resources.html" style="display: none;">Resources</a>
                 </div>
             </div>
         </div>
@@ -41,7 +43,7 @@
     <!-- Contact Hero -->
     <section class="contact-hero">
         <div class="container">
-            <h1 class="contact-hero-title">Contact</h1>
+            <h1 class="contact-hero-title">Contact Us</h1>
         </div>
     </section>
 
@@ -63,8 +65,8 @@
                         </svg>
                     </div>
                     <h3>Location</h3>
-                    <p class="contact-location-name">Boston, MA</p>
-                    <p class="contact-location-address">4020 Street Los Angeles<br>California - 5025, USA</p>
+                    <p class="contact-location-name">Hyderabad, India</p>
+                    <p class="contact-location-address">Plot no. 10A, Sai Prithvi Enclave<br>Hyderabad 500084<br>Telangana, INDIA</p>
                 </div>
 
                 <div class="contact-info-card">
@@ -75,8 +77,7 @@
                     </div>
                     <h3>GET PHONE</h3>
                     <p class="contact-location-name">24/7 Online Support</p>
-                    <p class="contact-phone"><a href="tel:+14142569660">Tel: +41-41-256-9660</a></p>
-                    <p class="contact-phone"><a href="tel:+0909696969">Tel: +00-90-96-96-969</a></p>
+                    <p class="contact-phone"><a href="tel:+9197013490077">Tel: +91 97013490077</a></p>
                 </div>
 
                 <div class="contact-info-card">
@@ -88,8 +89,7 @@
                     </div>
                     <h3>SEND E-MAIL</h3>
                     <p class="contact-location-name">Email Address</p>
-                    <p class="contact-phone"><a href="mailto:info@agance.com">info@agance.com</a></p>
-                    <p class="contact-phone"><a href="mailto:demo@yourbrand.com">demo@yourbrand.com</a></p>
+                    <p class="contact-phone"><a href="sairaacad@gmail.com">sairaacad@gmail.com</a></p>
                 </div>
 
                 <div class="contact-info-card">
@@ -124,13 +124,34 @@
                 </div>
 
                 <div class="contact-form-right">
-                    <form id="contactForm" onsubmit="handleContactForm(event)">
+                    <form id="contactForm" onsubmit="event.preventDefault(); handleContactForm(event); return false;">
                         <div class="form-row-dual">
                             <div class="form-group">
                                 <input type="text" id="contactName" name="contactName" placeholder="Your Name" required>
                             </div>
                             <div class="form-group">
                                 <input type="email" id="contactEmail" name="contactEmail" placeholder="Your Email" required>
+                            </div>
+                        </div>
+
+                        <!-- Message Type Selection -->
+                        <div class="form-group message-type-selection">
+                            <label class="contact-type-label">I am contacting as:</label>
+                            <div class="contact-type-options">
+                                <label class="contact-type-card">
+                                    <input type="radio" name="contactType" value="partner" required>
+                                    <span class="contact-type-content">
+                                        
+                                        <span class="contact-type-text">Message as a Partner</span>
+                                    </span>
+                                </label>
+                                <label class="contact-type-card">
+                                    <input type="radio" name="contactType" value="educator" required>
+                                    <span class="contact-type-content">
+                                        
+                                        <span class="contact-type-text">Message as an Educator</span>
+                                    </span>
+                                </label>
                             </div>
                         </div>
 
@@ -157,7 +178,7 @@
     <!-- Map Section -->
     <section class="contact-map-section">
         <div class="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596073366!2d-74.25986548248684!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" 
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.0370776449556!2d78.38476187516257!3d17.455636183451977!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb9395f7be4847%3A0x9a6f5c5f90e3c6d8!2sSai%20Prithvi%20Enclave%2C%20Kondapur%2C%20Hyderabad%2C%20Telangana%20500084!5e0!3m2!1sen!2sin!4v1737484800000!5m2!1sen!2sin" 
                     width="100%" 
                     height="450" 
                     style="border:0;" 
@@ -195,10 +216,45 @@
             </div>
         </div>
     </footer>
+
+    <!-- Custom Notification Modal -->
+    <div id="customNotification" class="custom-notification-overlay">
+        <div class="custom-notification-box">
+            <button class="notification-close-btn" onclick="closeAndReload()">&times;</button>
+            <div class="notification-icon">✓</div>
+            <h3 id="notificationTitle" class="notification-title">Submitted Successfully</h3>
+            <p id="notificationMessage" class="notification-message">Thank you for contacting us! We will respond to your inquiry soon.</p>
+        </div>
+    </div>
     
+    <script src="js/mobile-menu.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/premium-interactions.js"></script>
+    <!-- WhatsApp Floating Button -->
+    <a href="#" id="whatsappShareBtn" class="whatsapp-float" aria-label="Share on WhatsApp" title="Share on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="32" height="32">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+    
+    <script src="js/mobile-menu.js"></script>
     <script src="js/contact.js"></script>
     <script src="js/dropdown.js"></script>
+    <script>
+        document.getElementById('whatsappShareBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const phoneNumber = '918125878585';
+            const message = encodeURIComponent('Hello, I am interested in SAIRA ACAD programs. I would like to know more.');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+        
+        function closeAndReload() {
+            document.getElementById('customNotification').classList.remove('show');
+            setTimeout(function() {
+                window.location.reload();
+            }, 300);
+        }
+    </script>
 </body>
 </html>
