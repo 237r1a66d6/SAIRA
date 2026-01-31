@@ -53,6 +53,10 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve static files from SAIRA directory (HTML, CSS, JS, assets)
+app.use('/SAIRA', express.static(path.join(__dirname, '..')));
+app.use(express.static(path.join(__dirname, '..')));
+
 // Request logging middleware
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
@@ -106,8 +110,26 @@ app.get('/', (req, res) => {
     });
 });
 
-// 404 handler
+// Serve index.html for root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Handle /SAIRA/index route
+app.get('/SAIRA/index', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// 404 handler - must be after all other routes
 app.use((req, res) => {
+    // If request is for an HTML file that doesn't have extension, try adding .html
+    if (!path.extname(req.path)) {
+        const htmlPath = path.join(__dirname, '..', req.path + '.html');
+        if (fs.existsSync(htmlPath)) {
+            return res.sendFile(htmlPath);
+        }
+    }
+    
     res.status(404).json({ 
         success: false, 
         message: 'Route not found' 
