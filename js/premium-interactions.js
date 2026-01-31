@@ -178,6 +178,31 @@ function createRipple(e, element) {
     setTimeout(() => ripple.remove(), 600);
 }
 
+// Add CSS animations
+const styleElement = document.createElement('style');
+styleElement.textContent = `
+    @keyframes rippleEffect {
+        from {
+            transform: scale(0);
+            opacity: 1;
+        }
+        to {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+
+    .course-card, .benefit-card, .process-step, .pricing-card {
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
+
+    .btn-primary, .btn-cta, .btn-large {
+        will-change: transform;
+    }
+`;
+document.head.appendChild(styleElement);
+
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     // Apply 3D tilt to cards
@@ -222,28 +247,3 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(statsSection);
     }
 });
-
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes rippleEffect {
-        from {
-            transform: scale(0);
-            opacity: 1;
-        }
-        to {
-            transform: scale(2);
-            opacity: 0;
-        }
-    }
-
-    .course-card, .benefit-card, .process-step, .pricing-card {
-        transform-style: preserve-3d;
-        will-change: transform;
-    }
-
-    .btn-primary, .btn-cta, .btn-large {
-        will-change: transform;
-    }
-`;
-document.head.appendChild(style);

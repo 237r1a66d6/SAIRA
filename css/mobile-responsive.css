@@ -468,11 +468,38 @@
 /* Fix WhatsApp Button on Mobile */
 @media (max-width: 768px) {
     .whatsapp-float {
-        bottom: 20px !important;
-        right: 15px !important;
-        width: 50px !important;
-        height: 50px !important;
+        display: flex !important;
+        visibility: visible !important;
+        bottom: 80px !important;
+        right: 50% !important;
+        transform: translateX(50%) !important;
+        margin-right: -28px !important;
+        width: 56px !important;
+        height: 56px !important;
         font-size: 1.8rem !important;
+        z-index: 10000 !important;
+        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5) !important;
+    }
+    
+    .whatsapp-float svg {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .whatsapp-float {
+        bottom: 70px !important;
+        right: 50% !important;
+        transform: translateX(50%) !important;
+        margin-right: -26px !important;
+        width: 52px !important;
+        height: 52px !important;
+    }
+    
+    .whatsapp-float svg {
+        width: 28px !important;
+        height: 28px !important;
     }
 }
 

@@ -158,15 +158,15 @@
 /* Responsive Breakpoints */
 @media (max-width: 968px) {
     .mobile-menu-toggle {
-        display: block;
+        display: block !important;
     }
 
     .nav-menu {
-        display: none;
+        display: none !important;
     }
 
-    .nav-buttons {
-        display: none;
+    .nav-buttons:not(.mobile) {
+        display: none !important;
     }
 
     .containernav {
