@@ -465,41 +465,54 @@
     }
 }
 
-/* Fix WhatsApp Button on Mobile */
-@media (max-width: 768px) {
+/* Fix WhatsApp Button on Mobile - Force Left Position */
+@media screen and (max-width: 768px) {
+    a.whatsapp-float,
     .whatsapp-float {
         display: flex !important;
         visibility: visible !important;
-        bottom: 80px !important;
-        right: 50% !important;
-        transform: translateX(50%) !important;
-        margin-right: -28px !important;
-        width: 56px !important;
-        height: 56px !important;
-        font-size: 1.8rem !important;
-        z-index: 10000 !important;
+        position: fixed !important;
+        bottom: 20px !important;
+        left: 20px !important;
+        right: auto !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        transform: translateX(0) !important;
+        width: 60px !important;
+        height: 60px !important;
+        z-index: 999999 !important;
+        background: #25D366 !important;
+        border-radius: 50% !important;
         box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5) !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
+    a.whatsapp-float svg,
     .whatsapp-float svg {
-        width: 30px !important;
-        height: 30px !important;
+        width: 32px !important;
+        height: 32px !important;
     }
 }
 
-@media (max-width: 480px) {
+@media screen and (max-width: 480px) {
+    a.whatsapp-float,
     .whatsapp-float {
-        bottom: 70px !important;
-        right: 50% !important;
-        transform: translateX(50%) !important;
-        margin-right: -26px !important;
-        width: 52px !important;
-        height: 52px !important;
+        position: fixed !important;
+        bottom: 15px !important;
+        left: 15px !important;
+        right: auto !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        transform: translateX(0) !important;
+        width: 56px !important;
+        height: 56px !important;
     }
     
+    a.whatsapp-float svg,
     .whatsapp-float svg {
-        width: 28px !important;
-        height: 28px !important;
+        width: 30px !important;
+        height: 30px !important;
     }
 }
 
@@ -871,4 +884,20 @@
     }
 }
 
+/* =============================================
+   LOGO STRIP MOBILE FIXES
+   ============================================= */
 
+/* Tablet and Mobile - Logo Strip - HIDDEN */
+@media screen and (max-width: 768px) {
+    .logo-strip-secondary {
+        display: none !important;
+    }
+}
+
+/* Small Mobile - Logo Strip - HIDDEN */
+@media screen and (max-width: 480px) {
+    .logo-strip-secondary {
+        display: none !important;
+    }
+}
