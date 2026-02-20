@@ -10,6 +10,25 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('Login form not found!');
     }
+
+    // Handle login type radio button changes
+    const loginTypeRadios = document.querySelectorAll('input[name="loginType"]');
+    const identifierInput = document.getElementById('identifier');
+    const identifierLabel = document.getElementById('identifierLabel');
+    
+    loginTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'email') {
+                identifierLabel.textContent = 'Email *';
+                identifierInput.placeholder = 'Enter your email';
+                identifierInput.type = 'email';
+            } else {
+                identifierLabel.textContent = 'Username *';
+                identifierInput.placeholder = 'Enter your username';
+                identifierInput.type = 'text';
+            }
+        });
+    });
 });
 
 async function handleLogin(event) {

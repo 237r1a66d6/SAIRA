@@ -43,8 +43,22 @@
                 
                 <form id="loginForm" class="auth-form" onsubmit="return false;">
                     <div class="form-group">
-                        <label for="identifier">Email or Username *</label>
-                        <input type="text" id="identifier" name="identifier" required placeholder="Enter your email or username" autocomplete="off">
+                        <label style="display: block; margin-bottom: 10px;">Login with:</label>
+                        <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="loginType" value="email" id="loginTypeEmail" checked>
+                                <span>Email</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="loginType" value="username" id="loginTypeUsername">
+                                <span>Username</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="identifier" id="identifierLabel">Email *</label>
+                        <input type="text" id="identifier" name="identifier" required placeholder="Enter your email" autocomplete="off">
                     </div>
 
                     <div class="form-group">
