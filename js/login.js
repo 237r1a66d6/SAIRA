@@ -10,25 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('Login form not found!');
     }
-
-    // Handle login type radio button changes
-    const loginTypeRadios = document.querySelectorAll('input[name="loginType"]');
-    const identifierInput = document.getElementById('identifier');
-    const identifierLabel = document.getElementById('identifierLabel');
-    
-    loginTypeRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'email') {
-                identifierLabel.textContent = 'Email *';
-                identifierInput.placeholder = 'Enter your email';
-                identifierInput.type = 'email';
-            } else {
-                identifierLabel.textContent = 'Username *';
-                identifierInput.placeholder = 'Enter your username';
-                identifierInput.type = 'text';
-            }
-        });
-    });
 });
 
 async function handleLogin(event) {
@@ -37,17 +18,22 @@ async function handleLogin(event) {
     hideError('errorMessage');
     
     // Get form values
-    const identifier = document.getElementById('identifier').value.trim();
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     
     console.log('=== LOGIN ATTEMPT ===');
-    console.log('Entered identifier:', identifier);
+    console.log('Username:', fullName);
+    console.log('Email:', email);
     
-    // Validation
-    if (!identifier || !password) {
-        showError('errorMessage', 'All fields are required.');
+    // Validation - at least one identifier must be provided
+    if ((!fullName && !email) || !password) {
+        showError('errorMessage', 'Please enter username or email, and password.');
         return;
     }
+    
+    // Determine which identifier to use
+    const identifier = email || fullName;
     
     // Disable submit button
     const submitBtn = event.target.querySelector('button[type="submit"]');
