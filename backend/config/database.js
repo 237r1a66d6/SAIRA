@@ -1,17 +1,48 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-// SQLite database setup
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: process.env.DATABASE_PATH || path.join(__dirname, '..', 'saira-acad.db'),
-    logging: process.env.NODE_ENV === 'development' ? console.log : false
-});
+// Database setup - supports both MySQL (for production) and SQLite (for development)
+let sequelize;
+
+if (process.env.DB_TYPE === 'mysql') {
+    // MySQL configuration for Hostinger
+    sequelize = new Sequelize(
+        process.env.DB_NAME,
+        process.env.DB_USER,
+        process.env.DB_PASSWORD,
+        {
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT || 3306,
+            dialect: 'mysql',
+            logging: process.env.NODE_ENV === 'development' ? console.log : false,
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000
+            },
+            dialectOptions: {
+                connectTimeout: 60000
+            }
+        }
+    );
+} else {
+    // SQLite for local development
+    sequelize = new Sequelize({
+        dialect: 'sqlite',
+        storage: process.env.DATABASE_PATH || path.join(__dirname, '..', 'saira-acad.db'),
+        logging: process.env.NODE_ENV === 'development' ? console.log : false
+    });
+}
 
 const connectDatabase = async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ SQLite database connected successfully');
+        const dbType = process.env.DB_TYPE === 'mysql' ? 'MySQL' : 'SQLite';
+        console.log(`✅ ${dbType} database connected successfully`);
+        if (process.env.DB_TYPE === 'mysql') {
+            console.log(`   Database: ${process.env.DB_NAME} on ${process.env.DB_HOST}`);
+        }
         
         // Sync all models
         await sequelize.sync({ alter: true });
