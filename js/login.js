@@ -40,48 +40,32 @@ async function handleLogin(event) {
     
     try {
         if (useBackend) {
-            // Try backend API first
+            // Try backend API first with fullName and password
             try {
-                // For login, we need email but form uses fullName
-                // First try to get users to find email by name (fallback)
-                const users = getUsers();
-                const userByName = users.find(u => u.fullName.toLowerCase() === fullName.toLowerCase());
+                const response = await api.loginUser({
+                    fullName: fullName,
+                    password: password
+                });
                 
-                if (userByName && userByName.email) {
-                    // Use the email to login via API
-                    const response = await api.loginUser({
-                        email: userByName.email,
-                        password: password
-                    });
+                if (response.success) {
+                    saveAuthToken(response.token);
+                    setCurrentUser(response.user);
                     
-                    if (response.success) {
-                        saveAuthToken(response.token);
-                        setCurrentUser(response.user);
-                        
-                        console.log('✅ LOGIN SUCCESS via API');
-                        window.location.href = 'user-dashboard.html';
-                        return;
-                    }
-                }
-                
-                // Fallback: try using fullName as email (in case user enters email)
-                if (isValidEmail(fullName)) {
-                    const response = await api.loginUser({
-                        email: fullName,
-                        password: password
-                    });
-                    
-                    if (response.success) {
-                        saveAuthToken(response.token);
-                        setCurrentUser(response.user);
-                        
-                        console.log('✅ LOGIN SUCCESS via API (email)');
-                        window.location.href = 'user-dashboard.html';
-                        return;
-                    }
+                    console.log('✅ LOGIN SUCCESS via API');
+                    window.location.href = 'user-dashboard.html';
+                    return;
+                } else {
+                    // API returned error
+                    throw new Error(response.message || 'Login failed');
                 }
             } catch (apiError) {
-                console.log('Backend API unavailable, falling back to localStorage');
+                console.log('Backend API error:', apiError.message);
+                // If it's a network error, fall back to localStorage
+                // If it's an authentication error, throw it
+                if (apiError.message && !apiError.message.includes('fetch') && !apiError.message.includes('network')) {
+                    throw apiError;
+                }
+                console.log('Falling back to localStorage');
             }
         }
         

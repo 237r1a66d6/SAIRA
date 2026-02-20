@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
+    <style>
+        .payment-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #5a4794 0%, #7b61b8 100%);
+            padding: 40px 20px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .payment-card h1 {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .payment-card p {
+            color: #666;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .qr-code-container {
+            background: linear-gradient(135deg, #f5f0ff 0%, #ffffff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 3px solid #e8dcff;
+        }
+
+        .qr-code-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .payment-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-info p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary-purple);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #4a3684;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 71, 148, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .payment-card {
+                padding: 30px 20px;
+            }
+
+            .payment-card h1 {
+                font-size: 1.5rem;
+            }
+
+            .qr-code-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-card">
+            <h1>Make a Payment</h1>
+            <p>Scan the QR code below to complete your payment</p>
+            
+            <div class="qr-code-container">
+                <img src="assets/QR_demo.jpeg" alt="Payment QR Code" style="width: 300px; height: 300px; display: block; margin: 0 auto;">
+            </div>
+
+            <div class="payment-info">
+                <p><strong>Scan with any UPI app</strong></p>
+                <p>Google Pay • PhonePe • Paytm • BHIM</p>
+            </div>
+
+            <a href="index.html" class="back-button">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
