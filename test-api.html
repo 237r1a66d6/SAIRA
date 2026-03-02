@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAIRA ACAD - API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #666; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .success { background: #d4edda; color: #155724; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .info { background: #d1ecf1; color: #0c5460; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 SAIRA ACAD API Integration Test</h1>
+
+    <!-- Test 1: Database Connection Test -->
+    <div class="test-section">
+        <h2>1. Database Connection Test</h2>
+        <button onclick="testDatabaseConnection()">Test Database Connection</button>
+        <div id="db-result"></div>
+    </div>
+
+    <!-- Test 2: Admin Login Test -->
+    <div class="test-section">
+        <h2>2. Admin Login API Test</h2>
+        <div>
+            <input type="text" id="admin-username" value="admin" placeholder="Username">
+            <input type="password" id="admin-password" value="Admin@123" placeholder="Password">
+            <button onclick="testAdminLogin()">Test Admin Login</button>
+        </div>
+        <div id="admin-result"></div>
+    </div>
+
+    <!-- Test 3: User Registration Test -->
+    <div class="test-section">
+        <h2>3. User Registration API Test</h2>
+        <div>
+            <input type="text" id="reg-username" value="testuser" placeholder="Username">
+            <input type="email" id="reg-email" value="test@example.com" placeholder="Email">
+            <input type="text" id="reg-phone" value="9876543210" placeholder="Phone">
+            <input type="password" id="reg-password" value="Test@123" placeholder="Password">
+            <button onclick="testUserRegister()">Test Registration</button>
+        </div>
+        <div id="register-result"></div>
+    </div>
+
+    <!-- Test 4: User Login Test -->
+    <div class="test-section">
+        <h2>4. User Login API Test</h2>
+        <div>
+            <input type="text" id="user-identifier" value="testuser" placeholder="Username or Email">
+            <input type="password" id="user-password" value="Test@123" placeholder="Password">
+            <button onclick="testUserLogin()">Test User Login</button>
+        </div>
+        <div id="user-result"></div>
+    </div>
+
+    <!-- Test 5: Field Mapping Test -->
+    <div class="test-section">
+        <h2>5. Field Mapping Test</h2>
+        <button onclick="testFieldMapping()">Check Field Mappings</button>
+        <div id="mapping-result"></div>
+    </div>
+
+    <!-- Test 6: LocalStorage vs Database Test -->
+    <div class="test-section">
+        <h2>6. Authentication Mode Test</h2>
+        <button onclick="checkAuthMode()">Check Authentication Mode</button>
+        <button onclick="clearLocalStorage()">Clear LocalStorage</button>
+        <div id="auth-mode-result"></div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/api-config.js"></script>
+    <script>
+        async function testDatabaseConnection() {
+            const resultDiv = document.getElementById('db-result');
+            resultDiv.innerHTML = '<div class="info">Testing database connection...</div>';
+
+            try {
+                const response = await fetch('test-connection.php');
+                if (response.ok) {
+                    resultDiv.innerHTML = '<div class="success">✅ Database connection test file is accessible. Open <a href="test-connection.php" target="_blank">test-connection.php</a> for detailed results.</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Cannot access test-connection.php. Make sure it\'s uploaded to your server.</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">❌ Error: ' + error.message + '</div>';
+            }
+        }
+
+        async function testAdminLogin() {
+            const resultDiv = document.getElementById('admin-result');
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+
+            resultDiv.innerHTML = '<div class="info">Testing admin login...</div>';
+
+            try {
+                const response = await fetch('/api/admin/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Admin login successful!</div>
+                        <div class="test-result">
+                            <strong>Response:</strong>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                        <div class="info">
+                            <strong>Admin Data Fields:</strong> ${Object.keys(data.admin || {}).join(', ')}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Login failed: ${data.message}</div>
+                        <div class="test-result">
+                            <strong>Response:</strong>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}<br>Make sure database credentials in db_connect.php are correct.</div>`;
+            }
+        }
+
+        async function testUserRegister() {
+            const resultDiv = document.getElementById('register-result');
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const password = document.getElementById('reg-password').value;
+
+            resultDiv.innerHTML = '<div class="info">Testing user registration...</div>';
+
+            try {
+                const response = await fetch('/api/users/register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        phone,
+                        qualification: 'B.Ed',
+                        password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Registration successful!</div>
+                        <div class="test-result">
+                            <strong>Response:</strong>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Registration failed: ${data.message}</div>
+                        <div class="test-result">
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testUserLogin() {
+            const resultDiv = document.getElementById('user-result');
+            const identifier = document.getElementById('user-identifier').value;
+            const password = document.getElementById('user-password').value;
+
+            resultDiv.innerHTML = '<div class="info">Testing user login...</div>';
+
+            try {
+                const response = await fetch('/api/users/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ User login successful!</div>
+                        <div class="test-result">
+                            <strong>Response:</strong>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                        <div class="info">
+                            <strong>User Data Fields:</strong> ${Object.keys(data.user || {}).join(', ')}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Login failed: ${data.message}</div>
+                        <div class="test-result">
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function testFieldMapping() {
+            const resultDiv = document.getElementById('mapping-result');
+            
+            const expectedFields = {
+                'User Object': ['id', 'username', 'email', 'phone', 'qualification', 'status', 'created_at'],
+                'Admin Object': ['id', 'username', 'email', 'role', 'status', 'created_at']
+            };
+
+            let html = '<div class="info"><strong>Expected Field Mappings:</strong></div>';
+            html += '<div class="test-result">';
+            
+            for (const [objName, fields] of Object.entries(expectedFields)) {
+                html += `<strong>${objName}:</strong><br>`;
+                html += `<ul>${fields.map(f => `<li>${f}</li>`).join('')}</ul>`;
+            }
+            
+            html += '</div>';
+            html += '<div class="info">Frontend uses these fields in user-dashboard.js and admin-dashboard.js</div>';
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function checkAuthMode() {
+            const resultDiv = document.getElementById('auth-mode-result');
+            const hasApi = typeof api !== 'undefined';
+            const apiBase = hasApi ? API_CONFIG.BASE_URL : 'Not loaded';
+            
+            const currentUser = localStorage.getItem('currentUser');
+            const currentAdmin = localStorage.getItem('currentAdmin');
+            const authToken = localStorage.getItem('authToken');
+            
+            let html = '<div class="test-result">';
+            html += `<strong>API Available:</strong> ${hasApi ? '✅ Yes' : '❌ No'}<br>`;
+            html += `<strong>API Base URL:</strong> ${apiBase}<br>`;
+            html += `<strong>Current User in LocalStorage:</strong> ${currentUser ? '✅ Yes' : '❌ No'}<br>`;
+            html += `<strong>Current Admin in LocalStorage:</strong> ${currentAdmin ? '✅ Yes' : '❌ No'}<br>`;
+            html += `<strong>Auth Token:</strong> ${authToken ? '✅ Present' : '❌ None'}<br>`;
+            html += '</div>';
+            
+            if (currentUser) {
+                html += '<div class="info"><strong>Current User Data:</strong><pre>' + currentUser + '</pre></div>';
+            }
+            if (currentAdmin) {
+                html += '<div class="info"><strong>Current Admin Data:</strong><pre>' + currentAdmin + '</pre></div>';
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function clearLocalStorage() {
+            localStorage.clear();
+            alert('LocalStorage cleared! Refresh the page.');
+            location.reload();
+        }
+    </script>
+
+    <div class="test-section" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+        <h2>⚠️ Important Notes</h2>
+        <ul>
+            <li>Run <strong>test-connection.php</strong> first to verify database setup</li>
+            <li>If admin login fails, use the "Fix Admin Password" button in test-connection.php</li>
+            <li>Make sure database credentials in <strong>db_connect.php</strong> are correct</li>
+            <li>LocalStorage is used as fallback when API is unavailable</li>
+            <li>Delete this test file before going to production</li>
+        </ul>
+    </div>
+</body>
+</html>

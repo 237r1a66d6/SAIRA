@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                        <p class="tagline">Guiding Academic Excellence</p>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary" style="background: linear-gradient(135deg, #f9a826 0%, #f7b84d 100%); color: white; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.4); display: inline-block;">Home</a>
+                <a href="login.html" class="btn btn-secondary" style="background: linear-gradient(135deg, #f9a826 0%, #f7b84d 100%); color: white; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.4); display: inline-block;">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-box">
+                <h2>Create Your Account</h2>
+                <p class="auth-subtitle">Join SAIRA ACAD and start your journey to academic excellence</p>
+                
+                <form id="registerForm" class="auth-form" onsubmit="return false;">
+    <div class="form-group">
+        <label for="username">Username *</label>
+        <input type="text" id="username" name="username" required placeholder="Username">
+    </div>
+
+    <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phone" required placeholder="Phone">
+    </div>
+
+    <div class="form-group">
+        <label for="qualification">Qualification *</label>
+        <select id="qualification" name="qualification" required>
+            <option value="B.Ed">B.Ed</option>
+            <option value="M.Ed">M.Ed</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" required placeholder="Email">
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" required placeholder="Password">
+    </div>
+
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm Password">
+    </div>
+
+    <div id="errorMessage" class="alert alert-error" style="display: none; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 5px; margin-bottom: 15px;"></div>
+    <div id="successMessage" class="alert alert-success" style="display: none; color: #27ae60; background-color: #d4edda; padding: 12px; border-radius: 5px; margin-bottom: 15px;"></div>
+    
+    <button type="submit" class="btn btn-primary btn-full">Register Now</button>
+</form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html">Login here</a></p>
+                    <p class="admin-link"><a href="admin-login.html">Admin Login</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/register.js"></script>
+    </body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar dashboard-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1><span class="highlight">SAIRA</span> <span style="color: ghostwhite;" >ACAD</span></h1>
+                    <p class="tagline" style="color: slategrey;">Guiding Academic Excellence</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <span id="userName" class="user-name"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showUserTab('dashboard')">
+                    <span class="icon">📊</span>
+                    My Dashboard
+                </button>
+                <button class="menu-item" onclick="showUserTab('courses')">
+                    <span class="icon">📚</span>
+                    Available Courses
+                </button>
+                <button class="menu-item" onclick="showUserTab('mentorship')">
+                    <span class="icon">🎓</span>
+                    Mentorship & Training
+                </button>
+                <button class="menu-item" onclick="showUserTab('careers')">
+                    <span class="icon">💼</span>
+                    Careers
+                </button>
+                <button class="menu-item" onclick="showUserTab('profile')">
+                    <span class="icon">👤</span>
+                    My Profile
+                </button>
+                <a href="terms-conditions.html" target="_blank" class="menu-item" style="text-decoration: none;">
+                    <span class="icon">📄</span>
+                    Terms & Conditions
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>Welcome, <span id="welcomeName"></span>!</h2>
+                <div class="welcome-message">
+                    <p>Welcome to SAIRA ACAD - Strategic Academics Innovation Resources Academy. 
+                    Start your journey towards academic excellence by exploring our courses and resources.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-details">
+                            <h3 id="enrolledCourses">0</h3>
+                            <p>Enrolled Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-details">
+                            <h3 id="completedCourses">0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-details">
+                            <h3 id="inProgressCourses">0</h3>
+                            <p>In Progress</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-details">
+                            <h3 id="userProgress">0%</h3>
+                            <p>Overall Progress</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-info-card">
+                    <h3>Quick Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Email:</strong>
+                            <span id="userEmail"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Phone:</strong>
+                            <span id="userPhone"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Qualification:</strong>
+                            <span id="userQualification"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Member Since:</strong>
+                            <span id="memberSince"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Tab -->
+            <div id="courses" class="tab-content">
+                <h2>Available Courses</h2>
+                <p class="section-description">
+                    Explore our comprehensive professional development courses designed for passionate teachers.
+                </p>
+
+                <div class="courses-grid">
+                    <div class="course-card detailed">
+                        <div class="course-icon">🔢</div>
+                        <h3>Mathematics</h3>
+                        <p>Advanced teaching methodologies for mathematical concepts, including algebra, geometry, and calculus.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 12 weeks</span>
+                            <span class="course-level">📊 Advanced</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Mathematics')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🔬</div>
+                        <h3>Science</h3>
+                        <p>Innovative approaches to physics, chemistry, and biology education with practical experiments.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 10 weeks</span>
+                            <span class="course-level">📊 Intermediate</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Science')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">📖</div>
+                        <h3>Languages</h3>
+                        <p>Modern techniques for language acquisition and literacy development across multiple languages.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 8 weeks</span>
+                            <span class="course-level">📊 All Levels</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Languages')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🌍</div>
+                        <h3>Social Studies</h3>
+                        <p>Engaging methods for teaching history, geography, civics, and social sciences.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 10 weeks</span>
+                            <span class="course-level">📊 Intermediate</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Social Studies')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🎨</div>
+                        <h3>Arts & Creativity</h3>
+                        <p>Fostering creativity and artistic expression in the classroom through various mediums.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 6 weeks</span>
+                            <span class="course-level">📊 Beginner</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Arts & Creativity')">Enroll Now</button>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">💻</div>
+                        <h3>Technology & Digital Learning</h3>
+                        <p>Integrating technology effectively in modern education with digital tools and platforms.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 8 weeks</span>
+                            <span class="course-level">📊 All Levels</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollCourse('Technology & Digital Learning')">Enroll Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mentorship & Training Tab -->
+            <div id="mentorship" class="tab-content">
+                <h2>Mentorship & Training Programs</h2>
+                <p class="section-description">
+                    Advance your teaching career with our comprehensive mentorship and certification programs.
+                </p>
+                <div style="text-align: center; margin: 40px 0;">
+                    <a href="mentorship-training.html" class="btn btn-primary btn-large">
+                        <span>🎓</span> Explore Training Programs
+                    </a>
+                    <p style="margin-top: 15px; color: #666;">
+                        View all certifications, enroll in programs, and connect with expert mentors
+                    </p>
+                </div>
+                <div class="courses-grid">
+                    <div class="course-card detailed">
+                        <div class="course-icon">📜</div>
+                        <h3>Foundation Training</h3>
+                        <p>Essential teaching methodologies for new educators. Build a strong foundation in classroom management and pedagogy.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 6 weeks</span>
+                            <span class="course-level">📊 Beginner</span>
+                        </div>
+                        <a href="mentorship-training.html" class="btn btn-primary">Learn More</a>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">🏆</div>
+                        <h3>Advanced Teaching</h3>
+                        <p>Master advanced instructional strategies, assessment techniques, and differentiated learning approaches.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 8 weeks</span>
+                            <span class="course-level">📊 Advanced</span>
+                        </div>
+                        <a href="mentorship-training.html" class="btn btn-primary">Learn More</a>
+                    </div>
+
+                    <div class="course-card detailed">
+                        <div class="course-icon">👔</div>
+                        <h3>Leadership Development</h3>
+                        <p>Develop leadership skills for department heads, coordinators, and aspiring school administrators.</p>
+                        <div class="course-details">
+                            <span class="course-duration">⏱ 10 weeks</span>
+                            <span class="course-level">📊 Leadership</span>
+                        </div>
+                        <a href="mentorship-training.html" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Careers Tab -->
+            <div id="careers" class="tab-content">
+                <h2>Career Opportunities</h2>
+                <p class="section-description">
+                    Join the SAIRA ACAD team and help transform education across the nation.
+                </p>
+                <div style="text-align: center; margin: 40px 0;">
+                    <a href="careers.html" class="btn btn-primary btn-large">
+                        <span>💼</span> View All Open Positions
+                    </a>
+                    <p style="margin-top: 15px; color: #666;">
+                        Explore career opportunities and apply for positions that match your expertise
+                    </p>
+                </div>
+                <div class="schools-list">
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3 style="font-size: 2em;">👨‍💼</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Senior Education Consultant</h4>
+                            <p>Lead educational strategy initiatives and work with partner schools to implement innovative teaching methodologies.</p>
+                            <div class="school-stats">
+                                <span>📍 Multiple Locations</span>
+                                <span>💼 Full-time</span>
+                                <span>⏱ 5+ years exp</span>
+                            </div>
+                            <a href="careers.html" class="btn btn-secondary" style="margin-top: 15px;">View Details</a>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3 style="font-size: 2em;">👩‍🏫</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Training Program Coordinator</h4>
+                            <p>Design and deliver professional development programs for teachers. Manage training schedules and mentor educators.</p>
+                            <div class="school-stats">
+                                <span>📍 Bangalore</span>
+                                <span>💼 Full-time</span>
+                                <span>⏱ 3+ years exp</span>
+                            </div>
+                            <a href="careers.html" class="btn btn-secondary" style="margin-top: 15px;">View Details</a>
+                        </div>
+                    </div>
+
+                    <div class="school-card">
+                        <div class="school-logo-large">
+                            <h3 style="font-size: 2em;">💻</h3>
+                        </div>
+                        <div class="school-info">
+                            <h4>Content Development Specialist</h4>
+                            <p>Create engaging educational content, curriculum materials, and training resources for our platform.</p>
+                            <div class="school-stats">
+                                <span>📍 Remote</span>
+                                <span>💼 Full-time</span>
+                                <span>⏱ 2+ years exp</span>
+                            </div>
+                            <a href="careers.html" class="btn btn-secondary" style="margin-top: 15px;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>My Profile</h2>
+                    <button class="btn btn-primary" onclick="showEditProfileModal()">
+                        <span>✏️</span> Edit Profile
+                    </button>
+                </div>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <span id="profileInitial"></span>
+                            </div>
+                            <div class="profile-name">
+                                <h3 id="profileName"></h3>
+                                <p id="profileEmail"></p>
+                            </div>
+                        </div>
+
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <strong>Full Name:</strong>
+                                <span id="profileFullName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Email Address:</strong>
+                                <span id="profileEmailAddress"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Phone Number:</strong>
+                                <span id="profilePhone"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Qualification:</strong>
+                                <span id="profileQualification"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Member Since:</strong>
+                                <span id="profileMemberSince"></span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Account Status:</strong>
+                                <span class="status-badge active">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn" onclick="closeEditProfileModal()">&times;</button>
+            </div>
+            <form id="editProfileForm" class="modal-form">
+                <input type="hidden" id="editProfileOldEmail">
+                <div class="form-group">
+                    <label for="editProfileName">Full Name *</label>
+                    <input type="text" id="editProfileName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileEmail">Email Address *</label>
+                    <input type="email" id="editProfileEmail" required placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePhone">Phone Number *</label>
+                    <input type="tel" id="editProfilePhone" required placeholder="Enter phone number" pattern="[0-9]{10}">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileQualification">Qualification *</label>
+                    <select id="editProfileQualification" required>
+                        <option value="B.Ed">B.Ed</option>
+                        <option value="M.Ed">M.Ed</option>
+                        <option value="B.A">B.A</option>
+                        <option value="M.A">M.A</option>
+                        <option value="B.Sc">B.Sc</option>
+                        <option value="M.Sc">M.Sc</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editProfilePassword" placeholder="Enter new password" minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmEditProfilePassword">Confirm New Password</label>
+                    <input type="password" id="confirmEditProfilePassword" placeholder="Confirm new password">
+                </div>
+                <div id="editProfileModalError" class="error-message" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditProfileModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/user-dashboard.js"></script>
+</body>
+</html>

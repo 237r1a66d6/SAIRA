@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAIRA ACAD - Guiding Academic Excellence</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
+</head>
+<body>
+    <!-- <nav class="navbar"> -->
+        <div class="containernav">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                    <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="index" class="nav-link">Home</a>
+                <a href="schools-page" class="nav-link">Schools</a>
+                <a href="join-saira" class="nav-link">Teachers</a>
+                <a href="careers" class="nav-link">Careers</a>
+                <a href="contact-us" class="nav-link">Contact Us</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn nav-link">About <span class="dropdown-arrow">▼</span></button>
+                    <div class="dropdown-content">
+                        <a href="about-us">About Us</a>
+                        <a href="mentorship-training" style="display: none;">Mentorship</a>
+                        <a href="success-stories">Success Stories</a>
+                        <a href="resources" style="display: none;">Resources</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="login" class="btn btn-secondary">Login</a>
+                <a href="register" class="btn btn-cta">Join Now</a>
+            </div>
+        </div>
+    <!-- </nav> -->
+
+    <section class="hero" style="background: linear-gradient(135deg, #f5f0ff 0%, #fef8f0 100%); min-height: 600px; display: flex; align-items: center; padding: 60px 0;">
+        <div class="container">
+            <div class="hero-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+                <div class="hero-content">
+                    <h1 style="font-size: 3.2rem; line-height: 1.2; font-weight: 700; color: #3d2f7c; margin-bottom: 25px;">
+                        Shaping Educators for Meaningful Classrooms
+                    </h1>
+                    <p style="font-size: 1.15rem; line-height: 1.7; color: #666; margin-bottom: 40px;">
+                        Where educators grow and schools find teaching excellence. Certified mentorship, classroom-ready training, and quality placements — all within one academic ecosystem.
+                    </p>
+                    
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <span style="font-size: 0.9rem; color: #666; font-weight: 500;"></span>
+                            <a href="schools-page" class="btn btn-large" style="background: #5a4794; color: white; padding: 16px 45px; border-radius: 50px; font-size: 1.05rem; display: inline-block; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(90, 71, 148, 0.25); font-weight: 600;">Partner with Us</a>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <span style="font-size: 0.9rem; color: #666; font-weight: 500;"></span>
+                            <a href="register" class="btn btn-large" style="background: white; color: #3d2f7c; padding: 16px 45px; border-radius: 50px; font-size: 1.05rem; display: inline-block; transition: all 0.3s ease; border: 2px solid #3d2f7c; font-weight: 600;">Join Saira Acad Educators</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-visual" style="position: relative; height: 500px;">
+                    <!-- Decorative background shape -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 450px; background: radial-gradient(circle, rgba(184, 163, 232, 0.25) 0%, rgba(249, 168, 38, 0.1) 70%); border-radius: 50%; filter: blur(40px);"></div>
+                    
+                    <!-- Organic shape -->
+                    <svg style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; height: 420px; opacity: 0.2;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#b8a3e8" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.2,73.1,42.5C64.8,55.8,53.8,67.8,40.3,75.2C26.8,82.6,10.8,85.4,-4.3,82.9C-19.4,80.4,-33.7,72.6,-46.5,63.9C-59.3,55.2,-70.6,45.6,-77.8,33.4C-85,21.2,-88.1,6.4,-86.8,-7.9C-85.5,-22.2,-79.8,-36,-70.8,-47.9C-61.8,-59.8,-49.5,-69.8,-36.1,-77.3C-22.7,-84.8,-8.1,-89.8,4.9,-87.5C17.9,-85.2,30.6,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
+                    </svg>
+                    
+                    <!-- Decorative dots with light rings -->
+                    <!-- Top left orange dot -->
+                    <div style="position: absolute; top: 8%; left: 10%;">
+                        <div style="width: 8px; height: 8px; background: #f9a826; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Left side dot with ring -->
+                    <div style="position: absolute; top: 35%; left: 5%;">
+                        <div style="width: 30px; height: 30px; border: 1.5px solid rgba(184, 163, 232, 0.3); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                        <div style="width: 6px; height: 6px; background: #b8a3e8; border-radius: 50%; position: relative; z-index: 2; margin: 12px;"></div>
+                    </div>
+                    
+                    <!-- Bottom left purple dot -->
+                    <div style="position: absolute; bottom: 18%; left: 12%;">
+                        <div style="width: 7px; height: 7px; background: #5a4794; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Right side orange dot -->
+                    <div style="position: absolute; top: 52%; right: 8%;">
+                        <div style="width: 8px; height: 8px; background: #f7b84d; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Bottom right dot with ring -->
+                    <div style="position: absolute; bottom: 32%; right: 15%;">
+                        <div style="width: 28px; height: 28px; border: 1.5px solid rgba(249, 168, 38, 0.3); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                        <div style="width: 7px; height: 7px; background: #f9a826; border-radius: 50%; position: relative; z-index: 2; margin: 10.5px;"></div>
+                    </div>
+                    
+                    <!-- Top right area dot -->
+                    <div style="position: absolute; top: 25%; right: 18%;">
+                        <div style="width: 6px; height: 6px; background: #e8dcff; border-radius: 50%; position: relative; z-index: 2;"></div>
+                    </div>
+                    
+                    <!-- Floating Cards -->
+                    <div style="position: absolute; top: 20%; right: 15%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite;">
+                        <div style="width: 35px; height: 35px; background: rgba(184, 163, 232, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">🏫</span>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Academic Partnership</span>
+                    </div>
+                    
+                    <div style="position: absolute; top: 45%; left: 10%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite 0.5s;">
+                        <div style="width: 35px; height: 35px; background: rgba(184, 163, 232, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">✓</span>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Continuous Support</span>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 20%; right: 20%; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 8px 25px rgba(61, 47, 124, 0.15); display: flex; align-items: center; gap: 12px; animation: float 3s ease-in-out infinite 1s;">
+                        <div style="width: 35px; height: 35px; background: rgba(249, 184, 77, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 1.2rem;">👥</span>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3d2f7c;">Classroom-Ready</span>
+                    </div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #3a3a3a;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+
+    <!-- Logo Animation Section -->
+    <section class="logo-slider-section" style="background-color: #d3d3d3 !important;">
+        <div class="logo-slider-wrapper">
+            <div class="logo-slider-track">
+                <div class="logo-slide">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/westfield.png" alt="Westfield Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/westfield.png" alt="Westfield Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo" loading="eager" style="display: block; visibility: visible;">
+                </div>
+                <div class="logo-slide">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/westfield.png" alt="Westfield Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/solitaire-global-school-logo.png" alt="Solitaire Global Schools" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/westfield.png" alt="Westfield Logo" loading="eager" style="display: block; visibility: visible;">
+                    <img src="assets/sattva ani.png" alt="Sattva Academy Logo" loading="eager" style="display: block; visibility: visible;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-saira">
+        <div class="container">
+            <div class="about-saira-content">
+                <div class="about-saira-text">
+                    <h2 class="section-title">Who We Are</h2>
+                    <p>Saira Acad is an academic support ecosystem built for schools and educators.
+We work alongside institutions to strengthen teaching quality by supporting educators
+continuously aligning pedagogy, classroom practice, and school goals.
+We don’t believe in one-time training.
+We believe in long-term academic partnerships that actually improve classrooms.</p>
+                    <a href="about-us" class="btn btn-secondary btn-large">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Educators Section -->
+    <section id="services" class="educator-section" style="background: linear-gradient(135deg, #f5f0ff 0%, #e8f4ff 100%); padding: 80px 0; color: #333;">
+        <div class="container">
+            <div style="max-width: 1200px; margin: 0 auto;">
+                <!-- Header -->
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: var(--primary-purple);">Saira for Educators</h2>
+                    <p style="font-size: 1.2rem; color: #555;">More than training. A clear growth path for educators.</p>
+                </div>
+                
+                <!-- Main Content Box -->
+                <div style="background: linear-gradient(135deg, #ffffff 0%, #f9f9ff 100%); border: 3px solid #e0d4ff; border-radius: 15px; padding: 50px; margin-bottom: 40px; box-shadow: 0 10px 40px rgba(61, 47, 124, 0.1);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
+                        <!-- Left Column: Text Content -->
+                        <div>
+                            <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 18px; color: #444;">
+                                <strong style="font-weight: 700; color: var(--primary-purple);">Teaching is not just a role—it's a career.</strong>
+                            </p>
+                            <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 18px; color: #555;">
+                                Most educators receive training, but very few get structured support to grow beyond the classroom.
+                            </p>
+                            <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 30px; color: #555;">
+                                Saira Acad supports educators with classroom-ready guidance and long-term career progression.
+                            </p>
+                            
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style="font-size: 1rem; line-height: 1.8; margin-bottom: 12px; padding-left: 25px; position: relative; color: #555;">
+                                    <span style="position: absolute; left: 0; color: var(--primary-orange);">●</span>
+                                    <em>Classroom-ready support</em>
+                                </li>
+                                <li style="font-size: 1rem; line-height: 1.8; margin-bottom: 12px; padding-left: 25px; position: relative; color: #555;">
+                                    <span style="position: absolute; left: 0; color: var(--primary-orange);">●</span>
+                                    <em>Practical teaching resources</em>
+                                </li>
+                                <li style="font-size: 1rem; line-height: 1.8; margin-bottom: 12px; padding-left: 25px; position: relative; color: #555;">
+                                    <span style="position: absolute; left: 0; color: var(--primary-orange);">●</span>
+                                    <em>Continuous guidance & mentorship</em>
+                                </li>
+                                <li style="font-size: 1rem; line-height: 1.8; margin-bottom: 12px; padding-left: 25px; position: relative; color: #555;">
+                                    <span style="position: absolute; left: 0; color: var(--primary-orange);">●</span>
+                                    <em>Confidence at every career stage</em>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Right Column: Career Progression Diagram -->
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="width: 100%; max-width: 280px; text-align: center; border: 3px solid #b8a3e8; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; background: linear-gradient(135deg, #f0e8ff 0%, #ffffff 100%); box-shadow: 0 4px 15px rgba(184, 163, 232, 0.3);">
+                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--primary-purple);">Teacher</h4>
+                            </div>
+                            <div style="font-size: 2rem; color: var(--primary-orange); margin-bottom: 15px; font-weight: bold;">↓</div>
+                            <div style="width: 100%; max-width: 280px; text-align: center; border: 3px solid #9e84db; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; background: linear-gradient(135deg, #e8dcff 0%, #ffffff 100%); box-shadow: 0 4px 15px rgba(158, 132, 219, 0.3);">
+                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--primary-purple);">Academic Coordinator</h4>
+                            </div>
+                            <div style="font-size: 2rem; color: var(--primary-orange); margin-bottom: 15px; font-weight: bold;">↓</div>
+                            <div style="width: 100%; max-width: 280px; text-align: center; border: 3px solid #8466cf; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; background: linear-gradient(135deg, #ded0ff 0%, #ffffff 100%); box-shadow: 0 4px 15px rgba(132, 102, 207, 0.3);">
+                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--primary-purple);">Academic Counsellor / Head</h4>
+                            </div>
+                            <div style="font-size: 2rem; color: var(--primary-orange); margin-bottom: 15px; font-weight: bold;">↓</div>
+                            <div style="width: 100%; max-width: 280px; text-align: center; border: 3px solid #5a4794; border-radius: 10px; padding: 15px 20px; background: linear-gradient(135deg, #d4c4ff 0%, #ffffff 100%); box-shadow: 0 4px 15px rgba(90, 71, 148, 0.4);">
+                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--primary-purple);">Academic Leadership Roles</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CTA Section -->
+                <div style="text-align: center;">
+                    <a href="register" class="btn btn-cta btn-large" style="background: linear-gradient(135deg, var(--primary-orange) 0%, #f7b84d 100%); color: white; padding: 18px 50px; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.4); display: inline-block; margin-bottom: 15px;">Join Saira Acad Educators</a>
+                    <p style="font-size: 0.95rem; color: var(--primary-purple); margin: 0; font-weight: 500;"><em>Build your classroom impact. Grow your academic career.</em></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Schools Section -->
+    <section class="school-section" style="background: #f8f9fa; padding: 80px 0; color: var(--primary-purple);">
+        <div class="container">
+            <div style="max-width: 1100px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <div style="display: inline-flex; align-items: center; gap: 15px; background: rgba(61, 47, 124, 0.1); padding: 15px 30px; border-radius: 50px; margin-bottom: 30px;">
+                        <span style="font-size: 2.5rem;">🏫</span>
+                        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; color: var(--primary-purple);">Schools</h3>
+                    </div>
+                    <h2 style="font-size: 2.8rem; font-weight: 700; margin-bottom: 20px; color: var(--primary-purple);">Saira for Schools</h2>
+                    <p style="font-size: 1.3rem; line-height: 1.8; color: #555; font-weight: 500;">Academic partnership for consistent teaching quality.</p>
+                </div>
+                
+                <div style="text-align: left; max-width: 900px; margin: 0 auto 40px;">
+                    <p style="font-size: 1.1rem; line-height: 1.9; margin-bottom: 30px; color: #555;">
+                        Schools invest in professional development, but often see limited long-term impact.
+                    </p>
+                    <p style="font-size: 1.1rem; line-height: 1.9; margin-bottom: 40px; color: #555;">
+                        Saira Acad partners with school leadership to build consistent, confident teaching across classrooms through structured, ongoing academic support aligned with your institution's vision.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px;">
+                        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--primary-orange);">
+                            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--primary-purple);">Trained & Certified Teacher Recruitment</h3>
+                            <p style="font-size: 1rem; line-height: 1.8; color: #666; margin: 0;">Qualified educators prepared for real classroom demands.</p>
+                        </div>
+                        
+                        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--primary-orange);">
+                            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--primary-purple);">Continuous Professional Growth for Teachers</h3>
+                            <p style="font-size: 1rem; line-height: 1.8; color: #666; margin: 0;">Ongoing training and upskilling to improve retention and performance.</p>
+                        </div>
+                        
+                        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--primary-orange);">
+                            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--primary-purple);">End-to-End Academic Support</h3>
+                            <p style="font-size: 1rem; line-height: 1.8; color: #666; margin: 0;">Classroom courses and academic guidance that strengthen daily teaching.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <a href="schools-page" class="btn btn-primary btn-large" style="background: linear-gradient(135deg, var(--primary-orange) 0%, #f7b84d 100%); color: white; padding: 18px 50px; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.3);">Partner With Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="process" style="background: #ffffff; padding: 80px 0;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 15px;">Why schools and educators choose Saira Acad</h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1100px; margin: 0 auto 50px;">
+                <!-- Stat 1 -->
+                <div style="background: linear-gradient(135deg, #f5f0ff 0%, #ffffff 100%); padding: 40px; border-radius: 15px; text-align: center; border: 2px solid #e8dcff; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <h3 style="font-size: 3rem; font-weight: 800; color: var(--primary-orange); margin-bottom: 15px;">250+</h3>
+                    <h4 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 10px;">Educators Supported</h4>
+                    <p style="font-size: 1.05rem; color: #666; line-height: 1.6;">Across schools and academic programs</p>
+                </div>
+                
+                <!-- Stat 2 -->
+                <div style="background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%); padding: 40px; border-radius: 15px; text-align: center; border: 2px solid #ffe8cc; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <h3 style="font-size: 3rem; font-weight: 800; color: var(--primary-purple); margin-bottom: 15px;">9+</h3>
+                    <h4 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 10px;">Schools Engaged</h4>
+                    <p style="font-size: 1.05rem; color: #666; line-height: 1.6;">Through long-term academic partnerships</p>
+                </div>
+                
+                <!-- Stat 3 -->
+                <div style="background: linear-gradient(135deg, #f5f0ff 0%, #ffffff 100%); padding: 40px; border-radius: 15px; text-align: center; border: 2px solid #e8dcff; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <h3 style="font-size: 3rem; font-weight: 800; color: var(--primary-orange); margin-bottom: 15px;">100%</h3>
+                    <h4 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 10px;">Focus on Classroom Implementation</h4>
+                    <p style="font-size: 1.05rem; color: #666; line-height: 1.6;">Not just theory or certificates</p>
+                </div>
+                
+                <!-- Stat 4 -->
+                <div style="background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%); padding: 40px; border-radius: 15px; text-align: center; border: 2px solid #ffe8cc; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <h3 style="font-size: 3rem; font-weight: 800; color: var(--primary-purple); margin-bottom: 15px;">∞</h3>
+                    <h4 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 10px;">Ongoing Academic Support Model</h4>
+                    <p style="font-size: 1.05rem; color: #666; line-height: 1.6;">Built for real teaching environments</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <p style="font-size: 1rem; color: #888; font-style: italic; line-height: 1.7;">Our impact is measured by classroom confidence and consistency — not attendance certificates.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section class="courses" id="courses">
+        <div class="container">
+            <div class="section-label">Services</div>
+            <h2 class="section-title">Join Our Community</h2>
+            <p class="section-description">
+                Be part of our growing educational network and make a lasting impact
+            </p>
+            <div class="courses-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 900px; margin: 0 auto;">
+                <div class="course-card modern-card">
+                    <div class="course-visual">
+                        <div class="visual-element">
+                            <span class="visual-icon">👨‍🏫</span>
+                            <span class="visual-text">Educators</span>
+                        </div>
+                    </div>
+                    <h3>Join as Educator</h3>
+                    <p style="flex-grow: 1;">Transform your teaching career with our professional development programs. Access cutting-edge resources, connect with fellow educators, and enhance your impact in the classroom.</p>
+                    <a href="register" class="btn btn-primary" style="margin-top: auto;">Join Now</a>
+                </div>
+                <div class="course-card modern-card">
+                    <div class="course-visual">
+                        <div class="visual-element">
+                            <span class="visual-icon">🏫</span>
+                            <span class="visual-text">Schools</span>
+                        </div>
+                    </div>
+                    <h3>Partner as School</h3>
+                    <p style="flex-grow: 1;">Elevate your institution's academic excellence through strategic partnerships. Provide your teachers with world-class training and innovative teaching methodologies.</p>
+                    <a href="contact-us" class="btn btn-primary" style="margin-top: auto;">Partner With Us</a>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <section class="partners" id="testimonials">
+        <div class="container">
+            <div class="section-label">Testimonials</div>
+            <h2 class="section-title">What Our Educators Say</h2>
+            <p class="section-description">
+                Discover how our educators have transformed their teaching with SAIRA ACAD
+            </p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Our classroom engagement increased significantly thanks to SAIRA ACAD's innovative teaching methodologies."</p>
+                    <div class="testimonial-author">
+                        <strong>Priya Sharma</strong>
+                        <span>Mathematics Teacher, Delhi Public School</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"SAIRA ACAD's professional development courses drastically improved my teaching effectiveness and student outcomes."</p>
+                    <div class="testimonial-author">
+                        <strong>Rajesh Kumar</strong>
+                        <span>Science Teacher, Kendriya Vidyalaya</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The strategic innovation approach streamlined my lesson planning, saving time and improving quality."</p>
+                    <div class="testimonial-author">
+                        <strong>Meera Patel</strong>
+                        <span>Language Teacher, Ryan International</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Their personalized learning paths greatly improved my professional development journey."</p>
+                    <div class="testimonial-author">
+                        <strong>Amit Singh</strong>
+                        <span>Social Studies Teacher, DAV Public School</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits" id="benefits">
+        <div class="container">
+            <div class="section-label">Benefits</div>
+            <h2 class="section-title">Why Choose SAIRA</h2>
+            <p class="section-description">Discover the advantages of partnering with our professional development platform</p>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Enhanced Effectiveness</h3>
+                    <p>We streamline teaching processes with innovative methodologies, reducing workload and maximizing impact.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Career Growth</h3>
+                    <p>By advancing skills, we enhance career prospects and open new opportunities effectively.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Personalized Learning</h3>
+                    <p>We deliver customized experiences, enhancing professional satisfaction and growth.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h3>Scalability</h3>
+                    <p>Our solutions allow you to adapt teaching strategies easily to meet evolving classroom demands.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Faster Implementation</h3>
+                    <p>We provide actionable strategies swiftly, enabling faster classroom transformation.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔄</div>
+                    <h3>Adaptive Methods</h3>
+                    <p>We adapt to changing educational landscapes, ensuring our solutions remain effective.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-label">FAQ</div>
+            <h2 class="section-title">Your Questions, Answered</h2>
+            <p class="section-description">Answers to your most common questions about our professional development platform</p>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Who can partner with Saira Acad?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Schools and educational institutions looking for continuous academic support for their educators.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Is this only for experienced teachers?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No. Our support model benefits educators at all stages of their teaching journey.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Is Saira Acad a one-time program?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No. We focus on long-term academic partnerships, not standalone workshops.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What kind of support do you provide after enrollment?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We provide continuous mentorship, access to expert educators, resource libraries, and a collaborative community of teachers. Our support includes regular check-ins, feedback on implementation, and ongoing professional development opportunities.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>How much does enrollment cost?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We offer flexible pricing options to accommodate different needs and budgets. Contact us for detailed information about course fees, institutional partnerships, and available financial assistance options.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quick-links-section" style="background: linear-gradient(135deg, #3d2f7c 0%, #5a4794 100%); padding: 60px 0;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 2rem; margin-bottom: 10px;">Explore More</h2>
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem;">Discover our success stories, get in touch, or learn about our policies</p>
+            </div>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; max-width: 1000px; margin: 0 auto;">
+                <a href="contact-us" class="btn btn-cta btn-large" style="min-width: 200px; text-align: center;">Contact Us</a>
+                <a href="schools-page" class="btn btn-cta btn-large" style="min-width: 200px; text-align: center;">For Schools</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>SAIRA <span class="highlight">ACAD</span></h3>
+                    <p>Guiding Academic Excellence</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#process">Process</a>
+                    <!-- <a href="#services">Services</a> -->
+                    <a href="#benefits">Benefits</a>
+                    <a href="#testimonials">Testimonials</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SAIRA ACAD - Strategic Academics Innovation Resources Academy. All rights reserved. Developed by Gautam & Chandu.</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/saira-acad-25103a3a5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_appl" aria-label="LinkedIn" class="social-link">in</a>
+                    <a href="https://x.com/sairaacad" aria-label="Twitter" class="social-link">𝕏</a>
+                    <a href="https://instagram.com/sairaacad" aria-label="Instagram" class="social-link">ig</a>
+                    <a href=" https://www.facebook.com/profile.php?id=61586279211712" aria-label="Facebook" class="social-link">f</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="#" id="whatsappShareBtn" class="whatsapp-float" aria-label="Share on WhatsApp" title="Share on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="32" height="32">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+
+    <script src="js/mobile-menu.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/premium-interactions.js"></script>
+    <script>
+        // FAQ Accordion Toggle
+        function toggleFaq(button) {
+            const faqItem = button.closest('.faq-item');
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle current item
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // WhatsApp Contact Functionality
+        document.getElementById('whatsappShareBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const phoneNumber = '918125878585';
+            const message = encodeURIComponent('Hello, I am interested in SAIRA ACAD programs. I would like to know more.');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
+    <script src="js/dropdown.js"></script>
+</body>
+</html>

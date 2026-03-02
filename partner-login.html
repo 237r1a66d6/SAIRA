@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Partner Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                    <p class="tagline">Strategic Academics<br>Innovation Resource Academy</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-header">
+                    <h2>School Partner Login</h2>
+                    <p>Access your school partner dashboard</p>
+                </div>
+                
+                <form id="partnerLoginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large">Login</button>
+                </form>
+                
+                <div class="login-footer">
+                    <p>Need help? <a href="contact-us.html">Contact Support</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/partner-login.js"></script>
+</body>
+</html>

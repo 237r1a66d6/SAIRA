@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Partner Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                        <p class="tagline">Guiding Academic Excellence</p>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">Home</a>
+                <a href="register.html" class="btn btn-secondary">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-box">
+                <h2>School Partner Login</h2>
+                <p class="auth-subtitle">Access your partner school dashboard</p>
+                
+                <form id="schoolLoginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="schoolUsername">Username *</label>
+                        <input type="text" id="schoolUsername" required placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="schoolPassword">Password *</label>
+                        <input type="password" id="schoolPassword" required placeholder="Enter your password">
+                    </div>
+
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Not a partner yet? <a href="contact-us.html">Contact us to become a partner</a></p>
+                    <p class="admin-link"><a href="login.html">User Login</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="js/school-login.js"></script>
+</body>
+</html>

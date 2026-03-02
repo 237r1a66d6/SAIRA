@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Partner Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="dashboard-nav">
+        <div class="nav-brand">
+            <h2>SAIRA <span class="highlight">ACAD</span></h2>
+        </div>
+        <div class="nav-right">
+            <span id="schoolName" class="user-name"></span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showTab('overview')">
+                    <span class="icon">📊</span>
+                    Dashboard Overview
+                </button>
+                <button class="menu-item" onclick="showTab('job-postings')">
+                    <span class="icon">📝</span>
+                    Job Postings
+                </button>
+                <button class="menu-item" onclick="showTab('applications')">
+                    <span class="icon">📋</span>
+                    Applications
+                </button>
+                <button class="menu-item" onclick="showTab('profile')">
+                    <span class="icon">🏫</span>
+                    School Profile
+                </button>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-details">
+                            <h3 id="totalPostings">0</h3>
+                            <p>Active Job Postings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-details">
+                            <h3 id="totalApplications">0</h3>
+                            <p>Total Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-details">
+                            <h3 id="hiredTeachers">0</h3>
+                            <p>Teachers Hired</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-details">
+                            <h3 id="pendingReview">0</h3>
+                            <p>Pending Review</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="recentActivity">
+                        <p class="no-data">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Postings Tab -->
+            <div id="job-postings" class="tab-content">
+                <div class="tab-header">
+                    <h2>Job Postings</h2>
+                    <button class="btn btn-primary" onclick="showAddJobModal()">
+                        <span>+</span> Post New Job
+                    </button>
+                </div>
+                <div class="table-container">
+                    <p class="info-message">Job posting functionality coming soon. You'll be able to post teaching positions and manage applications.</p>
+                </div>
+            </div>
+
+            <!-- Applications Tab -->
+            <div id="applications" class="tab-content">
+                <h2>Teacher Applications</h2>
+                <div class="table-container">
+                    <p class="info-message">Applications management coming soon. You'll be able to review and manage teacher applications.</p>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <h2>School Profile</h2>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-info">
+                            <h3 id="profileSchoolName"></h3>
+                            <div class="info-row">
+                                <strong>Username:</strong>
+                                <span id="profileUsername"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Email:</strong>
+                                <span id="profileEmail"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Phone:</strong>
+                                <span id="profilePhone"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Location:</strong>
+                                <span id="profileLocation"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Account Created:</strong>
+                                <span id="profileCreated"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/school-dashboard.js"></script>
+</body>
+</html>

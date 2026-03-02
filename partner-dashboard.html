@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar dashboard-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1><span class="highlight">SAIRA</span> <span style="color: ghostwhite;">ACAD</span></h1>
+                    <p class="tagline">School Partner Portal</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <span id="partnerName" class="user-name"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" onclick="showTab('overview')">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </button>
+                <button class="menu-item" onclick="showTab('job-applications')">
+                    <span class="icon">📋</span>
+                    Job Applications
+                </button>
+                <button class="menu-item" onclick="showTab('teacher-applications')">
+                    <span class="icon">👨‍🏫</span>
+                    Teacher Applications
+                </button>
+                <button class="menu-item" onclick="showTab('mentor-applications')">
+                    <span class="icon">🎓</span>
+                    Mentor Applications
+                </button>
+                <button class="menu-item" onclick="showTab('profile')">
+                    <span class="icon">⚙️</span>
+                    School Profile
+                </button>
+            </div>
+        </aside>
+
+        <main class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Welcome, <span id="schoolNameDisplay"></span>!</h2>
+                <p class="section-description">Manage your school's hiring needs and applications</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-details">
+                            <h3 id="totalJobApps">0</h3>
+                            <p>Job Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-details">
+                            <h3 id="totalTeacherApps">0</h3>
+                            <p>Teacher Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-details">
+                            <h3 id="totalMentorApps">0</h3>
+                            <p>Mentor Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-details">
+                            <h3 id="pendingReviews">0</h3>
+                            <p>Pending Reviews</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-section">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showTab('job-applications')">
+                            View Job Applications
+                        </button>
+                        <button class="btn btn-secondary" onclick="showTab('teacher-applications')">
+                            Review Teachers
+                        </button>
+                        <button class="btn btn-secondary" onclick="showTab('mentor-applications')">
+                            Review Mentors
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Applications Tab -->
+            <div id="job-applications" class="tab-content">
+                <h2>Job Applications</h2>
+                <p class="section-description">Review candidates who applied for job opportunities</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Position</th>
+                                <th>Experience</th>
+                                <th>Applied Date</th>
+                                <th>Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobApplicationsTable">
+                            <tr>
+                                <td colspan="7" class="no-data">Loading applications...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teacher Applications Tab -->
+            <div id="teacher-applications" class="tab-content">
+                <h2>Teacher Applications</h2>
+                <p class="section-description">Review teachers who applied through our platform</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Experience</th>
+                                <th>Subjects</th>
+                                <th>Applied Date</th>
+                                <th>Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherApplicationsTable">
+                            <tr>
+                                <td colspan="7" class="no-data">Loading applications...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mentor Applications Tab -->
+            <div id="mentor-applications" class="tab-content">
+                <h2>Mentor Applications</h2>
+                <p class="section-description">Review mentors who applied through our platform</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Experience</th>
+                                <th>Specialization</th>
+                                <th>Applied Date</th>
+                                <th>Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mentorApplicationsTable">
+                            <tr>
+                                <td colspan="7" class="no-data">Loading applications...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <h2>School Profile</h2>
+                
+                <div class="profile-section">
+                    <div class="profile-card">
+                        <h3>School Information</h3>
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <label>School Name:</label>
+                                <span id="profileSchoolName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Username:</label>
+                                <span id="profileUsername"></span>
+                            </div>
+                            <div class="detail-row">
+                                <label>Email:</label>
+                                <span id="profileEmail"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Support</h3>
+                        <p>Need assistance? Contact our support team:</p>
+                        <div class="action-buttons">
+                            <a href="contact-us.html" class="btn btn-primary">Contact Support</a>
+                            <a href="resources.html" class="btn btn-secondary">View Resources</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/partner-dashboard.js"></script>
+</body>
+</html>

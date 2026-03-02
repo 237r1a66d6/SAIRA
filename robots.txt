@@ -1,0 +1,22 @@
+# robots.txt for SAIRA ACAD
+
+User-agent: *
+Allow: /
+
+# Disallow admin and login pages
+Disallow: /admin-dashboard.html
+Disallow: /admin-login.html
+Disallow: /partner-dashboard.html
+Disallow: /partner-login.html
+Disallow: /school-dashboard.html
+Disallow: /school-login.html
+Disallow: /teacher-dashboard.html
+Disallow: /teacher-login.html
+Disallow: /user-dashboard.html
+Disallow: /login.html
+
+# Disallow backend
+Disallow: /backend/
+
+# Sitemap location
+Sitemap: https://sairaacad.com/sitemap.xml

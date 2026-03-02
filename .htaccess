@@ -1,0 +1,155 @@
+# ============================================================================
+# SAIRA ACAD .htaccess Configuration for Hostinger
+# Optimized for clean URLs, security, and performance
+# ============================================================================
+
+# Enable Rewrite Engine
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Force HTTPS (Uncomment after SSL certificate is installed on Hostinger)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+    
+    # Remove www (Optional - uncomment if you want non-www)
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Allow API CORS
+    <FilesMatch "\.(php)$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    </FilesMatch>
+</IfModule>
+
+# PHP Configuration for Hostinger
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
+
+# PERFORMANCE OPTIMIZATION
+# Enable Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+    SetOutputFilter DEFLATE
+</IfModule>
+
+# Browser Caching - Leverage Browser Cache
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images - cache for 1 year
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript - cache for 1 month
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts - cache for 1 year
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # HTML - cache for 1 hour
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # PDF - cache for 1 month
+    ExpiresByType application/pdf "access plus 1 month"
+    
+    # PHP - no cache
+    ExpiresByType application/x-httpd-php "access plus 0 seconds"
+</IfModule>
+
+# Alternative Caching using Cache-Control Headers
+<IfModule mod_headers.c>
+    # Cache static assets
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|svg|css|js|woff|woff2|ttf|otf)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # HTML files - shorter cache
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "max-age=3600, must-revalidate"
+    </FilesMatch>
+    
+    # PHP files - no cache
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# Disable Directory Browsing
+Options -Indexes
+
+# Default Document
+DirectoryIndex index.html index.php
+
+# Protect sensitive files
+<FilesMatch "^(db_connect\.php|\.env|\.git|\.gitignore)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect database.sql file from direct access
+<Files "database.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Prevent access to backup and config files
+<FilesMatch "\.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable ETags for better caching
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+FileETag None
+
+# UTF-8 Encoding
+AddDefaultCharset UTF-8
+
+# Custom Error Pages (Optional - create these files if needed)
+# ErrorDocument 404 /404.html
+# ErrorDocument 403 /403.html
+# ErrorDocument 500 /500.html
+
+# ============================================================================
+# END OF .htaccess - Ready for Hostinger deployment
+# ============================================================================
+

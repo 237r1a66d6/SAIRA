@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J4FHJLX2SQ');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SAIRA ACAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/OnlyLogo(noBG).png" alt="SAIRA ACAD Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>SAIRA <span class="highlight">ACAD</span></h1>
+                        <p class="tagline">Guiding Academic Excellence</p>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary" style="background: linear-gradient(135deg, #f9a826 0%, #f7b84d 100%); color: white; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.4); display: inline-block;">Home</a>
+                <a href="register.html" class="btn btn-secondary" style="background: linear-gradient(135deg, #f9a826 0%, #f7b84d 100%); color: white; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(249, 168, 38, 0.4); display: inline-block;">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-box">
+                <h2>Login</h2>
+                <p class="auth-subtitle">Login to access your dashboard</p>
+                
+                <form id="loginForm" class="auth-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="fullName">Username</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your username" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="off">
+                    </div>
+                    
+                    <p style="font-size: 0.85rem; color: #666; margin-top: -10px; margin-bottom: 15px;">Enter either username or email to login</p>
+
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="register.html">Register here</a></p>
+                    <p class="admin-link"><a href="admin-login.html">Admin Login</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/auth.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
