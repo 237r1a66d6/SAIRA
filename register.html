@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-J4FHJLX2SQ');
     </script>
     
@@ -42,53 +40,44 @@
                 <p class="auth-subtitle">Join SAIRA ACAD and start your journey to academic excellence</p>
                 
                 <form id="registerForm" class="auth-form" onsubmit="return false;">
-                    <div class="form-group">
-                        <label for="fullName">Username *</label>
-                        <input type="text" id="fullName" name="fullName" required placeholder="Enter your username" autocomplete="off">
-                    </div>
+    <div class="form-group">
+        <label for="username">Username *</label>
+        <input type="text" id="username" name="username" required placeholder="Username">
+    </div>
 
-                    <div class="form-group">
-                        <label for="phoneNumber">Phone Number *</label>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter your phone number" pattern="[0-9]{10}">
-                        <small>Please enter a 10-digit phone number</small>
-                    </div>
+    <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phone" required placeholder="Phone">
+    </div>
 
-                    <div class="form-group">
-                        <label for="qualification">Qualification *</label>
-                        <select id="qualification" name="qualification" required>
-                            <option value="">Select your qualification</option>
-                            <option value="B.Ed">B.Ed (Bachelor of Education)</option>
-                            <option value="M.Ed">M.Ed (Master of Education)</option>
-                            <option value="B.A">B.A (Bachelor of Arts)</option>
-                            <option value="M.A">M.A (Master of Arts)</option>
-                            <option value="B.Sc">B.Sc (Bachelor of Science)</option>
-                            <option value="M.Sc">M.Sc (Master of Science)</option>
-                            <option value="PhD">PhD (Doctor of Philosophy)</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
+    <div class="form-group">
+        <label for="qualification">Qualification *</label>
+        <select id="qualification" name="qualification" required>
+            <option value="B.Ed">B.Ed</option>
+            <option value="M.Ed">M.Ed</option>
+        </select>
+    </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required placeholder="Enter your email">
-                    </div>
+    <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" required placeholder="Email">
+    </div>
 
-                    <div class="form-group">
-                        <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8">
-                        <small>Password must be at least 8 characters long</small>
-                    </div>
+    <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" required placeholder="Password">
+    </div>
 
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password *</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
-                    </div>
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm Password">
+    </div>
 
-                    <div id="errorMessage" class="error-message" style="display: none;"></div>
-                    <div id="successMessage" class="success-message" style="display: none;"></div>
-
-                    <button type="submit" class="btn btn-primary btn-full">Register Now</button>
-                </form>
+    <div id="errorMessage" class="alert alert-error" style="display: none; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 5px; margin-bottom: 15px;"></div>
+    <div id="successMessage" class="alert alert-success" style="display: none; color: #27ae60; background-color: #d4edda; padding: 12px; border-radius: 5px; margin-bottom: 15px;"></div>
+    
+    <button type="submit" class="btn btn-primary btn-full">Register Now</button>
+</form>
 
                 <div class="auth-footer">
                     <p>Already have an account? <a href="login.html">Login here</a></p>
@@ -98,8 +87,8 @@
         </div>
     </section>
 
-    <script src="js/auth.js"></script>
-    <script src="js/api-config.js"></script>
-    <script src="js/register.js"></script>
-</body>
+    <script src="js/api-config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/register-v2.js"></script>
+    </body>
 </html>

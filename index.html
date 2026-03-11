@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="nav-buttons">
-                <a href="payment.html" class="btn btn-payment" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);">💳 Pay</a>
+                <!--<a href="payment.html" class="btn btn-payment" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);">💳 Pay</a>-->
                 <a href="login.html" class="btn btn-secondary">Login</a>
                 <a href="register.html" class="btn btn-cta">Join Now</a>
             </div>
@@ -195,10 +195,76 @@
     </section>
 
     <style>
+        /* Logo Strip Animation */
+        .logo-strip-secondary {
+            background: #fff;
+            padding: 40px 0;
+            overflow: hidden;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .logo-strip-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .logo-strip-scroll {
+            display: flex;
+            width: fit-content;
+            animation: scrollLogos 30s linear infinite;
+        }
+
+        .logo-item-group {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            padding: 0 40px;
+        }
+
+        .logo-item-group img {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.95;
+            transition: all 0.3s ease;
+        }
+
+        .logo-item-group img:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        @keyframes scrollLogos {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Pause animation on hover */
+        .logo-strip-scroll:hover {
+            animation-play-state: paused;
+        }
+
         /* Hide logo strip on mobile devices */
         @media (max-width: 768px) {
             .logo-strip-secondary {
                 display: none !important;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (max-width: 1024px) {
+            .logo-item-group {
+                gap: 50px;
+            }
+            
+            .logo-item-group img {
+                height: 60px;
             }
         }
     </style>

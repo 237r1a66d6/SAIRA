@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Debug - SAIRA ACAD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #666; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-form {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        #console-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .log-entry { margin: 5px 0; }
+        .log-error { color: #f48771; }
+        .log-success { color: #89d185; }
+        .log-info { color: #6cb6ff; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Registration Debug Tool</h1>
+    <div class="status info">Use this tool to diagnose registration issues on Hostinger</div>
+
+    <!-- Test 1: Check File Load -->
+    <div class="debug-panel">
+        <h2>1. File Load Check</h2>
+        <div id="file-check"></div>
+        <button onclick="checkFileLoad()">Run Check</button>
+    </div>
+
+    <!-- Test 2: Check API Configuration -->
+    <div class="debug-panel">
+        <h2>2. API Configuration</h2>
+        <div id="api-check"></div>
+        <button onclick="checkAPIConfig()">Check API Config</button>
+    </div>
+
+    <!-- Test 3: Test Registration API -->
+    <div class="debug-panel">
+        <h2>3. Test Registration API</h2>
+        <div class="test-form">
+            <input type="text" id="test-username" placeholder="Username" value="testuser123">
+            <input type="text" id="test-phone" placeholder="Phone" value="9876543210">
+            <select id="test-qualification">
+                <option value="B.Ed">B.Ed</option>
+                <option value="M.Ed">M.Ed</option>
+            </select>
+            <input type="email" id="test-email" placeholder="Email" value="testuser123@example.com">
+            <input type="password" id="test-password" placeholder="Password" value="Test@12345">
+            <button onclick="testRegistrationAPI()">Test API Call</button>
+        </div>
+        <div id="api-test-result"></div>
+    </div>
+
+    <!-- Test 4: Test Form Submission -->
+    <div class="debug-panel">
+        <h2>4. Test Form Handler</h2>
+        <button onclick="testFormHandler()">Test Form Handler</button>
+        <div id="form-test-result"></div>
+    </div>
+
+    <!-- Test 5: Console Log -->
+    <div class="debug-panel">
+        <h2>5. Console Output</h2>
+        <button onclick="clearConsoleLog()">Clear Log</button>
+        <div id="console-log"></div>
+    </div>
+
+    <!-- Test 6: Network Test -->
+    <div class="debug-panel">
+        <h2>6. Network Connectivity</h2>
+        <button onclick="testNetworkConnectivity()">Test Network</button>
+        <div id="network-result"></div>
+    </div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Override console.log to capture output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        function addToConsoleLog(message, type = 'info') {
+            const consoleDiv = document.getElementById('console-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleDiv.appendChild(entry);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsoleLog(args.join(' '), 'info');
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsoleLog('ERROR: ' + args.join(' '), 'error');
+        };
+
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsoleLog('WARN: ' + args.join(' '), 'info');
+        };
+
+        function clearConsoleLog() {
+            document.getElementById('console-log').innerHTML = '';
+        }
+
+        // Test 1: File Load Check
+        function checkFileLoad() {
+            const resultDiv = document.getElementById('file-check');
+            let html = '<div class="status info">Checking files...</div>';
+            
+            const checks = [
+                { name: 'api-config.js', loaded: typeof API_CONFIG !== 'undefined' },
+                { name: 'auth.js', loaded: typeof showError === 'function' },
+                { name: 'API object', loaded: typeof api !== 'undefined' },
+                { name: 'getUsers function', loaded: typeof getUsers === 'function' },
+                { name: 'saveUsers function', loaded: typeof saveUsers === 'function' }
+            ];
+            
+            html += '<ul style="margin: 10px 0;">';
+            checks.forEach(check => {
+                const status = check.loaded ? '✅' : '❌';
+                const className = check.loaded ? 'success' : 'error';
+                html += `<li class="${className}">${status} ${check.name}: ${check.loaded ? 'Loaded' : 'NOT FOUND'}</li>`;
+            });
+            html += '</ul>';
+            
+            resultDiv.innerHTML = html;
+            console.log('File load check completed');
+        }
+
+        // Test 2: API Configuration
+        function checkAPIConfig() {
+            const resultDiv = document.getElementById('api-check');
+            
+            if (typeof API_CONFIG === 'undefined') {
+                resultDiv.innerHTML = '<div class="status error">❌ API_CONFIG not loaded!</div>';
+                return;
+            }
+            
+            let html = '<div class="status success">✅ API Configuration loaded</div>';
+            html += '<pre>' + JSON.stringify(API_CONFIG, null, 2) + '</pre>';
+            
+            if (typeof api !== 'undefined') {
+                html += '<div class="status success">✅ API object available</div>';
+                html += '<p><strong>Available methods:</strong></p><ul>';
+                for (let method in api) {
+                    if (typeof api[method] === 'function') {
+                        html += `<li>${method}()</li>`;
+                    }
+                }
+                html += '</ul>';
+            } else {
+                html += '<div class="status error">❌ API object NOT available</div>';
+            }
+            
+            resultDiv.innerHTML = html;
+            console.log('API config check completed');
+        }
+
+        // Test 3: Registration API
+        async function testRegistrationAPI() {
+            const resultDiv = document.getElementById('api-test-result');
+            resultDiv.innerHTML = '<div class="status info">Testing registration API...</div>';
+            
+            const username = document.getElementById('test-username').value;
+            const phone = document.getElementById('test-phone').value;
+            const qualification = document.getElementById('test-qualification').value;
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+            
+            console.log('Testing registration with:', { username, email, phone, qualification });
+            
+            try {
+                if (typeof api === 'undefined') {
+                    throw new Error('API object not loaded');
+                }
+                
+                const response = await api.registerUser({
+                    username,
+                    phone,
+                    qualification,
+                    email,
+                    password
+                });
+                
+                console.log('Registration API response:', response);
+                
+                if (response.success) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ Registration API works!</div>
+                        <pre>${JSON.stringify(response, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ Registration failed: ${response.message}</div>
+                        <pre>${JSON.stringify(response, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('Registration API error:', error);
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ Error: ${error.message}</div>
+                    <p><strong>Possible causes:</strong></p>
+                    <ul>
+                        <li>Database connection failed (check db_connect.php)</li>
+                        <li>API endpoint not found (check /api/users/register.php exists)</li>
+                        <li>CORS error (check .htaccess configuration)</li>
+                        <li>Network connectivity issue</li>
+                    </ul>
+                    <pre>${error.stack}</pre>
+                `;
+            }
+        }
+
+        // Test 4: Form Handler
+        function testFormHandler() {
+            const resultDiv = document.getElementById('form-test-result');
+            
+            // Check if register page exists
+            fetch('register.html')
+                .then(response => {
+                    if (response.ok) {
+                        resultDiv.innerHTML = `
+                            <div class="status success">✅ register.html exists</div>
+                            <p><a href="register.html" target="_blank">Open Registration Page</a></p>
+                            <div class="status info">
+                                <strong>Instructions:</strong><br>
+                                1. Open the link above<br>
+                                2. Open Console (F12)<br>
+                                3. Fill the form and click Register<br>
+                                4. Check console for errors
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = '<div class="status error">❌ register.html not found</div>';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<div class="status error">❌ Error checking register.html: ${error.message}</div>`;
+                });
+            
+            console.log('Form handler test initiated');
+        }
+
+        // Test 6: Network Connectivity
+        async function testNetworkConnectivity() {
+            const resultDiv = document.getElementById('network-result');
+            resultDiv.innerHTML = '<div class="status info">Testing network...</div>';
+            
+            const tests = [
+                { name: 'Database Connection', url: 'test-connection.php' },
+                { name: 'Register API Endpoint', url: 'api/users/register.php' },
+                { name: 'Login API Endpoint', url: 'api/users/login.php' },
+                { name: 'Admin Login API', url: 'api/admin/login.php' }
+            ];
+            
+            let html = '<ul style="margin: 10px 0;">';
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: 'HEAD',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok || response.status === 405) {
+                        html += `<li class="success">✅ ${test.name}: Reachable (${response.status})</li>`;
+                        console.log(`${test.name} is reachable`);
+                    } else {
+                        html += `<li class="error">❌ ${test.name}: HTTP ${response.status}</li>`;
+                    }
+                } catch (error) {
+                    html += `<li class="error">❌ ${test.name}: ${error.message}</li>`;
+                    console.error(`${test.name} failed:`, error);
+                }
+            }
+            
+            html += '</ul>';
+            resultDiv.innerHTML = html;
+        }
+
+        // Auto-run checks on load
+        window.addEventListener('load', function() {
+            console.log('=== Registration Debug Tool Loaded ===');
+            console.log('Page URL:', window.location.href);
+            console.log('User Agent:', navigator.userAgent);
+            checkFileLoad();
+            checkAPIConfig();
+        });
+    </script>
+
+    <div class="debug-panel" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+        <h2>⚠️ Common Issues & Solutions</h2>
+        <ul>
+            <li><strong>Button does nothing:</strong> Check browser Console (F12) for JavaScript errors</li>
+            <li><strong>API object undefined:</strong> Make sure api-config.js is uploaded and loaded</li>
+            <li><strong>Network errors:</strong> Check db_connect.php has correct Hostinger credentials</li>
+            <li><strong>404 on API:</strong> Verify /api/ folder and PHP files are uploaded</li>
+            <li><strong>Page refreshes:</strong> Form had action="register_handler.php" (now fixed)</li>
+        </ul>
+    </div>
+</body>
+</html>

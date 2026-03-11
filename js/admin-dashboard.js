@@ -1,8 +1,15 @@
 // Admin Dashboard JavaScript
+// Version: 2.0.1 - Enhanced delete functionality with database integration (2026-03-06)
 
 let currentTab = 'overview';
 let adminListCache = [];
 let adminSource = 'local';
+let userListCache = [];
+let userSource = 'local';
+let lastSyncTime = null;
+let syncFailureCount = 0;
+let isRefreshing = false;
+let isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 // Simple notification function
 function showNotification(message, type = 'success') {
@@ -10,28 +17,572 @@ function showNotification(message, type = 'success') {
     alert(message);
 }
 
+// Mobile debug logger - MUST be defined early since other functions use it
+function logMobileDebug(message, data = null) {
+    const timestamp = new Date().toLocaleTimeString();
+    const logMessage = `[${timestamp}] 📱 ${message}`;
+    
+    console.log(logMessage, data || '');
+    
+    // Store last 20 logs in localStorage for debugging  
+    try {
+        const logs = JSON.parse(localStorage.getItem('mobileSyncLogs') || '[]');
+        logs.push({ time: timestamp, message, data });
+        if (logs.length > 20) logs.shift(); // Keep last 20
+        localStorage.setItem('mobileSyncLogs', JSON.stringify(logs));
+    } catch (e) {
+        // Silent fail if storage is full
+    }
+}
+
+// Real-time status indicator functions
+function updateRealtimeStatus(status, message = '', timestamp = null) {
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const lastUpdate = document.getElementById('lastUpdate');
+    
+    console.log(`🔔 Status Update: ${status} - ${message}`);
+    logMobileDebug(`Status changed to: ${status}`, { message, timestamp });
+    
+    if (!statusDot || !statusText) {
+        console.warn('⚠️  Status elements not found in DOM');
+        return;
+    }
+    
+    // Remove all status classes
+    statusDot.className = 'status-dot';
+    
+    switch(status) {
+        case 'syncing':
+            statusDot.classList.add('status-syncing');
+            statusText.textContent = message || 'Syncing...';
+            statusText.style.color = '#ffa500';
+            break;
+        case 'connected':
+            statusDot.classList.add('status-connected');
+            statusText.textContent = message || 'Live';
+            statusText.style.color = '#4CAF50';
+            syncFailureCount = 0;
+            break;
+        case 'error':
+            statusDot.classList.add('status-error');
+            statusText.textContent = message || 'Connection Error';
+            statusText.style.color = '#f44336';
+            break;
+    }
+    
+    if (lastUpdate && timestamp) {
+        lastSyncTime = timestamp;
+        const timeStr = new Date(timestamp).toLocaleTimeString();
+        lastUpdate.textContent = `Updated: ${timeStr}`;
+        lastUpdate.style.display = 'inline';
+    }
+}
+
+function formatTimeSince(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ago`;
+}
+
+// Update time display every second
+setInterval(() => {
+    const lastUpdate = document.getElementById('lastUpdate');
+    if (lastUpdate && lastSyncTime) {
+        const timeStr = formatTimeSince(new Date(lastSyncTime));
+        lastUpdate.textContent = `Updated: ${timeStr}`;
+    }
+}, 1000);
+
+// Mobile visual feedback indicator
+function flashMobileIndicator(type = 'success') {
+    const mobileBtn = document.getElementById('mobileRefreshBtn');
+    if (!mobileBtn || !isMobileDevice) return;
+    
+    if (type === 'success') {
+        mobileBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+        setTimeout(() => {
+            mobileBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        }, 500);
+    }
+}
+
+// Mobile debug logger - helps troubleshoot mobile issues
+function logMobileDebug(message, data = null) {
+    if (!isMobileDevice) return;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    const logMessage = `[${timestamp}] 📱 ${message}`;
+    
+    console.log(logMessage, data || '');
+    
+    // Store last 10 logs in localStorage for debugging
+    try {
+        const logs = JSON.parse(localStorage.getItem('mobileSyncLogs') || '[]');
+        logs.push({ time: timestamp, message, data });
+        if (logs.length > 10) logs.shift();
+        localStorage.setItem('mobileSyncLogs', JSON.stringify(logs));
+    } catch (e) {
+        // Silent fail if storage is full
+    }
+}
+
+// Progressive loading strategy for faster mobile experience
+let isInitialLoadComplete = false;
+let criticalDataLoaded = false;
+
 document.addEventListener('DOMContentLoaded', async function() {
+    const loadStartTime = Date.now();
+    console.log('\ud83d\ude80 Starting optimized dashboard load...');
+    
     // Check authentication
     const admin = checkAuth('admin');
     if (!admin) return;
     
-    // Display admin name
+    // Display admin name immediately (critical UI)
     const adminNameElement = document.getElementById('adminName');
     if (adminNameElement) {
         adminNameElement.textContent = `Admin: ${admin.username}`;
     }
     
-    // Check for new consultations and show notification
-    checkNewConsultations();
+    // Detect which tab is currently active on page load
+    const activeTabs = document.querySelectorAll('.tab-content.active');
+    if (activeTabs.length > 0) {
+        const activeTabId = activeTabs[0].id;
+        currentTab = activeTabId;
+        console.log('\ud83c\udfaf Detected active tab on load:', currentTab);
+    }
     
-    // Load initial data
-    await loadDashboardData();
+    // Initialize real-time status immediately
+    updateRealtimeStatus('syncing', 'Loading...');
     
-    // Setup modal event listeners
+    // PHASE 1: Load critical data first (Overview counts) - Fast!
+    console.log('\ud83c\udfaf Phase 1: Loading critical overview data...');
+    let dataLoadSuccess = false;
+    try {
+        const result = await loadDashboardDataOptimized();
+        criticalDataLoaded = true;
+        dataLoadSuccess = result !== false;
+        const phase1Time = Date.now() - loadStartTime;
+        console.log(`\u2705 Phase 1 complete in ${phase1Time}ms`, { success: dataLoadSuccess });
+    } catch (error) {
+        console.error('\u274c Phase 1 failed:', error);
+        criticalDataLoaded = false;
+        dataLoadSuccess = false;
+    }
+    
+    // Setup modal event listeners (synchronous, fast)
     setupModalListeners();
+    
+    // Enable auto-refresh immediately for real-time updates
+    startAutoRefresh();
+    
+    // Mark as connected ONLY if data loaded successfully
+    if (dataLoadSuccess && criticalDataLoaded) {
+        updateRealtimeStatus('connected', 'Live', Date.now());
+    } else {
+        updateRealtimeStatus('error', 'Load Failed - Retrying');
+        // Try manual refresh after brief delay
+        setTimeout(() => {
+            console.log('\ud83d\udd04 Retrying data load...');
+            manualRefresh();
+        }, 2000);
+    }
+    
+    // PHASE 2: Load secondary data in background (non-blocking)
+    console.log('📦 Phase 2: Loading secondary data in background...');
+    setTimeout(async () => {
+        try {
+            // Load User Management data if that tab is active
+            const userManagementTab = document.getElementById('user-management');
+            console.log('🔍 Checking user-management tab:', {
+                exists: !!userManagementTab,
+                hasActiveClass: userManagementTab?.classList.contains('active'),
+                currentTab: currentTab
+            });
+            
+            if (userManagementTab && userManagementTab.classList.contains('active')) {
+                console.log('🚀 User Management tab is active - loading data...');
+                try {
+                    await fetchUsersFromDatabase(true);
+                    console.log('✅ fetchUsersFromDatabase completed');
+                    await loadUserManagement();
+                    console.log('✅ loadUserManagement completed');
+                } catch (err) {
+                    console.error('❌ Error loading user management on initial load:', err);
+                    console.error('Error details:', err.message, err.stack);
+                }
+            } else if (currentTab === 'user-management') {
+                // Fallback: If currentTab is set but element check failed
+                console.log('🔄 Loading user management via currentTab fallback...');
+                try {
+                    await fetchUsersFromDatabase(true);
+                    await loadUserManagement();
+                } catch (err) {
+                    console.error('❌ Error in fallback user management load:', err);
+                }
+            }
+            
+            // Check for new consultations (low priority)
+            checkNewConsultations();
+            
+            isInitialLoadComplete = true;
+            const totalTime = Date.now() - loadStartTime;
+            console.log(`✅ Full dashboard loaded in ${totalTime}ms`);
+        } catch (error) {
+            console.error('⚠️  Phase 2 warning:', error);
+            // Non-critical, continue anyway
+        }
+    }, 100); // Small delay to not block critical rendering
+    
+    // Setup mobile-specific features
+    setupMobileOptimizations();
 });
 
+// Mobile-specific optimizations for real-time updates
+function setupMobileOptimizations() {
+    // Page Visibility API - handle mobile tab switching and background states
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Handle page focus/blur for mobile devices
+    window.addEventListener('focus', handlePageFocus);
+    window.addEventListener('blur', handlePageBlur);
+    
+    // Network Information API for mobile network optimization
+    if ('connection' in navigator) {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+            console.log(`Mobile network type: ${connection.effectiveType}`);
+            
+            // Listen for network changes
+            connection.addEventListener('change', () => {
+                console.log(`Network changed to: ${connection.effectiveType}`);
+                handleNetworkChange(connection.effectiveType);
+            });
+        }
+    }
+    
+    // Online/offline detection for mobile
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    console.log('Mobile optimizations enabled: Page Visibility API + Network Detection active');
+}
+
+function handleNetworkChange(effectiveType) {
+    // Adjust refresh behavior based on network quality
+    if (effectiveType === 'slow-2g' || effectiveType === '2g') {
+        console.log('Slow network detected - consider reducing refresh frequency');
+        updateRealtimeStatus('connected', 'Live (slow network)', lastSyncTime);
+    } else if (effectiveType === '3g') {
+        updateRealtimeStatus('connected', 'Live (3G)', lastSyncTime);
+    } else {
+        updateRealtimeStatus('connected', 'Live', lastSyncTime);
+    }
+}
+
+function handleOnline() {
+    console.log('Mobile device is online - resuming refresh');
+    updateRealtimeStatus('connected', 'Back Online');
+    if (!autoRefreshInterval) {
+        startAutoRefresh();
+    }
+    // Immediate refresh after coming back online
+    setTimeout(() => manualRefresh(), 500);
+}
+
+function handleOffline() {
+    console.log('Mobile device is offline');
+    updateRealtimeStatus('error', 'Offline - No Connection');
+    stopAutoRefresh();
+}
+
+function handleVisibilityChange() {
+    if (document.hidden) {
+        // Page is hidden (user switched tabs or app went to background)
+        console.log('📴 Page hidden - pausing aggressive refresh (battery saving)');
+        // Keep interval running but will skip refreshes while hidden
+    } else {
+        // Page is visible again - immediately refresh to show latest data
+        const timeSinceLastSync = lastSyncTime ? Date.now() - lastSyncTime : Infinity;
+        console.log(`👁️  Page visible - refreshing immediately (last sync: ${Math.round(timeSinceLastSync/1000)}s ago)`);
+        updateRealtimeStatus('syncing', 'Updating...');
+        
+        // Force immediate refresh when user returns (more aggressive on mobile)
+        const delay = isMobileDevice ? 50 : 100; // Even faster on mobile
+        setTimeout(async () => {
+            try {
+                // Force fresh data from server
+                await fetchUsersFromDatabase(true);
+                await fetchAdmins(true);
+                await refreshCurrentTabData();
+                updateRealtimeStatus('connected', 'Live', Date.now());
+                console.log('✅ Mobile: Data refreshed successfully on return');
+                
+                if (isMobileDevice) {
+                    flashMobileIndicator('success');
+                }
+            } catch (error) {
+                console.error('❌ Mobile: Refresh on visibility change failed', error);
+                updateRealtimeStatus('error', 'Refresh Failed');
+                // Retry once more after 2 seconds
+                setTimeout(() => manualRefresh(), 2000);
+            }
+        }, delay);
+    }
+}
+
+function handlePageFocus() {
+    console.log('Page focused - mobile device active');
+    // Restart auto-refresh if it was stopped
+    if (!autoRefreshInterval) {
+        startAutoRefresh();
+    }
+}
+
+function handlePageBlur() {
+    console.log('Page blurred - mobile device may be inactive');
+    // Keep running but log the state change
+}
+
+// Auto-refresh functionality for real-time database updates
+let autoRefreshInterval = null;
+const MOBILE_REFRESH_INTERVAL = 15000; // Increased to 15 seconds for mobile to reduce load
+const DESKTOP_REFRESH_INTERVAL = 20000; // Increased to 20 seconds for desktop
+const MAX_RETRY_FAILURES = 3; // Stop auto-refresh after 3 consecutive failures
+let lastSuccessfulSync = null;
+let consecutiveFailures = 0;
+
+function startAutoRefresh() {
+    // Clear any existing interval
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+    
+    // Mobile gets faster refresh for better real-time experience
+    const refreshInterval = isMobileDevice ? MOBILE_REFRESH_INTERVAL : DESKTOP_REFRESH_INTERVAL;
+    const deviceType = isMobileDevice ? 'mobile' : 'desktop';
+    const interval = isMobileDevice ? '15 seconds' : '20 seconds';
+    console.log(`🔄 Starting real-time sync for ${deviceType} (every ${interval})...`);
+    
+    // Refresh data at specified interval for real-time updates
+    autoRefreshInterval = setInterval(async () => {
+        // Skip refresh if page is hidden on mobile to save battery
+        if (isMobileDevice && document.hidden) {
+            console.log('📱 Mobile: Skipping refresh while page is hidden (battery saving)');
+            return;
+        }
+        if (isRefreshing) {
+            console.log('Refresh already in progress, skipping...');
+            return;
+        }
+        
+        const startTime = Date.now();
+        console.log(`${isMobileDevice ? '📱' : '💻'} Auto-refreshing data from database...`);
+        updateRealtimeStatus('syncing', 'Syncing...');
+        
+        try {
+            await refreshCurrentTabData();
+            const syncDuration = Date.now() - startTime;
+            console.log(`✅ Sync completed in ${syncDuration}ms`);
+            
+            lastSuccessfulSync = Date.now();
+            consecutiveFailures = 0;
+            syncFailureCount = 0;
+            updateRealtimeStatus('connected', 'Live', Date.now());
+            
+            // Show sync success indicator on mobile
+            if (isMobileDevice) {
+                flashMobileIndicator('success');
+            }
+        } catch (error) {
+            console.error('❌ Auto-refresh error:', error);
+            consecutiveFailures++;
+            syncFailureCount++;
+            
+            if (consecutiveFailures >= MAX_RETRY_FAILURES) {
+                updateRealtimeStatus('error', 'Connection Lost - Auto-refresh Paused');
+                console.error(`🔴 ${consecutiveFailures} consecutive failures detected. Stopping auto-refresh.`);
+                console.error('⚠️ To retry, click the "Refresh" button manually or reload the page.');
+                
+                // STOP auto-refresh to prevent overwhelming the server
+                stopAutoRefresh();
+                
+                // Show error notification to user
+                if (typeof showAdminNotification !== 'undefined') {
+                    showAdminNotification('Connection Error', 'Auto-refresh paused due to connection issues. Click "Refresh" to retry manually.', 'error');
+                }
+            } else {
+                updateRealtimeStatus('connected', `Retry ${consecutiveFailures}/${MAX_RETRY_FAILURES}`, lastSyncTime);
+                console.warn(`⚠️ Retry attempt ${consecutiveFailures} of ${MAX_RETRY_FAILURES}`);
+            }
+        }
+    }, refreshInterval);
+    
+    console.log(`✅ Real-time auto-refresh enabled (${refreshInterval}ms interval)`);
+    
+    // Add mobile-specific optimizations
+    if (isMobileDevice) {
+        console.log('📱 Mobile optimizations: Fast polling (5s), aggressive reconnection, battery-aware');
+    }
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        updateRealtimeStatus('error', 'Offline');
+        console.log('Auto-refresh stopped');
+    }
+}
+
+async function refreshCurrentTabData() {
+    if (isRefreshing) {
+        console.log('Refresh already in progress, skipping duplicate call...');
+        return;
+    }
+    
+    isRefreshing = true;
+    const deviceType = isMobileDevice ? '[Mobile]' : '[Desktop]';
+    console.log(`${deviceType} Refreshing current tab data...`);
+    
+    try {
+        // Force refresh cache for current tab based on what's visible
+        if (currentTab === 'overview') {
+            await loadDashboardData();
+        } else if (currentTab === 'user-management') {
+            await fetchUsersFromDatabase(true); // Force refresh
+            await loadUserManagement();
+        } else if (currentTab === 'admin-management') {
+            await fetchAdmins(true); // Force refresh
+            await loadAdminManagement();
+        } else if (currentTab === 'partner-messages') {
+            await loadPartnerMessages();
+        } else if (currentTab === 'educator-messages') {
+            await loadEducatorMessages();
+        } else if (currentTab === 'schools' || currentTab === 'school-partners') {
+            // Refresh school-related data
+            await loadPartnerSchoolsDisplay();
+        }
+        
+        // Always refresh overview counts in background
+        await updateOverviewCounts();
+    } finally {
+        isRefreshing = false;
+    }
+}
+
+// Helper function to update overview counts without full page reload
+async function updateOverviewCounts() {
+    try {
+        const admins = await fetchAdmins();
+        const users = await fetchUsersFromDatabase();
+        const teachers = getTeachers();
+        const partners = await getSchoolPartners();
+        
+        const totalAdminsEl = document.getElementById('totalAdmins');
+        const totalUsersEl = document.getElementById('totalUsers');
+        const totalTeachersEl = document.getElementById('totalTeachers');
+        const totalPartnerSchoolsEl = document.getElementById('totalPartnerSchools');
+        
+        if (totalAdminsEl) totalAdminsEl.textContent = admins.length;
+        if (totalUsersEl) totalUsersEl.textContent = users.length;
+        if (totalTeachersEl) totalTeachersEl.textContent = teachers.length;
+        if (totalPartnerSchoolsEl) totalPartnerSchoolsEl.textContent = partners.length;
+    } catch (error) {
+        console.error('Error updating overview counts:', error);
+    }
+}
+
+// Global manual refresh function for all devices (especially mobile)
+async function manualRefresh() {
+    console.log('🔄 Manual refresh triggered (mobile/desktop) - FORCING DATABASE REFRESH');
+    updateRealtimeStatus('syncing', 'Refreshing...');
+    
+    // Animate the refresh button
+    const mobileBtn = document.getElementById('mobileRefreshBtn');
+    const overviewIcon = document.getElementById('overviewRefreshIcon');
+    
+    if (mobileBtn) {
+        mobileBtn.classList.add('spinning');
+    }
+    if (overviewIcon) {
+        overviewIcon.style.animation = 'spin 1s linear infinite';
+    }
+    
+    try {
+        console.log('📊 Step 1: Force refresh users from database...');
+        // Force refresh all data
+        await fetchUsersFromDatabase(true);
+        
+        console.log('📊 Step 2: Force refresh admins from database...');
+        await fetchAdmins(true);
+        
+        console.log('📊 Step 3: Reload dashboard data...');
+        await loadDashboardData();
+        
+        console.log('📊 Step 4: Refresh current tab data...');
+        await refreshCurrentTabData();
+        
+        updateRealtimeStatus('connected', 'Live', Date.now());
+        
+        // Show success feedback
+        if (isMobileDevice) {
+            showAdminNotification('Success', '✓ Data refreshed successfully!');
+        }
+        
+        console.log('✅ Manual refresh completed successfully');
+    } catch (error) {
+        console.error('❌ Manual refresh error:', error);
+        console.error('Error details:', error.message, error.stack);
+        updateRealtimeStatus('error', 'Refresh Failed');
+        showAdminNotification('Error', 'Failed to refresh data: ' + error.message, 'error');
+    } finally {
+        // Stop animation
+        if (mobileBtn) {
+            mobileBtn.classList.remove('spinning');
+        }
+        if (overviewIcon) {
+            overviewIcon.style.animation = '';
+        }
+    }
+}
+
+// Manual refresh function for user management
+async function refreshUserData() {
+    console.log('Manually refreshing user data from database...');
+    updateRealtimeStatus('syncing', 'Refreshing...');
+    
+    const refreshBtn = document.getElementById('refreshUsersBtn');
+    if (refreshBtn) {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = 'Refreshing...';
+    }
+    
+    try {
+        await fetchUsersFromDatabase(true); // Force refresh from database
+        await loadUserManagement();
+        await loadDashboardData(); // Update counts
+        updateRealtimeStatus('connected', 'Live', Date.now());
+        showAdminNotification('Success', 'User data refreshed from database!');
+    } catch (error) {
+        console.error('Refresh error:', error);
+        updateRealtimeStatus('error', 'Refresh Failed');
+        showAdminNotification('Error', 'Failed to refresh data', 'error');
+    } finally {
+        if (refreshBtn) {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = '🔄 Refresh';
+        }
+    }
+}
+
 function showTab(tabName) {
+    console.log('=== Switching to tab:', tabName, '===');
+    
     // Hide all tabs
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => tab.classList.remove('active'));
@@ -47,13 +598,54 @@ function showTab(tabName) {
     }
     
     // Add active class to clicked menu item
-    event.target.closest('.menu-item').classList.add('active');
+    if (event && event.target) {
+        const menuItem = event.target.closest('.menu-item');
+        if (menuItem) {
+            menuItem.classList.add('active');
+        }
+    }
     
-    // Load data for the tab
+    // Update current tab immediately
+    currentTab = tabName;
+    
+    // Load data for the tab - Force refresh from database for critical tabs
     if (tabName === 'admin-management') {
         loadAdminManagement();
     } else if (tabName === 'user-management') {
-        loadUserManagement();
+        console.log('🎯 Loading User Management tab...');
+        console.log('Current userSource before fetch:', userSource);
+        console.log('Cache size before fetch:', userListCache.length);
+        
+        // Show loading state immediately with helpful message
+        const tableBody = document.getElementById('userTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="6" class="no-data" style="text-align: center; padding: 40px;"><div style="font-size: 18px; margin-bottom: 10px;">🔄 Loading users from database...</div><div style="font-size: 14px; color: #666;">This may take up to 15 seconds on slower servers</div><div style="font-size: 12px; color: #999; margin-top: 10px;">Check console (F12) for detailed progress</div></td></tr>';
+        }
+        
+        // Update status indicator
+        updateRealtimeStatus('syncing', 'Fetching users...');
+        
+        // Always fetch fresh data from database when opening user management
+        const startTime = Date.now();
+        fetchUsersFromDatabase(true)
+            .then(() => {
+                const duration = Date.now() - startTime;
+                console.log(`✅ Fetch complete in ${duration}ms, loading user management UI...`);
+                console.log('userSource after fetch:', userSource);
+                console.log('Cache size after fetch:', userListCache.length);
+                return loadUserManagement();
+            })
+            .then(() => {
+                console.log('✅ User management UI loaded successfully');
+                updateRealtimeStatus('connected', 'Live', Date.now());
+            })
+            .catch(error => {
+                console.error('❌ Error loading user management:', error);
+                console.error('Stack:', error.stack);
+                updateRealtimeStatus('error', 'Load Failed');
+                // Try to load anyway with cached data
+                loadUserManagement();
+            });
     } else if (tabName === 'teacher-management') {
         loadTeacherManagement();
     } else if (tabName === 'schools') {
@@ -71,20 +663,128 @@ function showTab(tabName) {
     } else if (tabName === 'debug-storage') {
         refreshDebugData();
     }
-    
-    currentTab = tabName;
+}
+
+// Optimized dashboard data loading with parallel requests and caching
+async function loadDashboardDataOptimized() {
+    const startTime = Date.now();
+    try {
+        console.log('⚡ Loading dashboard data in parallel...');
+        logMobileDebug('Starting parallel data load');
+        
+        // FORCE REFRESH on initial load to ensure fresh data from database
+        const forceInitialRefresh = !isInitialLoadComplete;
+        console.log('🔄 Force refresh:', forceInitialRefresh);
+        
+        // Load all data in parallel with timeout protection
+        const loadPromises = [
+            fetchAdmins(forceInitialRefresh), // Force refresh on initial load
+            fetchUsersFromDatabase(forceInitialRefresh), // Force refresh from database
+            Promise.resolve(getTeachers()), // Synchronous, wrap in Promise
+            getSchoolPartners()
+        ];
+        
+        // Add individual timeouts to each promise
+        const timedPromises = loadPromises.map((p, i) => 
+            Promise.race([
+                p,
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error(`Timeout loading data ${i}`)), 5000)
+                )
+            ])
+        );
+        
+        const [admins, users, teachers, partners] = await Promise.allSettled(timedPromises);
+        
+        // Extract values, handling rejected promises
+        const adminsData = admins.status === 'fulfilled' ? admins.value : [];
+        const usersData = users.status === 'fulfilled' ? users.value : [];
+        const teachersData = teachers.status === 'fulfilled' ? teachers.value : [];
+        const partnersData = partners.status === 'fulfilled' ? partners.value : [];
+        
+        // Update counts with null checks
+        const totalAdminsEl = document.getElementById('totalAdmins');
+        const totalUsersEl = document.getElementById('totalUsers');
+        const totalTeachersEl = document.getElementById('totalTeachers');
+        const totalPartnerSchoolsEl = document.getElementById('totalPartnerSchools');
+        
+        if (totalAdminsEl) totalAdminsEl.textContent = adminsData.length;
+        if (totalUsersEl) totalUsersEl.textContent = usersData.length;
+        if (totalTeachersEl) totalTeachersEl.textContent = teachersData.length;
+        if (totalPartnerSchoolsEl) totalPartnerSchoolsEl.textContent = partnersData.length;
+        
+        const loadTime = Date.now() - startTime;
+        const hasData = adminsData.length > 0 || usersData.length > 0;
+        console.log(`✅ Dashboard data loaded in ${loadTime}ms (parallel):`, {
+            admins: adminsData.length,
+            users: usersData.length,
+            teachers: teachersData.length,
+            partners: partnersData.length,
+            hasData: hasData
+        });
+        logMobileDebug('Dashboard data loaded', { 
+            time: loadTime, 
+            counts: { 
+                admins: adminsData.length, 
+                users: usersData.length 
+            },
+            hasData: hasData
+        });
+        
+        // Return true only if we have actual data
+        if (!hasData) {
+            console.warn('⚠️ Dashboard loaded but no data found!');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('❌ CRITICAL ERROR loading dashboard data:', error);
+        console.error('Error details:', error.message, error.stack);
+        logMobileDebug('Dashboard load error', { error: error.message });
+        
+        // Show error in UI
+        const totalAdminsEl = document.getElementById('totalAdmins');
+        const totalUsersEl = document.getElementById('totalUsers');
+        const totalTeachersEl = document.getElementById('totalTeachers');
+        const totalPartnerSchoolsEl = document.getElementById('totalPartnerSchools');
+        
+        if (totalAdminsEl) totalAdminsEl.textContent = '⚠️';
+        if (totalUsersEl) totalUsersEl.textContent = '⚠️';
+        if (totalTeachersEl) totalTeachersEl.textContent = '⚠️';
+        if (totalPartnerSchoolsEl) totalPartnerSchoolsEl.textContent = '⚠️';
+        
+        return false;
+    }
 }
 
 async function loadDashboardData() {
-    const admins = await fetchAdmins();
-    const users = getUsers(); // users remain local for now
-    const teachers = getTeachers(); // teachers remain local for now
-    const partners = await getSchoolPartners();
-    
-    document.getElementById('totalAdmins').textContent = admins.length;
-    document.getElementById('totalUsers').textContent = users.length;
-    document.getElementById('totalTeachers').textContent = teachers.length;
-    document.getElementById('totalPartnerSchools').textContent = partners.length;
+    try {
+        const admins = await fetchAdmins();
+        const users = await fetchUsersFromDatabase(); // Now fetching from database
+        const teachers = getTeachers(); // teachers remain local for now
+        const partners = await getSchoolPartners();
+        
+        // Update counts with null checks
+        const totalAdminsEl = document.getElementById('totalAdmins');
+        const totalUsersEl = document.getElementById('totalUsers');
+        const totalTeachersEl = document.getElementById('totalTeachers');
+        const totalPartnerSchoolsEl = document.getElementById('totalPartnerSchools');
+        
+        if (totalAdminsEl) totalAdminsEl.textContent = admins.length;
+        if (totalUsersEl) totalUsersEl.textContent = users.length;
+        if (totalTeachersEl) totalTeachersEl.textContent = teachers.length;
+        if (totalPartnerSchoolsEl) totalPartnerSchoolsEl.textContent = partners.length;
+        
+        console.log('Dashboard data loaded:', {
+            admins: admins.length,
+            users: users.length,
+            teachers: teachers.length,
+            partners: partners.length
+        });
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
 }
 
 // Fetch admins from backend when possible; fallback to localStorage
@@ -96,12 +796,16 @@ async function fetchAdmins(forceRefresh = false) {
     if (typeof api !== 'undefined') {
         try {
             const response = await api.getAllAdmins();
-            if (response && response.success && Array.isArray(response.admins)) {
+            // Handle both response formats: response.admins or response.data.admins
+            const admins = response.admins || (response.data && response.data.admins);
+            
+            if (response && response.success && Array.isArray(admins)) {
                 adminSource = 'backend';
-                adminListCache = response.admins.map(a => ({
+                adminListCache = admins.map(a => ({
                     ...a,
                     createdDate: a.createdDate || a.createdAt || a.created_on || new Date().toISOString()
                 }));
+                console.log(`✓ Loaded ${adminListCache.length} admins from database backend`);
                 return adminListCache;
             }
         } catch (error) {
@@ -115,6 +819,116 @@ async function fetchAdmins(forceRefresh = false) {
         createdDate: a.createdDate || new Date().toISOString()
     }));
     return adminListCache;
+}
+
+// NEW: Fetch users from database backend when possible; fallback to localStorage
+async function fetchUsersFromDatabase(forceRefresh = false) {
+    console.log('📡 fetchUsersFromDatabase called with forceRefresh:', forceRefresh);
+    console.log('📊 Current cache status:', { cacheLength: userListCache.length, userSource });
+    
+    // Return cached data if available and not forcing refresh
+    if (!forceRefresh && userListCache.length > 0 && userSource === 'backend') {
+        console.log('✅ Returning cached users from backend:', userListCache.length);
+        return userListCache;
+    }
+
+    // Check if API is available
+    if (typeof api === 'undefined' || typeof API_CONFIG === 'undefined') {
+        console.error('❌ API or API_CONFIG not available!');
+        console.error('typeof api:', typeof api);
+        console.error('typeof API_CONFIG:', typeof API_CONFIG);
+        // Fall through to localStorage
+    } else {
+        try {
+            console.log('🌐 Attempting to fetch users from database API...');
+            console.log('📍 API BASE URL:', API_CONFIG.BASE_URL);
+            console.log('📍 API Endpoint:', API_CONFIG.ENDPOINTS.ADMIN_USERS);
+            console.log('📍 Full URL:', `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`);
+            
+            const response = await api.getAllUsers();
+            console.log('✅ API Response received:', response);
+            console.log('Response structure:', {
+                hasSuccess: 'success' in response,
+                success: response.success,
+                hasData: 'data' in response,
+                hasUsers: 'users' in response,
+                dataKeys: response.data ? Object.keys(response.data) : 'no data',
+                topLevelKeys: Object.keys(response)
+            });
+            
+            // Handle both response formats: response.users or response.data.users
+            let users = null;
+            if (response.data && Array.isArray(response.data.users)) {
+                users = response.data.users;
+                console.log('✓ Found users in response.data.users');
+            } else if (Array.isArray(response.users)) {
+                users = response.users;
+                console.log('✓ Found users in response.users');
+            }
+            
+            console.log('Extracted users array:', users);
+            console.log('Is array?', Array.isArray(users));
+            console.log('User count:', users ? users.length : 'null/undefined');
+            
+            // Check if response is successful and users is an array (even if empty)
+            if (response && response.success === true && Array.isArray(users)) {
+                userSource = 'backend';
+                userListCache = users.map(u => ({
+                    ...u,
+                    fullName: u.fullName || u.username,
+                    phoneNumber: u.phoneNumber || u.phone,
+                    createdDate: u.createdDate || u.created_at || new Date().toISOString()
+                }));
+                console.log(`✅ SUCCESS: Loaded ${userListCache.length} users from database backend`);
+                if (userListCache.length > 0) {
+                    console.log('📋 Sample user data:', JSON.stringify(userListCache[0], null, 2));
+                    console.log('🎯 All users:', userListCache.map(u => ({ id: u.id, username: u.username, email: u.email })));
+                } else {
+                    console.log('ℹ️  Database is empty - no users registered yet');
+                }
+                return userListCache;
+            } else {
+                console.error('❌ API response validation failed!');
+                console.error('📊 Response details:', {
+                    hasResponse: !!response,
+                    success: response?.success,
+                    successType: typeof response?.success,
+                    hasUsers: !!users,
+                    isArray: Array.isArray(users),
+                    userCount: users?.length,
+                    responseKeys: response ? Object.keys(response) : [],
+                    dataKeys: response?.data ? Object.keys(response.data) : []
+                });
+                console.error('📄 Full response:', JSON.stringify(response, null, 2));
+                console.error('⚠️  Falling through to localStorage due to validation failure');
+            }
+        } catch (error) {
+            console.error('❌ CRITICAL: Fetch users from database failed!');
+            console.error('Error message:', error.message);
+            console.error('Error name:', error.name);
+            console.error('Error stack:', error.stack);
+            console.error('Full error object:', error);
+            console.error('⚠️  Falling through to localStorage due to exception');
+            
+            // Store error for diagnostic panel
+            localStorage.setItem('lastUserAPIError', `${error.name}: ${error.message}`);
+            
+            // Show diagnostic panel if available
+            if (typeof showDiagnosticWithError === 'function') {
+                showDiagnosticWithError(`${error.name}: ${error.message}`);
+            }
+        }
+    }
+
+    // Fallback to localStorage
+    console.log('📦 Falling back to localStorage');
+    userSource = 'local';
+    userListCache = getUsers().map(u => ({
+        ...u,
+        createdDate: u.createdDate || new Date().toISOString()
+    }));
+    console.log(`📦 Loaded ${userListCache.length} users from localStorage`);
+    return userListCache;
 }
 
 async function loadAdminManagement() {
@@ -147,34 +961,121 @@ async function loadAdminManagement() {
     tableBody.innerHTML = html;
 }
 
-function loadUserManagement() {
-    const users = getUsers();
+async function loadUserManagement() {
+    console.log('🎯 loadUserManagement called');
+    console.log('Current state: userSource=' + userSource + ', cache=' + userListCache.length);
+    
     const tableBody = document.getElementById('userTableBody');
     
-    if (users.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="no-data">No users found</td></tr>';
+    if (!tableBody) {
+        console.error('❌ userTableBody element not found in DOM!');
         return;
     }
     
-    let html = '';
-    users.forEach(user => {
-        const progress = getUserProgress(user.email);
-        html += `
-            <tr>
-                <td>${user.fullName}</td>
-                <td>${user.email}</td>
-                <td>${user.phoneNumber}</td>
-                <td>${user.qualification}</td>
-                <td>${progress}%</td>
-                <td>
-                    <button class="action-btn edit" onclick="editUser('${user.email}')">Edit</button>
-                    <button class="action-btn delete" onclick="deleteUser('${user.email}')">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
+    try {
+        console.log('🔄 Fetching users (will use cache if available)...');
+        const users = await fetchUsersFromDatabase(); // This returns cached data if userSource is 'backend'
+        console.log('📊 fetchUsersFromDatabase returned:', { 
+            count: users?.length, 
+            source: userSource,
+            isArray: Array.isArray(users)
+        });
+        
+        // ALWAYS update data source indicator
+        updateDataSourceIndicator(userSource);
+        
+        // ALWAYS update last refresh time
+        const now = new Date().toLocaleTimeString();
+        const lastUpdateEl = document.getElementById('lastUpdateTime');
+        if (lastUpdateEl) {
+            lastUpdateEl.textContent = `Last updated: ${now} (${userSource})`;
+        }
+        
+        // Check if we have no users
+        if (!users || !Array.isArray(users) || users.length === 0) {
+            const sourceText = userSource === 'backend' ? 
+                '🟢 Connected to Live Database - No users registered yet<br><small style="color: #28a745;">✅ Database connection successful • Source: Hostinger MySQL<br>Users will appear here once they register on your website.</small>' : 
+                '🟡 Using Local Storage (Fallback)<br><small style="color: #ffc107;">⚠️ Could not connect to database<br>Check browser console (F12) for detailed error messages<br>Click "Test API" button for diagnostics</small>';
+            const errorMsg = `<tr><td colspan="6" class="no-data" style="padding: 40px; text-align: center;">${sourceText}</td></tr>`;
+            tableBody.innerHTML = errorMsg;
+            console.log('ℹ️  No users to display. Source:', userSource);
+            console.log('Debug info:', { 
+                users, 
+                userSource, 
+                cacheLength: userListCache.length,
+                apiConfigExists: !!API_CONFIG,
+                apiObjectExists: typeof api !== 'undefined',
+                apiBaseUrl: API_CONFIG?.BASE_URL,
+                apiEndpoint: API_CONFIG?.ENDPOINTS?.ADMIN_USERS
+            });
+            
+            // Show diagnostic panel if using localStorage
+            if (userSource === 'local' && typeof showDiagnosticWithError === 'function') {
+                const lastError = localStorage.getItem('lastUserAPIError') || 'API call failed - check console';
+                setTimeout(() => showDiagnosticWithError(lastError), 500);
+            }
+            
+            return;
+        }
+        
+        console.log('✅ Processing', users.length, 'users for display...');
+        console.log('Sample user:', users[0]);
     
-    tableBody.innerHTML = html;
+        let html = '';
+        users.forEach((user, index) => {
+            const progress = getUserProgress(user.email);
+            const userId = user.id || user.email; // Use database ID if available, fallback to email
+            const statusBadge = user.status ? `<span class="status-badge ${user.status}">${user.status}</span>` : '';
+            const sourceLabel = userSource === 'backend' ? `<small style="color: #28a745;">(DB-${user.id})</small>` : '<small style="color: #ffc107;">(Local)</small>';
+            
+            html += `
+                <tr>
+                    <td>${user.fullName || user.username || 'N/A'} ${user.id ? sourceLabel : ''}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.phoneNumber || user.phone || 'N/A'}</td>
+                    <td>${user.qualification || 'N/A'}</td>
+                    <td>${progress}%</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editUser('${user.email}')">Edit</button>
+                        <button class="action-btn delete" onclick="deleteUser('${userId}', '${user.email}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tableBody.innerHTML = html;
+        console.log(`✅ SUCCESS: Displayed ${users.length} users from ${userSource} at ${now}`);
+        console.log('Table HTML length:', html.length);
+        console.log('TableBody has content:', tableBody.innerHTML.length > 0);
+        
+    } catch (error) {
+        console.error('❌ Error in loadUserManagement:', error);
+        console.error('Error stack:', error.stack);
+        updateDataSourceIndicator('error');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="6" class="no-data" style="color: #dc3545; padding: 40px; text-align: center;">❌ Error loading users<br><small>' + error.message + '</small><br><small>Check browser console (F12) for full details</small></td></tr>';
+        }
+        
+        // Store error for diagnostic
+        localStorage.setItem('lastUserAPIError', error.message);
+    }
+}
+
+// Update data source indicator
+function updateDataSourceIndicator(source) {
+    const indicator = document.getElementById('dataSourceIndicator');
+    if (indicator) {
+        if (source === 'backend') {
+            indicator.innerHTML = '🟢 Live Database (Hostinger MySQL)';
+            indicator.style.color = '#28a745';
+        } else if (source === 'error') {
+            indicator.innerHTML = '🔴 Error Loading Data';
+            indicator.style.color = '#dc3545';
+        } else {
+            indicator.innerHTML = '🟡 Local Storage (Fallback)';
+            indicator.style.color = '#ffc107';
+        }
+    }
 }
 
 // Modal Functions
@@ -377,8 +1278,9 @@ async function handleAddAdmin(event) {
 }
 
 // Add User Handler
-function handleAddUser(event) {
+async function handleAddUser(event) {
     event.preventDefault();
+    console.log('🆕 handleAddUser called - Starting user creation process...');
     hideError('userModalError');
     
     const fullName = document.getElementById('newUserName').value.trim();
@@ -387,83 +1289,184 @@ function handleAddUser(event) {
     const email = document.getElementById('newUserEmail').value.trim();
     const password = document.getElementById('newUserPassword').value;
     
+    console.log('📝 Form data collected:', {
+        fullName,
+        phoneNumber,
+        qualification,
+        email,
+        passwordLength: password.length
+    });
+    
     // Validation
     if (!fullName || !phoneNumber || !qualification || !email || !password) {
+        console.error('❌ Validation failed: Missing required fields');
         showError('userModalError', 'All fields are required.');
         return;
     }
     
     if (!isValidEmail(email)) {
+        console.error('❌ Validation failed: Invalid email');
         showError('userModalError', 'Please enter a valid email address.');
         return;
     }
     
     if (!isValidPhone(phoneNumber)) {
+        console.error('❌ Validation failed: Invalid phone number');
         showError('userModalError', 'Please enter a valid 10-digit phone number.');
         return;
     }
     
     if (password.length < 8) {
+        console.error('❌ Validation failed: Password too short');
         showError('userModalError', 'Password must be at least 8 characters long.');
         return;
     }
     
-    // Check if user exists
-    const users = getUsers();
-    const existingUser = users.find(u => u.email === email);
+    console.log('✅ All validations passed');
     
-    if (existingUser) {
-        showError('userModalError', 'User with this email already exists.');
-        return;
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Adding to Database...';
+    
+    try {
+        // Try to add user to Hostinger database via API
+        if (typeof api !== 'undefined') {
+            console.log('🎯 API object is available');
+            console.log('📍 API Base URL:', API_CONFIG?.BASE_URL);
+            console.log('📍 Register endpoint:', API_CONFIG?.ENDPOINTS?.USER_REGISTER);
+            console.log('🎯 Adding user to Hostinger MySQL database...');
+            
+            const userData = {
+                username: fullName,
+                phone: phoneNumber,
+                qualification: qualification,
+                email: email,
+                password: password
+            };
+            
+            console.log('📤 Sending request to API with data:', {
+                username: userData.username,
+                email: userData.email,
+                phone: userData.phone,
+                qualification: userData.qualification
+            });
+            
+            const response = await api.registerUser(userData);
+            console.log('📡 API Response received:', response);
+            console.log('📊 Response details:', {
+                success: response?.success,
+                message: response?.message,
+                hasData: !!response?.data,
+                dataId: response?.data?.id
+            });
+            
+            if (response && response.success === true) {
+                console.log('✅ SUCCESS: User successfully added to database!');
+                console.log('📋 User ID:', response.data?.id);
+                console.log('📋 Username:', response.data?.username);
+                
+                console.log('🔄 Step 1: Refreshing user list from database...');
+                // Refresh user list from database
+                await fetchUsersFromDatabase(true);
+                
+                console.log('🔄 Step 2: Reloading user management UI...');
+                await loadUserManagement();
+                
+                console.log('🔄 Step 3: Updating dashboard counts...');
+                await loadDashboardData();
+                
+                console.log('✅ All refresh steps completed');
+                
+                closeAddUserModal();
+                showAdminNotification('Success', `User "${fullName}" added to database successfully! They can now login.`);
+                updateRealtimeStatus('connected', 'Live', Date.now());
+                console.log('🎉 User creation process completed successfully!');
+                return;
+            } else {
+                // API returned error
+                const errorMsg = response?.message || 'Failed to add user to database';
+                console.error('❌ API returned failure response');
+                console.error('❌ Error message:', errorMsg);
+                console.error('❌ Full response:', JSON.stringify(response, null, 2));
+                throw new Error(errorMsg);
+            }
+        } else {
+            console.error('❌ API object not available!');
+            console.error('typeof api:', typeof api);
+            throw new Error('API not available - cannot connect to database');
+        }
+        
+    } catch (error) {
+        console.error('❌ EXCEPTION CAUGHT: Failed to add user to database');
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        
+        // Show specific error messages
+        let errorMessage = 'Failed to add user to database. ';
+        
+        if (error.message.includes('already exists')) {
+            errorMessage = 'A user with this email or username already exists in the database.';
+        } else if (error.message.includes('timeout')) {
+            errorMessage = 'Database connection timeout. Please check your internet connection.';
+        } else if (error.message) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += 'Please check console for details.';
+        }
+        
+        console.error('❌ Showing error to user:', errorMessage);
+        showError('userModalError', errorMessage);
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        
+        // Don't fall back to localStorage - we want database only
+        updateRealtimeStatus('error', 'Database Error');
     }
-    
-    // Create new user
-    const newUser = {
-        fullName: fullName,
-        phoneNumber: phoneNumber,
-        qualification: qualification,
-        email: email,
-        password: password,
-        registeredDate: new Date().toISOString(),
-        progress: 0,
-        enrolledCourses: 0,
-        completedCourses: 0,
-        inProgressCourses: 0
-    };
-    
-    users.push(newUser);
-    saveUsers(users);
-    
-    closeAddUserModal();
-    loadUserManagement();
-    loadDashboardData();
-    
-    showAdminNotification('Success', 'User added successfully!');
 }
 
 // Edit User Functions
-function editUser(email) {
-    const users = getUsers();
-    const user = users.find(u => u.email === email);
+async function editUser(email) {
+    console.log('📝 Loading user data for editing:', email);
+    
+    // Try to find user from cache first
+    let user = userListCache.find(u => u.email === email);
+    
+    // Fallback to localStorage
+    if (!user) {
+        const users = getUsers();
+        user = users.find(u => u.email === email);
+    }
     
     if (!user) {
         showAdminNotification('Error', 'User not found!', 'error');
         return;
     }
     
+    console.log('Found user:', user);
+    
     // Fill form with user data
     document.getElementById('editUserEmail').value = user.email;
-    document.getElementById('editUserName').value = user.fullName;
+    document.getElementById('editUserName').value = user.fullName || user.username;
     document.getElementById('editUserNewEmail').value = user.email;
-    document.getElementById('editUserPhone').value = user.phoneNumber;
+    document.getElementById('editUserPhone').value = user.phoneNumber || user.phone;
     document.getElementById('editUserQualification').value = user.qualification;
     document.getElementById('editUserPassword').value = '';
     document.getElementById('confirmEditUserPassword').value = '';
     
+    // Store user ID for later use
+    if (user.id) {
+        document.getElementById('editUserForm').setAttribute('data-user-id', user.id);
+    }
+    
     showEditUserModal();
 }
 
-function handleEditUser(event) {
+async function handleEditUser(event) {
     event.preventDefault();
     hideError('editUserModalError');
     
@@ -491,16 +1494,6 @@ function handleEditUser(event) {
         return;
     }
     
-    // Check if new email already exists (if email changed)
-    if (oldEmail !== newEmail) {
-        const users = getUsers();
-        const existingUser = users.find(u => u.email === newEmail);
-        if (existingUser) {
-            showError('editUserModalError', 'A user with this email already exists.');
-            return;
-        }
-    }
-    
     // Validate password if provided
     if (newPassword) {
         if (newPassword.length < 8) {
@@ -513,38 +1506,119 @@ function handleEditUser(event) {
         }
     }
     
-    // Update user
-    const users = getUsers();
-    const userIndex = users.findIndex(u => u.email === oldEmail);
+    // Get user ID from form attribute
+    const userId = document.getElementById('editUserForm').getAttribute('data-user-id');
     
-    if (userIndex === -1) {
-        showError('editUserModalError', 'User not found!');
-        return;
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Updating...';
+    
+    try {
+        // Try to update in database if user has ID (from backend)
+        if (userId && typeof api !== 'undefined') {
+            console.log('🎯 Updating user in Hostinger MySQL database...');
+            console.log('User ID:', userId);
+            
+            const updateData = {
+                username: fullName,
+                phone: phoneNumber,
+                qualification: qualification,
+                email: newEmail
+            };
+            
+            // Add password if provided
+            if (newPassword) {
+                updateData.password = newPassword;
+            }
+            
+            console.log('Update data:', updateData);
+            
+            const response = await api.updateUser(userId, updateData);
+            console.log('📡 API Response:', response);
+            
+            if (response && response.success) {
+                console.log('✅ User successfully updated in database!');
+                
+                // Refresh user list from database
+                await fetchUsersFromDatabase(true);
+                await loadUserManagement();
+                await loadDashboardData();
+                
+                closeEditUserModal();
+                showAdminNotification('Success', `User "${fullName}" updated successfully in database!`);
+                updateRealtimeStatus('connected', 'Live', Date.now());
+                return;
+            } else {
+                const errorMsg = response.message || 'Failed to update user in database';
+                console.error('❌ API Error:', errorMsg);
+                throw new Error(errorMsg);
+            }
+        } else {
+            // Fallback to localStorage for old users without database ID
+            console.log('⚠️ User has no database ID, updating localStorage only...');
+            
+            // Check if new email already exists (if email changed)
+            if (oldEmail !== newEmail) {
+                const users = getUsers();
+                const existingUser = users.find(u => u.email === newEmail);
+                if (existingUser) {
+                    showError('editUserModalError', 'A user with this email already exists.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                    return;
+                }
+            }
+            
+            // Update user in localStorage
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === oldEmail);
+            
+            if (userIndex === -1) {
+                showError('editUserModalError', 'User not found!');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                return;
+            }
+            
+            users[userIndex].fullName = fullName;
+            users[userIndex].email = newEmail;
+            users[userIndex].phoneNumber = phoneNumber;
+            users[userIndex].qualification = qualification;
+            
+            // Update password if provided
+            if (newPassword) {
+                users[userIndex].password = newPassword;
+            }
+            
+            saveUsers(users);
+            
+            closeEditUserModal();
+            loadUserManagement();
+            loadDashboardData();
+            
+            showAdminNotification('Success', 'User updated successfully in localStorage!');
+        }
+        
+    } catch (error) {
+        console.error('❌ Failed to update user:', error);
+        
+        let errorMessage = 'Failed to update user. ';
+        if (error.message) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += 'Please check console for details.';
+        }
+        
+        showError('editUserModalError', errorMessage);
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        
+        updateRealtimeStatus('error', 'Database Error');
     }
-    
-    users[userIndex].fullName = fullName;
-    users[userIndex].email = newEmail;
-    users[userIndex].phoneNumber = phoneNumber;
-    users[userIndex].qualification = qualification;
-    
-    // Update password if provided
-    if (newPassword) {
-        users[userIndex].password = newPassword;
-    }
-    
-    saveUsers(users);
-    
-    // Update current user if editing logged in user
-    const currentUser = getCurrentUser();
-    if (currentUser && currentUser.email === oldEmail) {
-        setCurrentUser(users[userIndex]);
-    }
-    
-    closeEditUserModal();
-    loadUserManagement();
-    loadDashboardData();
-    
-    showAdminNotification('Success', 'User updated successfully!');
 }
 
 // Edit Admin Functions
@@ -721,22 +1795,66 @@ async function deleteAdmin(adminId) {
     }
 }
 
-function deleteUser(email) {
+function deleteUser(userId, email) {
+    console.log('🗑️ deleteUser called:', { userId, email, userSource });
+    
     showCustomConfirm(
         'Are you sure you want to delete this user? This action cannot be undone.',
         'Delete User',
         'Delete'
-    ).then(confirmed => {
-        if (!confirmed) return;
+    ).then(async confirmed => {
+        if (!confirmed) {
+            console.log('Delete cancelled by user');
+            return;
+        }
         
-        const users = getUsers();
-        const filteredUsers = users.filter(u => u.email !== email);
-    
-    saveUsers(filteredUsers);
-    loadUserManagement();
-    loadDashboardData();
-    
-    showAdminNotification('Success', 'User deleted successfully!');
+        try {
+            // Try backend deletion first if user is from database
+            if (userSource === 'backend' && userId && typeof api !== 'undefined') {
+                console.log('🌐 Attempting to delete user from database...', { userId, email });
+                
+                try {
+                    const response = await api.deleteUser(userId);
+                    console.log('🔍 Delete API response:', response);
+                    
+                    if (response && response.success) {
+                        console.log('✅ User deleted successfully from database!');
+                        
+                        // Refresh data from database
+                        await fetchUsersFromDatabase(true);
+                        loadUserManagement();
+                        loadDashboardData();
+                        
+                        showAdminNotification('Success', 'User deleted successfully from database!');
+                        return;
+                    } else {
+                        console.error('❌ Delete API returned unsuccessful response:', response);
+                        showAdminNotification('Error', response?.message || 'Failed to delete user from database', 'error');
+                        return;
+                    }
+                } catch (apiError) {
+                    console.error('❌ Backend delete user failed:', apiError);
+                    showAdminNotification('Error', 'Failed to delete user from database: ' + (apiError.message || 'Unknown error'), 'error');
+                    return;
+                }
+            }
+            
+            // If not using backend, fall back to localStorage
+            console.log('⚠️ Using localStorage fallback for delete');
+            const users = getUsers();
+            const filteredUsers = users.filter(u => u.email !== email);
+        
+            saveUsers(filteredUsers);
+            userListCache = filteredUsers;
+            userSource = 'local';
+            loadUserManagement();
+            loadDashboardData();
+            
+            showAdminNotification('Success', 'User deleted from local storage!');
+        } catch (error) {
+            console.error('❌ Delete user error:', error);
+            showAdminNotification('Error', error.message || 'Unable to delete user', 'error');
+        }
     });
 }
 
@@ -1473,65 +2591,75 @@ async function loadPartnerMessages() {
     
     try {
         const token = localStorage.getItem('adminToken');
-        console.log('Fetching partner contacts from:', `${window.API_BASE_URL}/api/admin/contacts/partners`);
-        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners`, {
+        const url = `${window.API_BASE_URL}/api/admin/contacts/partners.php`;
+        console.log('📨 Fetching partner contacts from:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
+        }).catch(err => {
+            console.error('Network error fetching partner messages:', err);
+            throw new Error('Network connection failed. Please check your internet connection.');
         });
+        
         console.log('Response status:', response.status);
         
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Partner messages error response:', errorText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const result = await response.json();
-        console.log('Partner contacts result:', result);
+        console.log('✅ Partner contacts result:', result);
         
-        if (result.success && result.contacts) {
-            const contacts = result.contacts;
-            
-            if (contacts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No partner messages yet</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = contacts.map(contact => {
-                // Truncate message to first 5 words
-                const words = contact.contactMessage.split(' ');
-                const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
-                
-                return `
-                <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
-                    <td>${contact.contactName}</td>
-                    <td>${contact.contactEmail}</td>
-                    <td>${contact.contactPhone}</td>
-                    <td>${contact.contactSubject}</td>
-                    <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
-                        ${truncatedMessage}
-                    </td>
-                    <td>
-                        <span class="status-badge status-${contact.status}">
-                            ${contact.status}
-                        </span>
-                    </td>
-                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
-                    <td style="display: flex; gap: 8px; align-items: center;">
-                        <button onclick="viewPartnerMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
-                            View
-                        </button>
-                        <button onclick="markPartnerAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
-                            ✓
-                        </button>
-                    </td>
-                </tr>
-            `}).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading partner messages</td></tr>';
+        // Check for data in result.data.contacts or result.contacts
+        const contacts = result.data?.contacts || result.contacts || [];
+        
+        if (contacts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">📭 No partner messages yet. Messages will appear here when partners submit the contact form.</td></tr>';
+            return;
         }
+        
+        tbody.innerHTML = contacts.map(contact => {
+            // Truncate message to first 5 words
+            const words = contact.contactMessage.split(' ');
+            const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
+            
+            return `
+            <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
+                <td>${contact.contactName}</td>
+                <td>${contact.contactEmail}</td>
+                <td>${contact.contactPhone}</td>
+                <td>${contact.contactSubject}</td>
+                <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
+                    ${truncatedMessage}
+                </td>
+                <td>
+                    <span class="status-badge status-${contact.status}">
+                        ${contact.status}
+                    </span>
+                </td>
+                <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                <td style="display: flex; gap: 8px; align-items: center;">
+                    <button onclick="viewPartnerMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
+                        View
+                    </button>
+                    <button onclick="markPartnerAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
+                        ✓
+                    </button>
+                </td>
+            </tr>
+        `}).join('');
     } catch (error) {
-        console.error('Error loading partner messages:', error);
-        tbody.innerHTML = `<tr><td colspan="9" class="no-data">Error: ${error.message}</td></tr>`;
+        console.error('❌ Error loading partner messages:', error);
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data" style="color: #dc3545;">
+            ⚠️ Error loading partner messages: ${error.message}<br>
+            <small>This may occur if the API endpoint is not set up or the database table needs updating.</small>
+        </td></tr>`;
     }
 }
 
@@ -1548,65 +2676,75 @@ async function loadEducatorMessages() {
     
     try {
         const token = localStorage.getItem('adminToken');
-        console.log('Fetching educator contacts from:', `${window.API_BASE_URL}/api/admin/contacts/educators`);
-        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators`, {
+        const url = `${window.API_BASE_URL}/api/admin/contacts/educators.php`;
+        console.log('👩‍🏫 Fetching educator contacts from:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
+        }).catch(err => {
+            console.error('Network error fetching educator messages:', err);
+            throw new Error('Network connection failed. Please check your internet connection.');
         });
+        
         console.log('Response status:', response.status);
         
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Educator messages error response:', errorText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const result = await response.json();
-        console.log('Educator contacts result:', result);
+        console.log('✅ Educator contacts result:', result);
         
-        if (result.success && result.contacts) {
-            const contacts = result.contacts;
-            
-            if (contacts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No educator messages yet</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = contacts.map(contact => {
-                // Truncate message to first 5 words
-                const words = contact.contactMessage.split(' ');
-                const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
-                
-                return `
-                <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
-                    <td>${contact.contactName}</td>
-                    <td>${contact.contactEmail}</td>
-                    <td>${contact.contactPhone}</td>
-                    <td>${contact.contactSubject}</td>
-                    <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
-                        ${truncatedMessage}
-                    </td>
-                    <td>
-                        <span class="status-badge status-${contact.status}">
-                            ${contact.status}
-                        </span>
-                    </td>
-                    <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
-                    <td style="display: flex; gap: 8px; align-items: center;">
-                        <button onclick="viewEducatorMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
-                            View
-                        </button>
-                        <button onclick="markEducatorAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
-                            ✓
-                        </button>
-                    </td>
-                </tr>
-            `}).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading educator messages</td></tr>';
+        // Check for data in result.data.contacts or result.contacts
+        const contacts = result.data?.contacts || result.contacts || [];
+        
+        if (contacts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="no-data">📭 No educator messages yet. Messages will appear here when educators submit the contact form.</td></tr>';
+            return;
         }
+        
+        tbody.innerHTML = contacts.map(contact => {
+            // Truncate message to first 5 words
+            const words = contact.contactMessage.split(' ');
+            const truncatedMessage = words.slice(0, 5).join(' ') + (words.length > 5 ? '...' : '');
+            
+            return `
+            <tr style="${contact.status === 'new' ? 'background-color: #fff8e1;' : ''}">
+                <td>${contact.contactName}</td>
+                <td>${contact.contactEmail}</td>
+                <td>${contact.contactPhone}</td>
+                <td>${contact.contactSubject}</td>
+                <td style="min-width: 100px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85em;" title="${contact.contactMessage}">
+                    ${truncatedMessage}
+                </td>
+                <td>
+                    <span class="status-badge status-${contact.status}">
+                        ${contact.status}
+                    </span>
+                </td>
+                <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                <td style="display: flex; gap: 8px; align-items: center;">
+                    <button onclick="viewEducatorMessage(${contact.id}, '${contact.contactName.replace(/'/g, "\\'")}', '${contact.contactEmail}', '${contact.contactPhone}', '${contact.contactSubject.replace(/'/g, "\\'")}', \`${contact.contactMessage.replace(/`/g, "\\`")}\`, '${contact.status}')" class="btn-icon btn-view" title="View">
+                        View
+                    </button>
+                    <button onclick="markEducatorAsRead(${contact.id})" class="btn-icon btn-mark-read" title="Mark as Read" ${contact.status !== 'new' ? 'disabled' : ''}>
+                        ✓
+                    </button>
+                </td>
+            </tr>
+        `}).join('');
     } catch (error) {
-        console.error('Error loading educator messages:', error);
-        tbody.innerHTML = `<tr><td colspan="9" class="no-data">Error: ${error.message}</td></tr>`;
+        console.error('❌ Error loading educator messages:', error);
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data" style="color: #dc3545;">
+            ⚠️ Error loading educator messages: ${error.message}<br>
+            <small>This may occur if the API endpoint is not set up or the database table needs updating.</small>
+        </td></tr>`;
     }
 }
 
@@ -2046,14 +3184,20 @@ async function getSchoolPartners() {
     
     // Try to sync with backend in background (non-blocking)
     if (typeof api !== 'undefined') {
-        api.getAllSchoolPartners().then(response => {
-            if (response && response.success && Array.isArray(response.partners)) {
+        try {
+            const response = await api.getAllSchoolPartners();
+            // Handle both response formats: response.partners or response.data.partners
+            const partners = response.partners || (response.data && response.data.partners);
+            
+            if (response && response.success && Array.isArray(partners)) {
                 // Update localStorage if backend has data
-                localStorage.setItem('schoolPartners', JSON.stringify(response.partners));
+                localStorage.setItem('schoolPartners', JSON.stringify(partners));
+                console.log(`✅ Synced ${partners.length} school partners from database`);
+                return partners;
             }
-        }).catch(error => {
-            console.warn('Backend sync failed:', error);
-        });
+        } catch (error) {
+            console.warn('Backend school partners sync failed, using localStorage:', error.message);
+        }
     }
     
     return localData;
@@ -2539,7 +3683,7 @@ async function deletePartnerMessage(id) {
         async () => {
             try {
                 const token = localStorage.getItem('adminToken');
-                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners/${id}`, {
+                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners.php?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -2569,7 +3713,7 @@ async function deleteEducatorMessage(id) {
         async () => {
             try {
                 const token = localStorage.getItem('adminToken');
-                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators/${id}`, {
+                const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators.php?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -2596,7 +3740,7 @@ async function deleteEducatorMessage(id) {
 async function markPartnerAsRead(id) {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners/${id}/status`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/partners.php?id=${id}&action=status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -2623,7 +3767,7 @@ async function markPartnerAsRead(id) {
 async function markEducatorAsRead(id) {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators/${id}/status`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/admin/contacts/educators.php?id=${id}&action=status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -2662,3 +3806,349 @@ async function markEducatorAsRead(id) {
         showAdminNotification('Error', 'Failed to update message status');
     }
 }
+
+// =========================================================================
+// Expose functions to global scope for onclick handlers
+// =========================================================================
+window.showTab = showTab;
+window.refreshUserData = refreshUserData;
+window.showAddAdminModal = showAddAdminModal;
+window.closeAddAdminModal = closeAddAdminModal;
+window.showAddUserModal = showAddUserModal;
+window.closeAddUserModal = closeAddUserModal;
+window.closeEditUserModal = closeEditUserModal;
+window.closeEditAdminModal = closeEditAdminModal;
+window.showAddSchoolModal = showAddSchoolModal;
+window.closeAddSchoolModal = closeAddSchoolModal;
+window.closeEditSchoolModal = closeEditSchoolModal;
+window.showAddSchoolPartnerModal = showAddSchoolPartnerModal;
+window.closeAddSchoolPartnerModal = closeAddSchoolPartnerModal;
+window.closeEditSchoolPartnerModal = closeEditSchoolPartnerModal;
+window.refreshDebugData = refreshDebugData;
+window.addSampleUser = addSampleUser;
+window.clearAllData = clearAllData;
+window.closeMessageViewModal = closeMessageViewModal;
+window.deletePartnerMessage = deletePartnerMessage;
+window.deleteEducatorMessage = deleteEducatorMessage;
+window.markPartnerAsRead = markPartnerAsRead;
+window.markEducatorAsRead = markEducatorAsRead;
+window.viewPartnerMessage = viewPartnerMessage;
+window.viewEducatorMessage = viewEducatorMessage;
+window.closeDeleteConfirmModal = closeDeleteConfirmModal;
+window.closeDeleteConfirm = closeDeleteConfirm;
+window.confirmDelete = confirmDelete;
+window.closeAdminNotification = closeAdminNotification;
+window.closeConsultationDetails = closeConsultationDetails;
+window.cancelConfirm = cancelConfirm;
+window.confirmAction = confirmAction;
+window.editUser = editUser;
+window.deleteUser = deleteUser;
+window.editAdmin = editAdmin;
+window.deleteAdmin = deleteAdmin;
+window.editSchool = editSchool;
+window.deleteSchool = deleteSchool;
+window.editSchoolPartner = editSchoolPartner;
+window.deleteSchoolPartner = deleteSchoolPartner;
+
+// =========================================================================
+// Debug Helper Functions - Available in Browser Console
+// =========================================================================
+window.debugTestUserAPI = async function() {
+    console.log('=== Testing User API Connection ===');
+    console.log('API Base URL:', window.API_BASE_URL);
+    console.log('API Endpoint:', API_CONFIG.ENDPOINTS.ADMIN_USERS);
+    console.log('Full URL:', `${window.API_BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`);
+    
+    try {
+        console.log('Calling api.getAllUsers()...');
+        const response = await api.getAllUsers();
+        console.log('Response received:', response);
+        return response;
+    } catch (error) {
+        console.error('API call failed:', error);
+        return { error: error.message, stack: error.stack };
+    }
+};
+
+// Visual API Test Function (shows popup with results)
+window.testUserApiDirect = async function() {
+    // Show loading state
+    updateRealtimeStatus('syncing', 'Testing API...');
+    
+    const startTime = Date.now();
+    let diagnostics = {
+        timestamp: new Date().toISOString(),
+        testDuration: 0,
+        apiConfig: {
+            baseUrl: API_CONFIG?.BASE_URL || 'NOT FOUND',
+            endpoint: API_CONFIG?.ENDPOINTS?.ADMIN_USERS || 'NOT FOUND',
+            fullUrl: API_CONFIG ? `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}` : 'CANNOT CONSTRUCT'
+        },
+        apiObjectStatus: typeof api !== 'undefined' ? 'Available ✅' : 'NOT FOUND ❌',
+        databaseConnection: 'Testing...',
+        response: null,
+        users: [],
+        error: null
+    };
+    
+    console.log('🧪 Starting comprehensive API test...');
+    console.log('Diagnostics baseline:', diagnostics);
+    
+    try {
+        // Test 1: Direct fetch to API endpoint
+        console.log('Test 1: Direct fetch call...');
+        const fetchUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`;
+        const fetchResponse = await fetch(fetchUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        });
+        
+        diagnostics.httpStatus = fetchResponse.status;
+        diagnostics.httpStatusText = fetchResponse.statusText;
+        
+        const responseText = await fetchResponse.text();
+        console.log('Raw API response:', responseText);
+        
+        try {
+            const jsonResponse = JSON.parse(responseText);
+            diagnostics.response = jsonResponse;
+            diagnostics.databaseConnection = jsonResponse.success ? 'Connected ✅' : 'Failed ❌';
+            
+            // Extract users
+            const users = jsonResponse.users || (jsonResponse.data && jsonResponse.data.users) || [];
+            diagnostics.users = users;
+            diagnostics.userCount = users.length;
+            
+            diagnostics.testDuration = Date.now() - startTime;
+            
+            // Show results in alert
+            let resultMessage = `🧪 API TEST RESULTS\\n\\n`;
+            resultMessage += `⏱️ Test Duration: ${diagnostics.testDuration}ms\\n`;
+            resultMessage += `🌐 API URL: ${fetchUrl}\\n`;
+            resultMessage += `📡 HTTP Status: ${diagnostics.httpStatus} ${diagnostics.httpStatusText}\\n`;
+            resultMessage += `🔌 Database: ${diagnostics.databaseConnection}\\n`;
+            resultMessage += `✅ Success: ${jsonResponse.success}\\n`;
+            resultMessage += `📊 Users Found: ${diagnostics.userCount}\\n\\n`;
+            
+            if (diagnostics.userCount > 0) {
+                resultMessage += `Sample User:\\n`;
+                resultMessage += `- ID: ${users[0].id}\\n`;
+                resultMessage += `- Username: ${users[0].username}\\n`;
+                resultMessage += `- Email: ${users[0].email}\\n`;
+                resultMessage += `- Phone: ${users[0].phone}\\n\\n`;
+                resultMessage += `✅ API IS WORKING! If dashboard shows "No users", check browser console (F12) for detailed logs.`;
+            } else {
+                resultMessage += `⚠️ API returned success but 0 users.\\nCheck phpMyAdmin to verify users exist in database.`;
+            }
+            
+            alert(resultMessage);
+            console.log('✅ Full diagnostics:', JSON.stringify(diagnostics, null, 2));
+            
+            updateRealtimeStatus('connected', 'Test Complete', Date.now());
+            
+        } catch (jsonError) {
+            diagnostics.error = `JSON Parse Error: ${jsonError.message}`;
+            diagnostics.rawResponse = responseText;
+            alert(`❌ API Response Error\\n\\nCould not parse JSON response.\\nRaw response: ${responseText.substring(0, 200)}...\\n\\nCheck browser console for details.`);
+            console.error('JSON parse error:', jsonError);
+            console.error('Raw response:', responseText);
+            updateRealtimeStatus('error', 'Test Failed');
+        }
+        
+    } catch (fetchError) {
+        diagnostics.testDuration = Date.now() - startTime;
+        diagnostics.error = `Network Error: ${fetchError.message}`;
+        
+        alert(`❌ NETWORK ERROR\\n\\n${fetchError.message}\\n\\nPossible causes:\\n- API endpoint not accessible\\n- CORS issue\\n- Database connection failed\\n\\nCheck browser console (F12) for full error details.`);
+        console.error('❌ API Test Failed:', fetchError);
+        console.error('Full diagnostics:', diagnostics);
+        updateRealtimeStatus('error', 'Network Error');
+    }
+    
+    // Also log to console for debugging
+    console.log('🧪 Complete diagnostics object:', diagnostics);
+    return diagnostics;
+};
+
+window.debugFetchUsers = async function() {
+    console.log('=== Testing fetchUsersFromDatabase ===');
+    const result = await fetchUsersFromDatabase(true);
+    console.log('Result:', result);
+    console.log('User source:', userSource);
+    console.log('Cache length:', userListCache.length);
+    return result;
+};
+
+window.debugInfo = function() {
+    console.log('=== Debug Info ===');
+    console.log('API available:', typeof api !== 'undefined');
+    console.log('API_CONFIG available:', typeof API_CONFIG !== 'undefined');
+    console.log('API Base URL:', window.API_BASE_URL);
+    console.log('Current User Source:', userSource);
+    console.log('Cached Users Count:', userListCache.length);
+    console.log('Admin Token:', localStorage.getItem('adminToken') ? 'Present' : 'Missing');
+    console.log('Current Admin:', localStorage.getItem('currentAdmin'));
+    
+    // Return the info as an object
+    return {
+        apiAvailable: typeof api !== 'undefined',
+        apiConfigAvailable: typeof API_CONFIG !== 'undefined',
+        apiBaseURL: window.API_BASE_URL,
+        userSource: userSource,
+        cachedUsersCount: userListCache.length,
+        hasAdminToken: !!localStorage.getItem('adminToken'),
+        currentAdmin: localStorage.getItem('currentAdmin')
+    };
+};
+
+// Force load users right now
+window.forceLoadUsers = async function() {
+    console.log('=== Force Loading Users ===');
+    try {
+        console.log('Step 1: Fetching from database...');
+        const users = await fetchUsersFromDatabase(true);
+        console.log('Step 2: Users fetched:', users);
+        console.log('Step 3: Calling loadUserManagement...');
+        await loadUserManagement();
+        console.log('Step 4: Complete!');
+        return { success: true, userCount: users.length };
+    } catch (error) {
+        console.error('Force load failed:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+// === DIAGNOSTIC PANEL FUNCTIONS ===
+
+// Toggle diagnostic panel visibility
+window.toggleDiagnostic = function() {
+    const content = document.getElementById('diagnosticContent');
+    const toggle = document.getElementById('diagnosticToggle');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        toggle.textContent = '▲';
+        updateDiagnosticInfo();
+    } else {
+        content.style.display = 'none';
+        toggle.textContent = '▼';
+    }
+};
+
+// Update diagnostic info in panel
+function updateDiagnosticInfo() {
+    const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    
+    document.getElementById('diagEnv').textContent = isProd ? 'Production' : 'Development';
+    document.getElementById('diagBaseUrl').textContent = API_CONFIG ? API_CONFIG.BASE_URL : 'NOT LOADED';
+    document.getElementById('diagEndpoint').textContent = API_CONFIG ? API_CONFIG.ENDPOINTS.ADMIN_USERS : 'NOT LOADED';
+    document.getElementById('diagSource').textContent = userSource.toUpperCase() + (userSource === 'backend' ? ' ✅' : ' ⚠️');
+    document.getElementById('diagCacheSize').textContent = userListCache.length + ' users';
+    
+    // Get last error from localStorage if any
+    const lastError = localStorage.getItem('lastUserAPIError');
+    document.getElementById('diagError').textContent = lastError || 'None';
+}
+
+// Show diagnostic panel with error
+function showDiagnosticWithError(error) {
+    const panel = document.getElementById('diagnosticPanel');
+    panel.style.display = 'block';
+    
+    // Store error
+    localStorage.setItem('lastUserAPIError', error);
+    
+    // Auto-expand
+    document.getElementById('diagnosticContent').style.display = 'block';
+    document.getElementById('diagnosticToggle').textContent = '▲';
+    
+    updateDiagnosticInfo();
+}
+
+// Run full diagnostic test
+window.runFullDiagnostic = async function() {
+    console.log('🔬 Running full diagnostic...');
+    
+    const diagnostics = {
+        timestamp: new Date().toISOString(),
+        environment: window.location.hostname,
+        userAgent: navigator.userAgent,
+        api: {
+            available: typeof api !== 'undefined',
+            configAvailable: typeof API_CONFIG !== 'undefined',
+            baseUrl: API_CONFIG?.BASE_URL,
+            endpoint: API_CONFIG?.ENDPOINTS?.ADMIN_USERS,
+            fullUrl: API_CONFIG ? `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}` : null
+        },
+        state: {
+            userSource: userSource,
+            cacheSize: userListCache.length,
+            hasAdminToken: !!localStorage.getItem('adminToken'),
+            currentAdmin: localStorage.getItem('currentAdmin')
+        },
+        tests: {}
+    };
+    
+    console.log('Diagnostics baseline:', diagnostics);
+    
+    // Test 1: API availability
+    diagnostics.tests.apiAvailable = typeof api !== 'undefined' && typeof API_CONFIG !== 'undefined';
+    
+    // Test 2: Try fetching from database
+    try {
+        console.log('Test: Fetching users...');
+        const users = await api.getAllUsers();
+        diagnostics.tests.apiCallSuccess = true;
+        diagnostics.tests.response = users;
+        diagnostics.tests.userCount = users.users?.length || users.data?.users?.length || 0;
+    } catch (error) {
+        diagnostics.tests.apiCallSuccess = false;
+        diagnostics.tests.error = error.message;
+    }
+    
+    console.log('📊 Full diagnostics:', diagnostics);
+    
+    // Display results
+    let message = `🔬 DIAGNOSTIC RESULTS\n\n`;
+    message += `Environment: ${diagnostics.environment}\n`;
+    message += `API Available: ${diagnostics.tests.apiAvailable ? '✅ YES' : '❌ NO'}\n`;
+    message += `API Base URL: ${diagnostics.api.baseUrl}\n`;
+    message += `User Source: ${diagnostics.state.userSource.toUpperCase()}\n`;
+    message += `Cache Size: ${diagnostics.state.cacheSize} users\n\n`;
+    
+    if (diagnostics.tests.apiCallSuccess) {
+        message += `✅ API CALL SUCCESSFUL!\n`;
+        message += `Users in Database: ${diagnostics.tests.userCount}\n\n`;
+        if (diagnostics.tests.userCount === 0) {
+            message += `ℹ️  Database is connected but empty.\nNo users have registered yet.\n\n`;
+        }
+        message += `If dashboard still shows "Local Storage",\ntry clicking the Refresh button.`;
+    } else {
+        message += `❌ API CALL FAILED\n`;
+        message += `Error: ${diagnostics.tests.error}\n\n`;
+        message += `Check:\n`;
+        message += `1. Is the API file uploaded to server?\n`;
+        message += `2. Check browser console (F12) for details\n`;
+        message += `3. Verify database credentials in db_connect.php`;
+    }
+    
+    alert(message);
+    
+    // Update diagnostic panel
+    updateDiagnosticInfo();
+    
+    return diagnostics;
+};
+
+// Auto-show diagnostic panel if using localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for data to load
+    setTimeout(() => {
+        if (userSource === 'local' && document.getElementById('diagnosticPanel')) {
+            document.getElementById('diagnosticPanel').style.display = 'block';
+            console.log('⚠️  Using localStorage - showing diagnostic panel');
+        }
+    }, 2000);
+});

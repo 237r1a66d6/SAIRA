@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Users API - Direct</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .result {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        pre {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Users API - Direct Fetch</h1>
+    
+    <div class="info">
+        <strong>Testing:</strong> /api/admin/users.php endpoint<br>
+        <strong>Expected:</strong> 5 users from Hostinger database<br>
+        <strong>Database:</strong> u642524181_SairaAcad
+    </div>
+
+    <button onclick="testDirectFetch()">🔍 Test Direct Fetch (Fetch API)</button>
+    <button onclick="testXHR()">🔍 Test XHR Method</button>
+    <button onclick="clearResults()">🧹 Clear Results</button>
+
+    <div id="results"></div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        function addResult(title, content, isError = false) {
+            const resultEl = document.createElement('div');
+            resultEl.className = 'result';
+            resultEl.innerHTML = `
+                <h3 class="${isError ? 'error' : 'success'}">${title}</h3>
+                <pre>${content}</pre>
+            `;
+            resultsDiv.appendChild(resultEl);
+        }
+        
+        async function testDirectFetch() {
+            addResult('⏳ Testing...', 'Fetching users from API...');
+            
+            try {
+                const apiUrl = '/api/admin/users.php';
+                console.log('Fetching from:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
+                const text = await response.text();
+                console.log('Raw response:', text);
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    addResult('❌ JSON Parse Error', `Raw response:\n${text}\n\nError: ${e.message}`, true);
+                    return;
+                }
+                
+                const formatted = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    const users = data.data?.users || [];
+                    const summary = `
+Status: ${response.status} ${response.statusText}
+Success: ${data.success}
+Message: ${data.message}
+User Count: ${users.length}
+Users Array Location: ${data.data?.users ? 'data.users ✅' : 'Not found ❌'}
+
+Full Response:
+${formatted}
+`;
+                    addResult(`✅ Success - ${users.length} Users Found`, summary);
+                    
+                    // Show first user as sample
+                    if (users.length > 0) {
+                        addResult('📋 Sample User (First)', JSON.stringify(users[0], null, 2));
+                    }
+                } else {
+                    addResult('❌ API Error', formatted, true);
+                }
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                addResult('❌ Network Error', `${error.message}\n\nStack:\n${error.stack}`, true);
+            }
+        }
+        
+        async function testXHR() {
+            addResult('⏳ Testing XHR...', 'Fetching with XMLHttpRequest...');
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/admin/users.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onload = function() {
+                const result = `
+Status: ${xhr.status}
+Response:
+${xhr.responseText}
+`;
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        const formatted = JSON.stringify(data, null, 2);
+                        addResult('✅ XHR Success', formatted);
+                    } catch (e) {
+                        addResult('❌ XHR JSON Parse Error', result, true);
+                    }
+                } else {
+                    addResult('❌ XHR Error', result, true);
+                }
+            };
+            
+            xhr.onerror = function() {
+                addResult('❌ XHR Network Error', 'Request failed', true);
+            };
+            
+            xhr.send();
+        }
+        
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            setTimeout(testDirectFetch, 500);
+        });
+    </script>
+</body>
+</html>

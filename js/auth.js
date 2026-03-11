@@ -3,22 +3,47 @@
 // Initialize default admin on first load
 function initializeDefaultAdmin() {
     const admins = getAdmins();
-    if (admins.length === 0) {
-        const defaultAdmin = {
-            username: 'admin',
-            password: '1234567@_a',
-            createdDate: new Date().toISOString(),
-            status: 'active'
-        };
-        admins.push(defaultAdmin);
+    
+    // Check if default admin exists with correct credentials
+    const defaultAdminIndex = admins.findIndex(a => a.username === 'admin');
+    
+    const correctDefaultAdmin = {
+        username: 'admin',
+        email: 'admin@sairaacad.com',
+        password: 'Admin@123',
+        role: 'super_admin',
+        createdDate: new Date().toISOString(),
+        status: 'active'
+    };
+    
+    if (defaultAdminIndex === -1) {
+        // No default admin exists, add it
+        admins.push(correctDefaultAdmin);
         localStorage.setItem('admins', JSON.stringify(admins));
+        console.log('Default admin created with username: admin, password: Admin@123');
+    } else if (admins[defaultAdminIndex].password !== 'Admin@123') {
+        // Default admin exists but with wrong password, update it
+        admins[defaultAdminIndex] = correctDefaultAdmin;
+        localStorage.setItem('admins', JSON.stringify(admins));
+        console.log('Default admin password updated to: Admin@123');
     }
 }
 
 // Get all admins from localStorage
 function getAdmins() {
-    const admins = localStorage.getItem('admins');
-    return admins ? JSON.parse(admins) : [];
+    try {
+        const admins = localStorage.getItem('admins');
+        const parsedAdmins = admins ? JSON.parse(admins) : [];
+        // Filter out any malformed admin objects
+        return parsedAdmins.filter(admin => 
+            admin && 
+            typeof admin === 'object' && 
+            admin.username
+        );
+    } catch (error) {
+        console.error('Error parsing admins from localStorage:', error);
+        return [];
+    }
 }
 
 // Save admins to localStorage
@@ -28,8 +53,19 @@ function saveAdmins(admins) {
 
 // Get all users from localStorage
 function getUsers() {
-    const users = localStorage.getItem('users');
-    return users ? JSON.parse(users) : [];
+    try {
+        const users = localStorage.getItem('users');
+        const parsedUsers = users ? JSON.parse(users) : [];
+        // Filter out any malformed user objects that don't have required properties
+        return parsedUsers.filter(user => 
+            user && 
+            typeof user === 'object' && 
+            (user.username || user.fullName || user.email)
+        );
+    } catch (error) {
+        console.error('Error parsing users from localStorage:', error);
+        return [];
+    }
 }
 
 // Save users to localStorage
@@ -171,3 +207,9 @@ function saveUserCourses(email, courses) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeDefaultAdmin();
 });
+
+// Expose functions to global scope for onclick handlers
+window.logout = logout;
+window.checkAuth = checkAuth;
+window.getCurrentUser = getCurrentUser;
+window.getCurrentAdmin = getCurrentAdmin;

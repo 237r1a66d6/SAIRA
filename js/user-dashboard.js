@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Display user name
     const userNameElement = document.getElementById('userName');
     if (userNameElement) {
-        userNameElement.textContent = `Welcome, ${user.fullName}`;
+        userNameElement.textContent = `Welcome, ${user.username || 'User'}`;
     }
     
     // Load user data
@@ -39,34 +39,61 @@ function showUserTab(tabName) {
 }
 
 function loadUserDashboard(user) {
+    // Validate user object
+    if (!user) {
+        console.error('User object is undefined or null');
+        return;
+    }
+    
     // Welcome name
     const welcomeElement = document.getElementById('welcomeName');
     if (welcomeElement) {
-        welcomeElement.textContent = user.fullName;
+        welcomeElement.textContent = user.username || 'User';
     }
     
     // Stats
-    document.getElementById('enrolledCourses').textContent = user.enrolledCourses || 0;
-    document.getElementById('completedCourses').textContent = user.completedCourses || 0;
-    document.getElementById('inProgressCourses').textContent = user.inProgressCourses || 0;
-    document.getElementById('userProgress').textContent = (user.progress || 0) + '%';
+    const enrolledEl = document.getElementById('enrolledCourses');
+    const completedEl = document.getElementById('completedCourses');
+    const inProgressEl = document.getElementById('inProgressCourses');
+    const progressEl = document.getElementById('userProgress');
+    
+    if (enrolledEl) enrolledEl.textContent = user.enrolledCourses || 0;
+    if (completedEl) completedEl.textContent = user.completedCourses || 0;
+    if (inProgressEl) inProgressEl.textContent = user.inProgressCourses || 0;
+    if (progressEl) progressEl.textContent = (user.progress || 0) + '%';
     
     // User info
-    document.getElementById('userEmail').textContent = user.email;
-    document.getElementById('userPhone').textContent = user.phoneNumber;
-    document.getElementById('userQualification').textContent = user.qualification;
-    document.getElementById('memberSince').textContent = formatDate(user.registeredDate);
+    const emailEl = document.getElementById('userEmail');
+    const phoneEl = document.getElementById('userPhone');
+    const qualEl = document.getElementById('userQualification');
+    const memberEl = document.getElementById('memberSince');
+    
+    if (emailEl) emailEl.textContent = user.email || 'N/A';
+    if (phoneEl) phoneEl.textContent = user.phone || user.phoneNumber || 'N/A';
+    if (qualEl) qualEl.textContent = user.qualification || 'N/A';
+    if (memberEl) memberEl.textContent = formatDate(user.created_at || user.registeredDate);
     
     // Profile tab
-    const initial = user.fullName.charAt(0).toUpperCase();
-    document.getElementById('profileInitial').textContent = initial;
-    document.getElementById('profileName').textContent = user.fullName;
-    document.getElementById('profileEmail').textContent = user.email;
-    document.getElementById('profileFullName').textContent = user.fullName;
-    document.getElementById('profileEmailAddress').textContent = user.email;
-    document.getElementById('profilePhone').textContent = user.phoneNumber;
-    document.getElementById('profileQualification').textContent = user.qualification;
-    document.getElementById('profileMemberSince').textContent = formatDate(user.registeredDate);
+    const username = user.username || 'User';
+    const initial = username.charAt(0).toUpperCase();
+    
+    const profileInitialEl = document.getElementById('profileInitial');
+    const profileNameEl = document.getElementById('profileName');
+    const profileEmailEl = document.getElementById('profileEmail');
+    const profileFullNameEl = document.getElementById('profileFullName');
+    const profileEmailAddressEl = document.getElementById('profileEmailAddress');
+    const profilePhoneEl = document.getElementById('profilePhone');
+    const profileQualEl = document.getElementById('profileQualification');
+    const profileMemberEl = document.getElementById('profileMemberSince');
+    
+    if (profileInitialEl) profileInitialEl.textContent = initial;
+    if (profileNameEl) profileNameEl.textContent = user.username || 'User';
+    if (profileEmailEl) profileEmailEl.textContent = user.email || 'N/A';
+    if (profileFullNameEl) profileFullNameEl.textContent = user.username || 'User';
+    if (profileEmailAddressEl) profileEmailAddressEl.textContent = user.email || 'N/A';
+    if (profilePhoneEl) profilePhoneEl.textContent = user.phone || user.phoneNumber || 'N/A';
+    if (profileQualEl) profileQualEl.textContent = user.qualification || 'N/A';
+    if (profileMemberEl) profileMemberEl.textContent = formatDate(user.created_at || user.registeredDate);
 }
 
 function enrollCourse(courseName) {
@@ -132,10 +159,10 @@ function showEditProfileModal() {
     
     // Fill form with current user data
     document.getElementById('editProfileOldEmail').value = user.email;
-    document.getElementById('editProfileName').value = user.fullName;
+    document.getElementById('editProfileName').value = user.username || '';
     document.getElementById('editProfileEmail').value = user.email;
-    document.getElementById('editProfilePhone').value = user.phoneNumber;
-    document.getElementById('editProfileQualification').value = user.qualification;
+    document.getElementById('editProfilePhone').value = user.phone || user.phoneNumber || '';
+    document.getElementById('editProfileQualification').value = user.qualification || '';
     document.getElementById('editProfilePassword').value = '';
     document.getElementById('confirmEditProfilePassword').value = '';
     

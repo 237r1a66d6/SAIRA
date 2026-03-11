@@ -60,19 +60,33 @@ async function handleAdminLogin(event) {
         // Fallback to localStorage
         console.log('Using localStorage for admin authentication');
         
+        // Initialize default admin if needed
+        initializeDefaultAdmin();
+        
         // Get all admins
         const admins = getAdmins();
+        console.log('Available admins:', admins);
+        console.log('Trying to login with:', { username, password: '***' });
         
         // Find admin by username and password
-        const admin = admins.find(a => 
-            a.username === username && 
-            a.password === password &&
-            a.status === 'active'
-        );
+        const admin = admins.find(a => {
+            console.log('Checking admin:', { 
+                username: a?.username, 
+                passwordMatch: a?.password === password,
+                status: a?.status
+            });
+            return a && a.username === username && 
+                   a.password === password &&
+                   (!a.status || a.status === 'active');
+        });
         
         if (!admin) {
+            console.error('No matching admin found');
+            console.log('Available usernames:', admins.map(a => a.username));
             throw new Error('Invalid admin credentials. Please check your username and password.');
         }
+        
+        console.log('✅ Admin found:', admin.username);
         
         // Set current admin
         setCurrentAdmin(admin);

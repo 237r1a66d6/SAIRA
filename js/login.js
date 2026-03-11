@@ -18,22 +18,22 @@ async function handleLogin(event) {
     hideError('errorMessage');
     
     // Get form values
-    const fullName = document.getElementById('fullName').value.trim();
+    const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     
     console.log('=== LOGIN ATTEMPT ===');
-    console.log('Username:', fullName);
+    console.log('Username:', username);
     console.log('Email:', email);
     
     // Validation - at least one identifier must be provided
-    if ((!fullName && !email) || !password) {
+    if ((!username && !email) || !password) {
         showError('errorMessage', 'Please enter username or email, and password.');
         return;
     }
     
     // Determine which identifier to use
-    const identifier = email || fullName;
+    const identifier = email || username;
     
     // Disable submit button
     const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -45,7 +45,7 @@ async function handleLogin(event) {
     
     try {
         if (useBackend) {
-            // Try backend API first with identifier (email or fullName) and password
+            // Try backend API first with identifier (email or username) and password
             try {
                 const response = await api.loginUser({
                     identifier: identifier,
@@ -82,13 +82,13 @@ async function handleLogin(event) {
         // Check if identifier is an email
         const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
         
-        // Find user by email or full name and password
+        // Find user by email or username and password
         const user = users.find(u => {
             const match = isEmail 
                 ? u.email && u.email.toLowerCase() === identifier.toLowerCase()
-                : u.fullName.toLowerCase() === identifier.toLowerCase();
-            const passMatch = u.password === password;
-            console.log(`Checking user: ${u.fullName} (${u.email}) | Match: ${match} | Pass match: ${passMatch}`);
+                : u.username && u.username.toLowerCase() === identifier.toLowerCase();
+            const passMatch = u && u.password === password;
+            console.log(`Checking user: ${u.username} (${u.email}) | Match: ${match} | Pass match: ${passMatch}`);
             return match && passMatch;
         });
         

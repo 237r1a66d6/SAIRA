@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Users API - Production</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            color: #333;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+        .info-value {
+            font-family: 'Courier New', monospace;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .users-table th, .users-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .users-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        .users-table tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Users API Production Test</h1>
+        
+        <div class="test-section">
+            <h2>Environment Detection</h2>
+            <div class="info-grid">
+                <div class="info-label">Current URL:</div>
+                <div class="info-value" id="currentUrl"></div>
+                
+                <div class="info-label">Hostname:</div>
+                <div class="info-value" id="hostname"></div>
+                
+                <div class="info-label">Protocol:</div>
+                <div class="info-value" id="protocol"></div>
+                
+                <div class="info-label">Environment:</div>
+                <div class="info-value" id="environment"></div>
+                
+                <div class="info-label">API Base URL:</div>
+                <div class="info-value" id="apiBaseUrl"></div>
+                
+                <div class="info-label">Full API Endpoint:</div>
+                <div class="info-value" id="fullApiUrl"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>API Connection Test</h2>
+            <button class="btn" onclick="testConnection()">🔌 Test Connection</button>
+            <button class="btn" onclick="fetchAllUsers()">👥 Fetch All Users</button>
+            <button class="btn" onclick="clearResults()">🗑️ Clear Results</button>
+            
+            <div id="connectionStatus"></div>
+            <div id="results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Users Data</h2>
+            <div id="usersDisplay"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Raw Response</h2>
+            <pre id="rawResponse">Click "Fetch All Users" to see raw API response...</pre>
+        </div>
+    </div>
+
+    <script src="js/api-config.js"></script>
+    <script>
+        // Display environment info on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+            
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('hostname').textContent = window.location.hostname;
+            document.getElementById('protocol').textContent = window.location.protocol;
+            document.getElementById('environment').textContent = isProd ? '🌐 Production' : '🖥️ Development';
+            document.getElementById('apiBaseUrl').textContent = API_CONFIG.BASE_URL;
+            document.getElementById('fullApiUrl').textContent = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`;
+        });
+
+        async function testConnection() {
+            const statusDiv = document.getElementById('connectionStatus');
+            const resultsDiv = document.getElementById('results');
+            
+            statusDiv.innerHTML = '<div class="status info">🔄 Testing connection...</div>';
+            resultsDiv.innerHTML = '';
+            
+            try {
+                const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`;
+                console.log('Testing URL:', url);
+                
+                const startTime = Date.now();
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                const duration = Date.now() - startTime;
+                
+                const contentType = response.headers.get('content-type');
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Connection Successful!<br>
+                            <small>
+                                Status: ${response.status} ${response.statusText}<br>
+                                Response Time: ${duration}ms<br>
+                                Content-Type: ${contentType}
+                            </small>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Connection Failed<br>
+                            <small>
+                                Status: ${response.status} ${response.statusText}<br>
+                                Response Time: ${duration}ms
+                            </small>
+                        </div>
+                    `;
+                }
+                
+                // Try to parse response
+                try {
+                    const data = await response.json();
+                    resultsDiv.innerHTML = `
+                        <h3>Response Data:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } catch (e) {
+                    const text = await response.text();
+                    resultsDiv.innerHTML = `
+                        <div class="status error">
+                            ⚠️ Response is not JSON<br>
+                            <small>Raw response:</small>
+                            <pre>${text}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Connection Error<br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+                console.error('Test connection error:', error);
+            }
+        }
+
+        async function fetchAllUsers() {
+            const statusDiv = document.getElementById('connectionStatus');
+            const usersDisplay = document.getElementById('usersDisplay');
+            const rawResponse = document.getElementById('rawResponse');
+            
+            statusDiv.innerHTML = '<div class="status info">🔄 Fetching users from database...</div>';
+            
+            try {
+                console.log('Fetching from:', `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ADMIN_USERS}`);
+                
+                const response = await api.getAllUsers();
+                
+                console.log('API Response:', response);
+                rawResponse.textContent = JSON.stringify(response, null, 2);
+                
+                // Handle both response formats
+                const users = response.users || (response.data && response.data.users) || [];
+                const count = users.length;
+                
+                if (response.success && Array.isArray(users)) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Successfully fetched ${count} users from database!<br>
+                            <small>Source: Database (Hostinger MySQL)</small>
+                        </div>
+                    `;
+                    
+                    if (count > 0) {
+                        let tableHtml = `
+                            <table class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Qualification</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        
+                        users.forEach(user => {
+                            tableHtml += `
+                                <tr>
+                                    <td>${user.id || 'N/A'}</td>
+                                    <td>${user.username || user.fullName || 'N/A'}</td>
+                                    <td>${user.email || 'N/A'}</td>
+                                    <td>${user.phone || user.phoneNumber || 'N/A'}</td>
+                                    <td>${user.qualification || 'N/A'}</td>
+                                    <td>${user.status || 'active'}</td>
+                                    <td>${new Date(user.created_at || user.createdDate).toLocaleDateString()}</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        tableHtml += '</tbody></table>';
+                        usersDisplay.innerHTML = tableHtml;
+                    } else {
+                        usersDisplay.innerHTML = '<div class="status info">ℹ️ Database is empty - no users registered yet.</div>';
+                    }
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ API returned unexpected format<br>
+                            <small>Check raw response below</small>
+                        </div>
+                    `;
+                    usersDisplay.innerHTML = '';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Error: ${error.message}<br>
+                        <small>Check browser console (F12) for details</small>
+                    </div>
+                `;
+                rawResponse.textContent = `Error: ${error.message}\n\nStack trace:\n${error.stack}`;
+                console.error('Fetch users error:', error);
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('connectionStatus').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('usersDisplay').innerHTML = '';
+            document.getElementById('rawResponse').textContent = 'Click "Fetch All Users" to see raw API response...';
+        }
+    </script>
+</body>
+</html>

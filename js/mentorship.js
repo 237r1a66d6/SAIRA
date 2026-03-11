@@ -3,9 +3,10 @@
 function getApiBaseUrl() {
     if (window.API_BASE_URL) return window.API_BASE_URL;
     const prod = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    if (!prod) return 'http://localhost:5000';
-    const host = window.location.hostname.replace(/^www\./, '');
-    return `https://api.${host}`;
+    if (!prod) return 'http://localhost';
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    return `${protocol}//${host}`;
 }
 
 // Show enrollment modal

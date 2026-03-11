@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- Performance Optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- Critical CSS loaded immediately -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <title>Admin Dashboard - SAIRA ACAD</title>
+    
+    <!-- Google Analytics (deferred for faster page load) -->
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-J4FHJLX2SQ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-J4FHJLX2SQ');
     </script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - SAIRA ACAD</title>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar dashboard-nav">
@@ -27,6 +38,11 @@
                 </div>
             </div>
             <div class="nav-buttons">
+                <div class="realtime-status" id="realtimeStatus">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">Syncing...</span>
+                    <span class="last-update" id="lastUpdate"></span>
+                </div>
                 <span id="adminName" class="user-name"></span>
                 <button onclick="logout()" class="btn btn-secondary">Logout</button>
             </div>
@@ -84,9 +100,24 @@
         </aside>
 
         <main class="dashboard-content">
+            <!-- Mobile Refresh Button (Floating) -->
+            <button id="mobileRefreshBtn" class="mobile-refresh-btn" onclick="manualRefresh()" title="Refresh Data">
+                <span class="refresh-icon">🔄</span>
+            </button>
+            
             <!-- Overview Tab -->
             <div id="overview" class="tab-content active">
-                <h2>Dashboard Overview</h2>
+                <div class="tab-header">
+                    <h2>Dashboard Overview</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="testUserApiDirect()" class="btn" style="background: #ff9800;">
+                            🧪 Test Database Connection
+                        </button>
+                        <button onclick="manualRefresh()" class="btn btn-primary">
+                            <span id="overviewRefreshIcon">🔄</span> Refresh All Data
+                        </button>
+                    </div>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">👥</div>
@@ -103,10 +134,10 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📚</div>
+                        <div class="stat-icon">�‍🏫</div>
                         <div class="stat-details">
-                            <h3>6</h3>
-                            <p>Available Courses</p>
+                            <h3 id="totalTeachers">0</h3>
+                            <p>Total Teachers</p>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -158,9 +189,46 @@
             <div id="user-management" class="tab-content">
                 <div class="tab-header">
                     <h2>User Management</h2>
-                    <button class="btn btn-primary" onclick="showAddUserModal()">
-                        <span>+</span> Add New User
-                    </button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span id="dataSourceIndicator" style="font-size: 14px; margin-right: 10px;">🔵 Loading...</span>
+                        <button class="btn" onclick="testUserApiDirect()" style="background: #ff9800; padding: 8px 15px;">
+                            🧪 Test API
+                        </button>
+                        <button class="btn btn-secondary" id="refreshUsersBtn" onclick="refreshUserData()" style="padding: 8px 15px;">
+                            🔄 Refresh
+                        </button>
+                        <button class="btn" onclick="forceLoadUsers()" style="background: #4CAF50; padding: 8px 15px;">
+                            ⚡ Force Load
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddUserModal()">
+                            <span>+</span> Add New User
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
+                    📊 <strong>Live Database:</strong> User data is fetched directly from your Hostinger MySQL database (phpMyAdmin) and auto-refreshes every 30 seconds.
+                    <br>
+                    <span id="lastUpdateTime" style="color: #555; font-size: 12px;">Loading...</span>
+                </div>
+
+                <!-- Diagnostic Panel (collapsible) -->
+                <div id="diagnosticPanel" style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; margin-bottom: 15px; display: none;">
+                    <div style="padding: 10px; cursor: pointer; font-weight: 600;" onclick="toggleDiagnostic()">
+                        🔍 Diagnostic Information <span id="diagnosticToggle">▼</span>
+                    </div>
+                    <div id="diagnosticContent" style="padding: 10px; border-top: 1px solid #ffc107; font-size: 13px; font-family: monospace; display: none;">
+                        <div><strong>Environment:</strong> <span id="diagEnv"></span></div>
+                        <div><strong>API Base URL:</strong> <span id="diagBaseUrl"></span></div>
+                        <div><strong>Users Endpoint:</strong> <span id="diagEndpoint"></span></div>
+                        <div><strong>User Source:</strong> <span id="diagSource"></span></div>
+                        <div><strong>Cache Size:</strong> <span id="diagCacheSize"></span></div>
+                        <div><strong>Last Error:</strong> <span id="diagError" style="color: #dc3545;"></span></div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn" onclick="runFullDiagnostic()" style="padding: 5px 10px; font-size: 12px;">🔬 Run Full Test</button>
+                            <button class="btn btn-secondary" onclick="window.open('test-users-api-production.html', '_blank')" style="padding: 5px 10px; font-size: 12px;">📊 Open Test Page</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-container">
@@ -177,7 +245,7 @@
                         </thead>
                         <tbody id="userTableBody">
                             <tr>
-                                <td colspan="6" class="no-data">Loading...</td>
+                                <td colspan="6" class="no-data">Loading users from database...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -980,8 +1048,39 @@
         </div>
     </div>
 
-    <script src="js/api-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/admin-dashboard.js"></script>
+    <!-- Force browser to reload JavaScript - Cache busting with timestamp -->
+    <script>
+        // Log version on load to verify fresh code
+        console.log('🔄 Admin Dashboard Loading - Timestamp:', new Date().toISOString());
+        console.log('📌 Expected API Config Version: 2.0.1 or higher');
+    </script>
+    <script src="js/api-config.js?v=20260306-1400"></script>
+    <script src="js/auth.js?v=20260306-1400"></script>
+    <script src="js/admin-dashboard.js?v=20260306-1400"></script>
+    <script>
+        // Verify API version loaded
+        if (typeof api !== 'undefined' && typeof api.deleteUser === 'function') {
+            console.log('✅ API loaded correctly - deleteUser function available');
+            // Check if it's the new version by calling toString and checking for the log
+            const fnString = api.deleteUser.toString();
+            if (fnString.includes('API deleteUser called with userId')) {
+                console.log('✅ CONFIRMED: Using NEW deleteUser function (v2.0.1)');
+            } else {
+                console.error('⚠️ WARNING: Old deleteUser function detected! Clear cache with Ctrl+Shift+R');
+            }
+        } else {
+            console.error('❌ API not loaded properly!');
+        }
+    </script>
+    
+    <!-- Mobile Performance Notice -->
+    <script>
+        // Log mobile device info for debugging
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('📱 Mobile device detected - Fast 5-second polling enabled');
+            console.log('Device:', navigator.userAgent);
+            console.log('Connection:', navigator.connection?.effectiveType || 'unknown');
+        }
+    </script>
 </body>
 </html>

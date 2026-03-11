@@ -17,7 +17,13 @@ async function handleContactForm(event) {
     };
     
     try {
-        const response = await fetch(`${window.API_BASE_URL}/api/forms/contact`, {
+        // Use API_BASE_URL if available, otherwise use relative path
+        const apiBaseUrl = window.API_BASE_URL || '';
+        const apiUrl = `${apiBaseUrl}/api/forms/contact.php`;
+        
+        console.log('📤 Submitting contact form to:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,7 +31,16 @@ async function handleContactForm(event) {
             body: JSON.stringify(data)
         });
         
+        console.log('📥 Response status:', response.status);
+        
+        // Check if response is actually JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error(`Server returned ${response.status}. API file may not be uploaded. Expected JSON but got: ${contentType}`);
+        }
+        
         const result = await response.json();
+        console.log('✅ Response data:', result);
         
         // Show appropriate message
         const messageElement = document.getElementById('notificationMessage');
@@ -42,10 +57,19 @@ async function handleContactForm(event) {
         
         notification.classList.add('show');
     } catch (error) {
-        console.error('Error:', error);
+        console.error('❌ Contact form error:', error);
         const messageElement = document.getElementById('notificationMessage');
         const notification = document.getElementById('customNotification');
-        messageElement.textContent = 'Unable to send message. Please check your connection.';
+        
+        // More detailed error message
+        if (error.message.includes('404')) {
+            messageElement.textContent = 'API endpoint not found. Please contact support.';
+        } else if (error.message.includes('500')) {
+            messageElement.textContent = 'Server error. Please try again later.';
+        } else {
+            messageElement.textContent = 'Unable to send message. Please check your connection.';
+        }
+        
         notification.classList.add('show');
     }
     

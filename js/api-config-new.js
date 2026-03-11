@@ -1,4 +1,4 @@
-// Production-ready API Configuration
+// Production-ready API Configuration for Hostinger PHP Backend
 const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
 function normalizeBaseUrl(url) {
@@ -6,8 +6,10 @@ function normalizeBaseUrl(url) {
 }
 
 function getDefaultProdApiBaseUrl() {
-    const host = window.location.hostname.replace(/^www\./, '');
-    return `https://api.${host}/api`;
+    // For Hostinger, use the same domain
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    return `${protocol}//${host}/api`;
 }
 
 function resolveApiBaseUrl() {
@@ -15,11 +17,9 @@ function resolveApiBaseUrl() {
     // 1) window.SAIRA_API_BASE_URL
     // 2) localStorage.SAIRA_API_BASE_URL
     const override = window.SAIRA_API_BASE_URL || localStorage.getItem('SAIRA_API_BASE_URL');
-    const base = override ? normalizeBaseUrl(override) : (isProd ? getDefaultProdApiBaseUrl() : 'http://localhost:5000/api');
+    const base = override ? normalizeBaseUrl(override) : (isProd ? getDefaultProdApiBaseUrl() : 'http://localhost/api');
 
-    // This file's ENDPOINTS do NOT include '/api', so ensure BASE_URL ends with '/api'
-    const normalized = normalizeBaseUrl(base);
-    return /\/api$/i.test(normalized) ? normalized : `${normalized}/api`;
+    return normalizeBaseUrl(base);
 }
 
 const API_CONFIG = {
@@ -28,26 +28,41 @@ const API_CONFIG = {
     
     ENDPOINTS: {
         // User endpoints
-        USER_REGISTER: '/users/register',
-        USER_LOGIN: '/users/login',
-        USER_PROFILE: '/users/profile',
+        USER_REGISTER: '/users/register.php',
+        USER_LOGIN: '/users/login.php',
+        USER_PROFILE: '/users/profile.php',
         
         // Admin endpoints
-        ADMIN_LOGIN: '/admin/login',
-        ADMIN_DASHBOARD: '/admin/dashboard',
-        ADMIN_USERS: '/admin/users',
-        ADMIN_CREATE_USER: '/admin/create-user',
-        ADMIN_UPDATE_USER: '/admin/update-user',
-        ADMIN_DELETE_USER: '/admin/delete-user',
+        ADMIN_LOGIN: '/admin/login.php',
+        ADMIN_DASHBOARD: '/admin/dashboard.php',
+        ADMIN_USERS: '/admin/users.php',
+        ADMIN_CREATE_USER: '/admin/create-user.php',
+        ADMIN_UPDATE_USER: '/admin/update-user.php',
+        ADMIN_DELETE_USER: '/admin/delete-user.php',
         
         // School Partner endpoints
-        PARTNER_LOGIN: '/school-partner/login',
-        PARTNER_CREATE: '/school-partner/create',
-        PARTNER_ALL: '/school-partner/all',
-        PARTNER_UPDATE: '/school-partner/update',
-        PARTNER_DELETE: '/school-partner/delete',
-        PARTNER_JOBS: '/school-partner/applications/jobs',
-        PARTNER_TEACHERS: '/school-partner/applications/teachers',
+        PARTNER_LOGIN: '/school-partner/login.php',
+        PARTNER_CREATE: '/school-partner/create.php',
+        PARTNER_ALL: '/school-partner/all.php',
+        PARTNER_UPDATE: '/school-partner/update.php',
+        PARTNER_DELETE: '/school-partner/delete.php',
+        PARTNER_JOBS: '/school-partner/applications/jobs.php',
+        PARTNER_TEACHERS: '/school-partner/applications/teachers.php',
+        PARTNER_MENTORS: '/school-partner/applications/mentors.php',
+        
+        // Teacher endpoints
+        TEACHER_LOGIN: '/teacher/login.php',
+        
+        // Form endpoints
+        CONTACT_FORM: '/forms/contact.php',
+        SCHOOL_REQUIREMENT: '/forms/school-requirement.php',
+        TEACHER_APPLICATION: '/forms/teacher-application.php',
+        MENTOR_APPLICATION: '/forms/mentor-application.php',
+        JOB_APPLICATION: '/forms/job-application.php',
+        ENROLLMENT: '/forms/enrollment.php',
+        CONSULTATION: '/forms/consultation.php'
+    }
+};
         PARTNER_MENTORS: '/school-partner/applications/mentors',
         
         // Form endpoints

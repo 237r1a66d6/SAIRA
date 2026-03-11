@@ -1,4 +1,3 @@
-/* Manrope Font */
 @font-face {
     font-family: 'Manrope';
     src: url('fonts/Manrope-Regular.ttf') format('truetype');
@@ -49,50 +48,58 @@
 }
 
 /* Logo Animation Slider */
-/* Second Logo Strip Section - Different Style */
-.logo-strip-secondary {
-    background: white;
-    padding: 35px 0;
+.logo-slider-section {
+    background: #ffffff;
+    padding: 40px 0;
     overflow: hidden;
     position: relative;
 }
 
-.logo-strip-container {
+.logo-slider-wrapper {
     width: 100%;
     overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-.logo-strip-scroll {
+.logo-slider-track {
     display: flex;
     width: fit-content;
-    animation: scroll-reverse 25s linear infinite;
-    will-change: transform;
+    animation: scroll 20s linear infinite;
 }
 
-.logo-item-group {
+.logo-slide {
     display: flex;
     align-items: center;
-    gap: 60px;
-    padding: 0 30px;
+    gap: 80px;
+    padding: 0 40px;
 }
 
-.logo-item-group img {
-    height: 75px;
+.logo-slide img {
+    height: 70px;
     width: auto;
-    max-width: 220px;
     object-fit: contain;
-    opacity: 0.95;
-    transition: all 0.3s ease;
-    display: block;
-    visibility: visible;
-}
-
-.logo-item-group img:hover {
+    filter: none;
     opacity: 1;
-    transform: scale(1.08) translateY(-3px);
+    transition: all 0.3s ease;
 }
 
-@keyframes scroll-reverse {
+.logo-slide img[src*="solitaire-global"] {
+    filter: none;
+    opacity: 1;
+    height: 70px;
+}
+
+.logo-slide img[src*="sattva"] {
+    height: 80px;
+}
+
+.logo-slide img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+@keyframes scroll {
     0% {
         transform: translateX(0);
     }
@@ -101,42 +108,19 @@
     }
 }
 
-/* Responsive adjustments for second strip */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .logo-strip-secondary {
-        padding: 25px 0;
+    .logo-slider-section {
+        padding: 30px 0;
     }
-    
-    .logo-strip-scroll {
-        animation: scroll-reverse 30s linear infinite;
-    }
-    
-    .logo-item-group {
+   
+    .logo-slide {
         gap: 50px;
         padding: 0 25px;
-        min-width: 100vw;
     }
-    
-    .logo-item-group img {
-        height: 60px;
-        max-width: 180px;
-        flex-shrink: 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo-strip-secondary {
-        padding: 20px 0;
-    }
-    
-    .logo-item-group {
-        gap: 40px;
-        padding: 0 20px;
-    }
-    
-    .logo-item-group img {
-        height: 50px;
-        max-width: 150px;
+   
+    .logo-slide img {
+        height: 40px;
     }
 }
 
@@ -444,6 +428,121 @@ body {
     margin-right: 15px;
     font-size: 0.95rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Real-time Status Indicator */
+.realtime-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.status-connected {
+    background: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+}
+
+.status-dot.status-syncing {
+    background: #ffa500;
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.status-dot.status-error {
+    background: #f44336;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.status-text {
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.last-update {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* Mobile Refresh Button - Floating Action Button */
+.mobile-refresh-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-refresh-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 28px rgba(102, 126, 234, 0.6);
+}
+
+.mobile-refresh-btn:active {
+    transform: scale(0.95);
+}
+
+.mobile-refresh-btn.spinning .refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hide mobile refresh button on desktop, show on mobile */
+@media (min-width: 769px) {
+    .mobile-refresh-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-refresh-btn {
+        display: flex;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+    }
 }
 
 /* Button Styles */
@@ -814,23 +913,7 @@ section {
     display: block;
     position: relative;
     padding-bottom: 8px;
-}
-
-.section-label::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-purple), var(--primary-orange));
-    border-radius: 2px;
-}
-
-section > .container {
-    text-align: center;
-}
+}\n\n.section-label::after {\n    content: '';\n    position: absolute;\n    bottom: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 50px;\n    height: 3px;\n    background: linear-gradient(90deg, var(--primary-purple), var(--primary-orange));\n    border-radius: 2px;\n}\n\nsection > .container {\n    text-align: center;\n}
 
 .section-label.light {
     color: var(--primary-orange);
@@ -1016,7 +1099,7 @@ section > .container {
     .process-step {
         max-width: 90%;
     }
-    
+   
     .process-copy {
         padding: 5rem 2.5rem 2rem 2.5rem;
     }
@@ -1025,7 +1108,7 @@ section > .container {
         width: 65px;
         height: 65px;
     }
-    
+   
     .badge-number {
         font-size: 1.6rem;
     }
@@ -1036,7 +1119,7 @@ section > .container {
     .process-grid::after {
         display: none;
     }
-    
+   
     .decoration-dot-1,
     .decoration-square-1 {
         display: none;
@@ -1054,7 +1137,7 @@ section > .container {
     .process-copy h3 {
         font-size: 1.4rem;
     }
-    
+   
     .process-copy p {
         font-size: 0.95rem;
     }
@@ -1064,7 +1147,7 @@ section > .container {
         height: 60px;
         top: 25px;
     }
-    
+   
     .badge-number {
         font-size: 1.5rem;
     }
@@ -1074,12 +1157,12 @@ section > .container {
     .process-copy {
         padding: 4rem 1.5rem 1.5rem 1.5rem;
     }
-    
+   
     .process-badge {
         width: 55px;
         height: 55px;
     }
-    
+   
     .badge-number {
         font-size: 1.3rem;
     }
@@ -1887,7 +1970,6 @@ section > .container {
 .form-group label {
     color: var(--text-dark);
     font-weight: 600;
-    text-align: left;
 }
 
 .form-group input,
@@ -2039,6 +2121,43 @@ section > .container {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+}
+
+.tab-header .btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Touch feedback for mobile devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Mobile touch device styles */
+    .btn:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+    }
+    
+    .menu-item:active {
+        background: rgba(102, 126, 234, 0.15);
+        transform: scale(0.98);
+    }
+    
+    .stat-card {
+        transition: transform 0.2s ease;
+    }
+    
+    .stat-card:active {
+        transform: scale(0.98);
+    }
+    
+    /* Improve touch targets for mobile */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .menu-item {
+        min-height: 48px;
+    }
 }
 
 .stats-grid {
@@ -2757,6 +2876,23 @@ footer {
         padding: 8px 12px;
         font-size: 0.85rem;
         margin-right: 0;
+    }
+
+    .realtime-status {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        gap: 6px;
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    .last-update {
+        display: none; /* Hide timestamp on mobile to save space */
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
     }
 
     .navbar .container {
@@ -4415,7 +4551,7 @@ footer {
         grid-template-columns: 1fr;
         gap: 40px;
     }
-    
+   
     .features-grid,
     .services-grid,
     .certification-grid,
@@ -4426,15 +4562,15 @@ footer {
     .career-tips {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+   
     .mentors-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-    
+   
     .story-card {
         grid-template-columns: 1fr;
     }
-    
+   
     .story-image {
         height: 250px;
     }
@@ -4444,11 +4580,11 @@ footer {
     .page-title {
         font-size: 2rem;
     }
-    
+   
     .section-heading {
         font-size: 2rem;
     }
-    
+   
     .features-grid,
     .services-grid,
     .certification-grid,
@@ -4467,44 +4603,39 @@ footer {
     .contact-options-grid {
         grid-template-columns: 1fr;
     }
-    
+   
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+   
     .blog-card.featured {
         grid-column: span 1;
     }
-    
+   
     .cta-buttons {
         flex-direction: column;
         align-items: center;
     }
-    
+   
     .impact-results {
         grid-template-columns: 1fr;
     }
-    
+   
     .modal-content {
         width: 95%;
         padding: 30px 20px;
     }
-    
+   
     .legal-document {
         padding: 40px 20px;
     }
 }
 
 /* WhatsApp Floating Button */
-.whatsapp-float,
-a.whatsapp-float,
-#whatsappShareBtn {
+.whatsapp-float {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    left: auto;
-    margin-left: auto;
-    margin-right: 0;
+    bottom: 100px;
+    right: 30px;
     width: 60px;
     height: 60px;
     background: #25D366;
@@ -4516,78 +4647,29 @@ a.whatsapp-float,
     z-index: 9999;
     transition: all 0.3s ease;
     cursor: pointer;
-    text-decoration: none;
-    visibility: visible;
-    opacity: 1;
 }
 
-.whatsapp-float:hover,
-a.whatsapp-float:hover,
-#whatsappShareBtn:hover {
+.whatsapp-float:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
 }
 
-.whatsapp-float svg,
-a.whatsapp-float svg,
-#whatsappShareBtn svg {
+.whatsapp-float svg {
     width: 32px;
     height: 32px;
-    pointer-events: none;
-    display: block;
 }
 
 @media (max-width: 768px) {
-    .whatsapp-float,
-    a.whatsapp-float,
-    #whatsappShareBtn {
-        position: fixed !important;
-        bottom: 20px !important;
-        left: 20px !important;
-        right: auto !important;
-        top: auto !important;
-        margin: 0 !important;
-        width: 60px !important;
-        height: 60px !important;
-        z-index: 999999 !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+    .whatsapp-float {
+        bottom: 80px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
     }
-    
-    .whatsapp-float svg,
-    a.whatsapp-float svg,
-    #whatsappShareBtn svg {
-        width: 32px !important;
-        height: 32px !important;
-        display: block !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .whatsapp-float,
-    a.whatsapp-float,
-    #whatsappShareBtn {
-        position: fixed !important;
-        bottom: 15px !important;
-        left: 15px !important;
-        right: auto !important;
-        top: auto !important;
-        margin: 0 !important;
-        width: 56px !important;
-        height: 56px !important;
-        z-index: 999999 !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    
-    .whatsapp-float svg,
-    a.whatsapp-float svg,
-    #whatsappShareBtn svg {
-        width: 28px !important;
-        height: 28px !important;
-        display: block !important;
+   
+    .whatsapp-float svg {
+        width: 28px;
+        height: 28px;
     }
 }
 
@@ -5217,16 +5299,16 @@ div[style*="background"] a * {
     .resources-grid {
         grid-template-columns: 1fr;
     }
-    
+   
     .mentorship-section {
         grid-template-columns: 1fr;
     }
-    
+   
     .session-item {
         flex-direction: column;
         text-align: center;
     }
-    
+   
     .mentor-details {
         flex-direction: column;
         text-align: center;
@@ -5557,7 +5639,7 @@ div[style*="background"] a * {
     .benefits-grid {
         grid-template-columns: 1fr;
     }
-    
+   
     .mentor-type-grid {
         grid-template-columns: 1fr;
     }
@@ -5567,17 +5649,17 @@ div[style*="background"] a * {
     .section-icon {
         font-size: 2.5rem;
     }
-    
+   
     .internship-benefits-box,
     .mentor-info-box {
         padding: 20px;
     }
-    
+   
     .benefit-item,
     .info-item {
         padding: 10px;
     }
-    
+   
     .benefit-icon,
     .info-icon {
         font-size: 1.5rem;
